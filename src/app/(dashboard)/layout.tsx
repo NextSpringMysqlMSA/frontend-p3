@@ -1,5 +1,4 @@
 import HomeNavbar from '@/components/layout/homeNavbar'
-import Sidebar from '@/components/layout/sidebar'
 import {ProfileProvider} from '@/contexts/ProfileContext'
 import Reminder from './reminder'
 
@@ -11,13 +10,10 @@ export default function Layout({
   return (
     <ProfileProvider>
       {/* <Reminder /> */}
-      <div className="flex flex-col w-full h-full">
+      <div className="flex flex-col items-center w-full min-h-screen">
         <HomeNavbar />
-        <div className="flex flex-row w-full h-full mt-16">
-          <Sidebar />
-          <div className="flex justify-center w-full ml-[65px] transition-all duration-300">
-            <div className="flex flex-col w-full max-w-screen-xl">{children}</div>
-          </div>
+        <div className="flex flex-col flex-1 w-full max-w-screen-xl mt-20 transition-all duration-300">
+          {children}
         </div>
       </div>
     </ProfileProvider>

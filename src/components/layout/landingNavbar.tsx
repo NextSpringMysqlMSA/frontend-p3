@@ -11,7 +11,7 @@ import {Leaf, ArrowRight} from 'lucide-react'
 export default function LandingNavBar() {
   return (
     <header className="fixed z-50 w-full">
-      <div className="flex items-center justify-between w-full px-4 py-3 bg-white shadow-sm lg:px-8">
+      <div className="flex items-center justify-between w-full h-20 px-4 py-3 bg-white shadow-sm lg:px-8">
         {/* 로고 영역 */}
         <Link href="/" className="flex items-center space-x-3">
           <div className="flex items-center justify-center w-10 h-10 rounded-lg shadow-sm bg-customG">

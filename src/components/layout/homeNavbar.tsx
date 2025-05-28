@@ -1,6 +1,6 @@
 'use client'
 
-import {useEffect, useState} from 'react'
+import {use, useEffect, useState} from 'react'
 import Link from 'next/link'
 import {
   DropdownMenu,
@@ -13,7 +13,7 @@ import {Avatar, AvatarImage, AvatarFallback} from '@/components/ui/avatar'
 import {HoverCard, HoverCardContent, HoverCardTrigger} from '@/components/ui/hover-card'
 import {useProfileStore} from '@/stores/profileStore'
 import {useAuthStore} from '@/stores/authStore'
-import {useRouter} from 'next/navigation'
+import {useRouter, usePathname} from 'next/navigation'
 import {ChevronDown, LogOut, User, Leaf} from 'lucide-react'
 import {motion} from 'framer-motion'
 
@@ -27,7 +27,10 @@ export default function HomeNavbar() {
   const {logout} = useAuthStore()
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const router = useRouter()
-
+  const [TCFDOpen, setTCFDOpen] = useState(false)
+  const [partnerOpen, setPartnerOpen] = useState(false)
+  const [scopeOpen, setScopeOpen] = useState(false)
+  const pathname = usePathname()
   /**
    * 로그아웃 처리 함수
    */
@@ -49,7 +52,7 @@ export default function HomeNavbar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 w-full">
-      <div className="flex items-center justify-between w-full h-16 px-4 bg-white border-b border-gray-200 shadow-sm lg:px-6">
+      <div className="flex items-center justify-between w-full h-20 px-4 bg-white border-b border-gray-200 shadow-sm lg:px-6">
         {/* 로고 영역 */}
         <div className="flex items-center">
           <Link href="/" className="flex items-center space-x-2">
@@ -67,6 +70,170 @@ export default function HomeNavbar() {
               <span className="-mt-1 text-xs font-medium text-customG">Dashboard</span>
             </motion.div>
           </Link>
+        </div>
+
+        {/* --------------------------------------------------------------------------------------------------메뉴 영역 */}
+        <div className="flex flex-row items-center justify-center w-full h-full space-x-4 ">
+          {/* 대시보드 ===================================================== */}
+          <Link href="/home">
+            <div
+              className={`px-4 py-2 text-sm rounded-full ${
+                pathname === '/home' ? 'bg-customG text-white' : 'hover:bg-gray-100'
+              }`}>
+              HOME
+            </div>
+          </Link>
+          {/* TCFD ===================================================== */}
+          <DropdownMenu open={TCFDOpen} onOpenChange={setTCFDOpen}>
+            <DropdownMenuTrigger asChild>
+              <button
+                className={`flex flex-row items-center px-4 py-2 text-sm rounded-full ${
+                  pathname === '/governance' ||
+                  pathname === '/strategy' ||
+                  pathname === '/goal'
+                    ? 'bg-customG text-white'
+                    : 'hover:bg-gray-100'
+                }`}>
+                TCFD
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-56 pt-3" sideOffset={13.5}>
+              <DropdownMenuSeparator className="md:hidden" />
+
+              <Link href="/governance">
+                <DropdownMenuItem className="gap-2 cursor-pointer">
+                  <span
+                    className={`${
+                      pathname === '/governance' ? 'border-b border-black' : ''
+                    }`}>
+                    거버넌스
+                  </span>
+                </DropdownMenuItem>
+              </Link>
+
+              <DropdownMenuSeparator />
+
+              <Link href="/strategy">
+                <DropdownMenuItem className="gap-2 cursor-pointer">
+                  <span
+                    className={`${
+                      pathname === '/strategy' ? 'border-b border-black' : ''
+                    }`}>
+                    전략
+                  </span>
+                </DropdownMenuItem>
+              </Link>
+
+              <DropdownMenuSeparator />
+
+              <Link href="/goal">
+                <DropdownMenuItem className="gap-2 cursor-pointer">
+                  <span
+                    className={`${pathname === '/goal' ? 'border-b border-black' : ''}`}>
+                    목표 및 지표
+                  </span>
+                </DropdownMenuItem>
+              </Link>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          {/* GRI ===================================================== */}
+          <Link href="/GRI">
+            <div
+              className={`px-4 py-2 text-sm rounded-full ${
+                pathname === '/GRI' ? 'bg-customG text-white' : 'hover:bg-gray-100'
+              }`}>
+              GRI
+            </div>
+          </Link>
+          {/* Scope ===================================================== */}
+          <DropdownMenu open={scopeOpen} onOpenChange={setScopeOpen}>
+            <DropdownMenuTrigger asChild>
+              <button
+                className={`flex flex-row items-center px-4 py-2 text-sm rounded-full ${
+                  pathname === '/managePartner' || pathname === '/financialRisk'
+                    ? 'bg-customG text-white'
+                    : 'hover:bg-gray-100'
+                }`}>
+                Scope
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-56 pt-3" sideOffset={13.5}>
+              <DropdownMenuSeparator className="md:hidden" />
+
+              <Link href="/managePartner">
+                <DropdownMenuItem className="gap-2 cursor-pointer">
+                  <span
+                    className={`${
+                      pathname === '/managePartner' ? 'border-b border-black' : ''
+                    }`}>
+                    Scope 1
+                  </span>
+                </DropdownMenuItem>
+              </Link>
+
+              <DropdownMenuSeparator />
+
+              <Link href="/financialRisk">
+                <DropdownMenuItem className="gap-2 cursor-pointer">
+                  <span
+                    className={`${
+                      pathname === '/financialRisk' ? 'border-b border-black' : ''
+                    }`}>
+                    Scope 2
+                  </span>
+                </DropdownMenuItem>
+              </Link>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          {/* 공급망 실사 ===================================================== */}
+          <Link href="/CSDDD">
+            <div
+              className={`px-4 py-2 text-sm rounded-full ${
+                pathname === '/CSDDD' ? 'bg-customG text-white' : 'hover:bg-gray-100 '
+              }`}>
+              공급망 실사
+            </div>
+          </Link>
+          {/* 협력사 관리 ===================================================== */}
+          <DropdownMenu open={partnerOpen} onOpenChange={setPartnerOpen}>
+            <DropdownMenuTrigger asChild>
+              <button
+                className={`flex flex-row items-center px-4 py-2 text-sm rounded-full ${
+                  pathname === '/managePartner' || pathname === '/financialRisk'
+                    ? 'bg-customG text-white'
+                    : 'hover:bg-gray-100'
+                }`}>
+                협력사 관리
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-56 pt-3" sideOffset={13.5}>
+              <DropdownMenuSeparator className="md:hidden" />
+
+              <Link href="/managePartner">
+                <DropdownMenuItem className="gap-2 cursor-pointer">
+                  <span
+                    className={`${
+                      pathname === '/managePartner' ? 'border-b border-black' : ''
+                    }`}>
+                    파트너사 관리
+                  </span>
+                </DropdownMenuItem>
+              </Link>
+
+              <DropdownMenuSeparator />
+
+              <Link href="/financialRisk">
+                <DropdownMenuItem className="gap-2 cursor-pointer">
+                  <span
+                    className={`${
+                      pathname === '/financialRisk' ? 'border-b border-black' : ''
+                    }`}>
+                    재무제표 리스크 관리
+                  </span>
+                </DropdownMenuItem>
+              </Link>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         {/* 우측 메뉴 영역 */}
@@ -144,17 +311,17 @@ export default function HomeNavbar() {
           {/* 드롭다운 메뉴 */}
           <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center px-3 py-2 text-sm text-gray-700 transition-colors rounded-md hover:bg-gray-100">
-                <span className="mr-2 hidden md:inline-block max-w-[120px] truncate">
+              <button className="flex items-center px-4 py-2 text-sm text-gray-700 transition-colors rounded-full hover:bg-gray-100">
+                <span className="hidden md:inline-block max-w-[120px] truncate">
                   {fullName}
                 </span>
-                <ChevronDown
+                {/* <ChevronDown
                   size={16}
                   className={`transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
-                />
+                /> */}
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuContent align="end" className="w-56 pt-3" sideOffset={13.5}>
               <div className="flex items-center gap-2 p-2 md:hidden">
                 <Avatar className="w-8 h-8">
                   {profile?.profileImageUrl ? (

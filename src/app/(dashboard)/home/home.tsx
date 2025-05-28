@@ -313,7 +313,7 @@ export default function Home() {
   })
 
   return (
-    <div className="flex flex-col w-full h-full p-4 md:p-8 bg-gray-50">
+    <div className="flex flex-col flex-1 w-full p-4 md:p-8 bg-gray-50">
       <motion.div
         initial={{opacity: 0, y: -10}}
         animate={{opacity: 1, y: 0}}
@@ -342,7 +342,7 @@ export default function Home() {
         variants={containerVariants}
         initial="hidden"
         animate="visible">
-        {/* IFRS S2 섹션 */}
+        {/* IFRS S2 섹션 ============================================================= */}
         <motion.div variants={itemVariants}>
           <Link href="/governance">
             <Card className="overflow-hidden h-[320px] hover:shadow-lg transition-shadow">
