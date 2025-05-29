@@ -12,7 +12,7 @@ export default function NavBar() {
   return (
     <div className="fixed z-40 flex items-center w-full h-20 px-4 py-3 bg-white shadow-sm lg:px-6">
       {/* 로고 영역 */}
-      <Link href="/" className="flex flex-row space-x-3">
+      <Link href="/" className="flex flex-row items-center space-x-2">
         <div className="flex items-center justify-center w-10 h-10 rounded-lg shadow-sm bg-customG">
           <Leaf className="text-white" size={20} />
         </div>
@@ -20,11 +20,11 @@ export default function NavBar() {
           initial={{opacity: 0, x: -5}}
           animate={{opacity: 1, x: 0}}
           transition={{duration: 0.3}}
-          className="flex flex-col">
-          <span className="text-xl tracking-tight font-bold text-customGTextLight">
+          className="flex flex-col text-center">
+          <span className="text-2xl font-bold tracking-tight text-customGTextLight">
             NSMM
           </span>
-          <span className="-mt-1 text-xs font-medium text-customG">Dashboard</span>
+          <span className="-mt-1 text-sm font-medium text-customG">Dashboard</span>
         </motion.div>
       </Link>
     </div>

@@ -55,7 +55,7 @@ export default function HomeNavbar() {
       <div className="flex items-center justify-between w-full h-20 px-4 bg-white border-b border-gray-200 shadow-sm lg:px-6">
         {/* 로고 영역 */}
         <div className="flex items-center">
-          <Link href="/" className="flex items-center space-x-2">
+          <Link href="/" className="flex flex-row items-center space-x-2">
             <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-customG">
               <Leaf className="text-white" size={20} />
             </div>
@@ -63,34 +63,87 @@ export default function HomeNavbar() {
               initial={{opacity: 0}}
               animate={{opacity: 1}}
               transition={{delay: 0.2}}
-              className="hidden md:flex md:flex-col">
-              <span className="text-xl tracking-tight font-bold text-customGTextLight">
+              className="hidden text-center md:flex md:flex-col">
+              <span className="text-2xl font-bold tracking-tight text-customGTextLight">
                 NSMM
               </span>
-              <span className="-mt-1 text-xs font-medium text-customG">Dashboard</span>
+              <span className="-mt-1 text-sm font-medium text-customG">Dashboard</span>
             </motion.div>
           </Link>
         </div>
 
         {/* --------------------------------------------------------------------------------------------------메뉴 영역 */}
-        <div className="flex flex-row items-center justify-center w-full h-full space-x-4 ">
+        <div className="flex flex-row items-center justify-center w-full h-full space-x-5 ">
           {/* 대시보드 ===================================================== */}
           <Link href="/home">
             <div
-              className={`px-4 py-2 text-sm rounded-full ${
-                pathname === '/home' ? 'bg-customG text-white' : 'hover:bg-gray-100'
+              className={`px-4 py-2 rounded-full ${
+                pathname === '/home' &&
+                !scopeOpen &&
+                !TCFDOpen &&
+                !partnerOpen &&
+                !dropdownOpen
+                  ? 'bg-customG text-white'
+                  : 'hover:bg-gray-100'
               }`}>
               HOME
             </div>
           </Link>
+          {/* Scope ===================================================== */}
+          <DropdownMenu open={scopeOpen} onOpenChange={setScopeOpen}>
+            <DropdownMenuTrigger asChild>
+              <button
+                className={`px-4 py-2 rounded-full ${
+                  (pathname === '/scope1' || pathname === '/scope2' || scopeOpen) &&
+                  !TCFDOpen &&
+                  !partnerOpen &&
+                  !dropdownOpen
+                    ? 'bg-customG text-white'
+                    : 'hover:bg-gray-100'
+                }`}>
+                Scope
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-56 pt-3" sideOffset={13.5}>
+              <DropdownMenuSeparator className="md:hidden" />
+
+              <Link href="/scope1">
+                <DropdownMenuItem className="gap-2 cursor-pointer">
+                  <span
+                    className={`text-base ${
+                      pathname === '/managePartner' ? 'border-b border-black' : ''
+                    }`}>
+                    Scope 1
+                  </span>
+                </DropdownMenuItem>
+              </Link>
+
+              <DropdownMenuSeparator />
+
+              <Link href="/scope2">
+                <DropdownMenuItem className="gap-2 cursor-pointer">
+                  <span
+                    className={`text-base ${
+                      pathname === '/financialRisk' ? 'border-b border-black' : ''
+                    }`}>
+                    Scope 2
+                  </span>
+                </DropdownMenuItem>
+              </Link>
+            </DropdownMenuContent>
+          </DropdownMenu>
           {/* TCFD ===================================================== */}
           <DropdownMenu open={TCFDOpen} onOpenChange={setTCFDOpen}>
             <DropdownMenuTrigger asChild>
               <button
-                className={`flex flex-row items-center px-4 py-2 text-sm rounded-full ${
-                  pathname === '/governance' ||
-                  pathname === '/strategy' ||
-                  pathname === '/goal'
+                className={`px-4 py-2 rounded-full ${
+                  (pathname === '/governance' ||
+                    pathname === '/strategy' ||
+                    pathname === '/goal' ||
+                    TCFDOpen) &&
+                  !scopeOpen &&
+                  !partnerOpen &&
+                  !dropdownOpen
                     ? 'bg-customG text-white'
                     : 'hover:bg-gray-100'
                 }`}>
@@ -103,7 +156,7 @@ export default function HomeNavbar() {
               <Link href="/governance">
                 <DropdownMenuItem className="gap-2 cursor-pointer">
                   <span
-                    className={`${
+                    className={`text-base ${
                       pathname === '/governance' ? 'border-b border-black' : ''
                     }`}>
                     거버넌스
@@ -116,7 +169,7 @@ export default function HomeNavbar() {
               <Link href="/strategy">
                 <DropdownMenuItem className="gap-2 cursor-pointer">
                   <span
-                    className={`${
+                    className={`text-base ${
                       pathname === '/strategy' ? 'border-b border-black' : ''
                     }`}>
                     전략
@@ -129,7 +182,9 @@ export default function HomeNavbar() {
               <Link href="/goal">
                 <DropdownMenuItem className="gap-2 cursor-pointer">
                   <span
-                    className={`${pathname === '/goal' ? 'border-b border-black' : ''}`}>
+                    className={`text-base ${
+                      pathname === '/goal' ? 'border-b border-black' : ''
+                    }`}>
                     목표 및 지표
                   </span>
                 </DropdownMenuItem>
@@ -139,57 +194,29 @@ export default function HomeNavbar() {
           {/* GRI ===================================================== */}
           <Link href="/GRI">
             <div
-              className={`px-4 py-2 text-sm rounded-full ${
-                pathname === '/GRI' ? 'bg-customG text-white' : 'hover:bg-gray-100'
+              className={`px-4 py-2 rounded-full ${
+                pathname === '/GRI' &&
+                !scopeOpen &&
+                !TCFDOpen &&
+                !partnerOpen &&
+                !dropdownOpen
+                  ? 'bg-customG text-white'
+                  : 'hover:bg-gray-100'
               }`}>
               GRI
             </div>
           </Link>
-          {/* Scope ===================================================== */}
-          <DropdownMenu open={scopeOpen} onOpenChange={setScopeOpen}>
-            <DropdownMenuTrigger asChild>
-              <button
-                className={`flex flex-row items-center px-4 py-2 text-sm rounded-full ${
-                  pathname === '/managePartner' || pathname === '/financialRisk'
-                    ? 'bg-customG text-white'
-                    : 'hover:bg-gray-100'
-                }`}>
-                Scope
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-56 pt-3" sideOffset={13.5}>
-              <DropdownMenuSeparator className="md:hidden" />
-
-              <Link href="/managePartner">
-                <DropdownMenuItem className="gap-2 cursor-pointer">
-                  <span
-                    className={`${
-                      pathname === '/managePartner' ? 'border-b border-black' : ''
-                    }`}>
-                    Scope 1
-                  </span>
-                </DropdownMenuItem>
-              </Link>
-
-              <DropdownMenuSeparator />
-
-              <Link href="/financialRisk">
-                <DropdownMenuItem className="gap-2 cursor-pointer">
-                  <span
-                    className={`${
-                      pathname === '/financialRisk' ? 'border-b border-black' : ''
-                    }`}>
-                    Scope 2
-                  </span>
-                </DropdownMenuItem>
-              </Link>
-            </DropdownMenuContent>
-          </DropdownMenu>
           {/* 공급망 실사 ===================================================== */}
           <Link href="/CSDDD">
             <div
-              className={`px-4 py-2 text-sm rounded-full ${
-                pathname === '/CSDDD' ? 'bg-customG text-white' : 'hover:bg-gray-100 '
+              className={`px-4 py-2 rounded-full ${
+                pathname === '/CSDDD' &&
+                !scopeOpen &&
+                !TCFDOpen &&
+                !partnerOpen &&
+                !dropdownOpen
+                  ? 'bg-customG text-white'
+                  : 'hover:bg-gray-100 '
               }`}>
               공급망 실사
             </div>
@@ -198,8 +225,13 @@ export default function HomeNavbar() {
           <DropdownMenu open={partnerOpen} onOpenChange={setPartnerOpen}>
             <DropdownMenuTrigger asChild>
               <button
-                className={`flex flex-row items-center px-4 py-2 text-sm rounded-full ${
-                  pathname === '/managePartner' || pathname === '/financialRisk'
+                className={`px-4 py-2 rounded-full ${
+                  (pathname === '/managePartner' ||
+                    pathname === '/financialRisk' ||
+                    partnerOpen) &&
+                  !scopeOpen &&
+                  !TCFDOpen &&
+                  !dropdownOpen
                     ? 'bg-customG text-white'
                     : 'hover:bg-gray-100'
                 }`}>
@@ -212,7 +244,7 @@ export default function HomeNavbar() {
               <Link href="/managePartner">
                 <DropdownMenuItem className="gap-2 cursor-pointer">
                   <span
-                    className={`${
+                    className={`text-base ${
                       pathname === '/managePartner' ? 'border-b border-black' : ''
                     }`}>
                     파트너사 관리
@@ -225,7 +257,7 @@ export default function HomeNavbar() {
               <Link href="/financialRisk">
                 <DropdownMenuItem className="gap-2 cursor-pointer">
                   <span
-                    className={`${
+                    className={`text-base ${
                       pathname === '/financialRisk' ? 'border-b border-black' : ''
                     }`}>
                     재무제표 리스크 관리
@@ -311,14 +343,17 @@ export default function HomeNavbar() {
           {/* 드롭다운 메뉴 */}
           <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center px-4 py-2 text-sm text-gray-700 transition-colors rounded-full hover:bg-gray-100">
+              <button
+                className={`flex items-center px-4 py-2 space-x-2 text-gray-700 transition-colors rounded-full hover:bg-gray-100 ${
+                  dropdownOpen ? 'bg-customG text-white' : ''
+                }`}>
                 <span className="hidden md:inline-block max-w-[120px] truncate">
                   {fullName}
                 </span>
-                {/* <ChevronDown
+                <ChevronDown
                   size={16}
                   className={`transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
-                /> */}
+                />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 pt-3" sideOffset={13.5}>
