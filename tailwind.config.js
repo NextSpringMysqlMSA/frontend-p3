@@ -9,7 +9,8 @@ module.exports = {
     extend: {
       fontFamily: {
         gm: ['gmNormal'],
-        gmBold: ['gmBold']
+        gmBold: ['gmBold'],
+        sans: ['Pretendard', 'sans-serif']
       },
       borderRadius: {
         lg: 'var(--radius)',

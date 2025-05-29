@@ -1,4 +1,4 @@
-import Home from './home'
+import Dashboard from './dashboard'
 
 export const metadata = {
   title: '대시보드',
@@ -11,7 +11,7 @@ export const metadata = {
 export default function home() {
   return (
     <div className="w-full h-full">
-      <Home />
+      <Dashboard />
     </div>
   )
 }

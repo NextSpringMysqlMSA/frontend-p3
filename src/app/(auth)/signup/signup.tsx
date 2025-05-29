@@ -163,7 +163,7 @@ export default function SignUp() {
             <Leaf className="text-white" size={24} />
           </div>
           <div className="flex flex-col">
-            <span className="text-2xl tracking-tight font-gmBold text-customGTextLight">
+            <span className="text-2xl tracking-tight font-bold text-customGTextLight">
               NSMM
             </span>
             <span className="text-sm font-medium text-customG">Dashboard</span>
@@ -178,7 +178,7 @@ export default function SignUp() {
         className="w-full max-w-md p-8 bg-white border border-gray-100 shadow-xl rounded-2xl">
         <motion.h1
           variants={itemVariants}
-          className="mb-6 text-2xl text-center text-gray-800 font-gmBold">
+          className="mb-6 text-2xl text-center text-gray-800 font-bold">
           회원가입
         </motion.h1>
         <motion.p

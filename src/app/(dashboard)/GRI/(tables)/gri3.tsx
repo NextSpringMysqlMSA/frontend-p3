@@ -22,7 +22,7 @@ export default function GRI3() {
         <CardHeader className="pb-4">
           <div className="flex items-center space-x-2">
             <BookOpen className="w-6 h-6 text-customG" />
-            <CardTitle className="text-2xl text-gray-800 font-gmBold">
+            <CardTitle className="text-2xl text-gray-800 font-bold">
               GRI 3: 중요 토픽
             </CardTitle>
           </div>

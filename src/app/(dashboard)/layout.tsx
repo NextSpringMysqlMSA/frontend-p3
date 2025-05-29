@@ -10,9 +10,9 @@ export default function Layout({
   return (
     <ProfileProvider>
       {/* <Reminder /> */}
-      <div className="flex flex-col items-center w-full min-h-screen">
+      <div className="flex flex-col items-center w-full">
         <HomeNavbar />
-        <div className="flex flex-col flex-1 w-full max-w-screen-xl mt-20 transition-all duration-300">
+        <div className="flex flex-col w-full h-full max-w-screen-xl transition-all duration-300">
           {children}
         </div>
       </div>
