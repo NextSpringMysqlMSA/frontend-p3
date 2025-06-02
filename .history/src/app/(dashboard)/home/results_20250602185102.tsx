@@ -84,7 +84,7 @@ export default function Results() {
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                   <FileText className="w-5 h-5 text-green-600" />
-                  <span className="text-xl text-green-800">여기도 아직 미정입니다.</span>
+                  <span className="text-xl text-green-800">GRI 작성 현황</span>
                 </CardTitle>
                 <Badge variant="outline" className="text-green-700 bg-green-50">
                   실시간 데이터

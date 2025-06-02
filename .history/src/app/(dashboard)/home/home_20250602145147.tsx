@@ -26,7 +26,18 @@ import {
 } from '@/components/ui/card'
 import {Badge} from '@/components/ui/badge'
 import {Separator} from '@/components/ui/separator'
-import {RefreshCcw, FileText, CloudSun, TrendingUp} from 'lucide-react'
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Award,
+  Zap,
+  Leaf,
+  ChevronUp,
+  RefreshCcw,
+  FileText,
+  CloudSun,
+  TrendingUp
+} from 'lucide-react'
 import {motion} from 'framer-motion'
 import GriChart from '@/components/chart/griChart'
 import IfrsChart from '@/components/chart/IfrsChart'

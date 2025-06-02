@@ -41,8 +41,3 @@ export const fetchCsdddResultProgress = async () => {
   const response = await api.get(`/api/v1/dashboard/csdddresult/progress`)
   return response.data
 }
-
-export const fetchScopeResultProgress = async () => {
-  const response = await api.get(`/api/v1/dashboard/scoperesult/progress`)
-  return response.data
-}

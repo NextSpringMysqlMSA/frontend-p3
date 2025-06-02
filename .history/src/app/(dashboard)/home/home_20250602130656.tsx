@@ -1,6 +1,5 @@
 'use client'
 import {useState, useEffect, useCallback} from 'react'
-import {Building, Pencil} from 'lucide-react'
 import {
   Chart as ChartJS,
   ArcElement,
@@ -26,13 +25,23 @@ import {
 } from '@/components/ui/card'
 import {Badge} from '@/components/ui/badge'
 import {Separator} from '@/components/ui/separator'
-import {RefreshCcw, FileText, CloudSun, TrendingUp} from 'lucide-react'
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Award,
+  Zap,
+  Leaf,
+  ChevronUp,
+  RefreshCcw,
+  FileText,
+  CloudSun,
+  TrendingUp
+} from 'lucide-react'
 import {motion} from 'framer-motion'
 import GriChart from '@/components/chart/griChart'
 import IfrsChart from '@/components/chart/IfrsChart'
 import ScopeChart from '@/components/chart/scopeChart'
 import CsdddChart from '@/components/chart/csdddChart'
-import PartnerCompanyChart from '@/components/chart/partnerCompanyChart'
 import NetZeroChart from '@/components/chart/netZeroChart'
 import {Button} from '@/components/ui/button'
 import Link from 'next/link'
@@ -410,21 +419,21 @@ export default function Home() {
                 <CardDescription>Scope1 / 2 작성 진행률</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center justify-between h-60">
+                <div className="flex items-center justify-between h-full">
                   {mounted && <ScopeChart refreshTrigger={refreshTrigger} />}
                 </div>
               </CardContent>
             </Card>
           </Link>
         </motion.div>
-        {/* CSDDD */}
+        {/* 협력사 ESG 정보 섹션 */}
         <motion.div variants={itemVariants}>
           <Link href="/CSDDD">
             <Card className="h-full overflow-hidden transition-shadow hover:shadow-lg">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
-                    <Pencil className="w-5 h-5 text-amber-600" />{' '}
+                    <Zap className="w-5 h-5 text-amber-600" />
                     <span className="text-xl text-amber-800">공급망 실사 자가진단</span>
                   </CardTitle>
                   <Badge variant="outline" className="text-amber-700 bg-amber-50">
@@ -432,11 +441,11 @@ export default function Home() {
                   </Badge>
                 </div>
                 <CardDescription>
-                  (EU공급망 / 인권 / 환경) 실사 자가진단 현황
+                  공급망(EU공급망 / 인권 / 환경) 실사 위반 현황
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center justify-center pt-2 h-60">
+                <div className="flex items-center justify-center h-40">
                   <div className="flex flex-col gap-3 w-[280px]">
                     {mounted && <CsdddChart refreshTrigger={refreshTrigger} />}
                   </div>
@@ -445,30 +454,41 @@ export default function Home() {
             </Card>
           </Link>
         </motion.div>
-        {/* 협력사 */}
+        {/* ESG Rating 섹션 */}
         <motion.div variants={itemVariants}>
-          <Link href="/partner-company">
-            <Card className="h-full overflow-hidden transition-shadow hover:shadow-lg">
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    <Building className="w-5 h-5 text-[#ff1493]" /> {/* DeepPink */}
-                    <span className="text-xl text-[#e60073]">협력사 등록 현황</span>
-                  </CardTitle>
-                  <Badge variant="outline" className="text-[#d10068] bg-[#ffe0ef]">
-                    실시간 데이터
-                  </Badge>
+          {/* <Card className="h-full overflow-hidden transition-shadow">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center text-lg text-purple-800">
+                <Award className="w-5 h-5 mr-2 text-purple-600" />
+                ESG Rating (MSCI)
+              </CardTitle>
+              <CardDescription className="text-gray-500">
+                ESG 등급 및 개선 목표
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-5xl font-bold text-gray-500">A</div>
+                <ArrowRight className="w-12 h-12 mx-4 text-gray-400" />
+                <div className="text-5xl font-bold text-purple-600">AA</div>
+              </div>
+
+              <div className="flex justify-center mb-6 text-center">
+                <div className="flex flex-row px-3 py-1.5 bg-purple-500 rounded-lg items-center">
+                  <ChevronUp className="w-3 h-3 mr-1 text-white" />
+                  <span className="text-sm text-white">36.7점 상승 필요</span>
                 </div>
-                <CardDescription>등록된 협력사 리스트와 상태 확인</CardDescription>
-              </CardHeader>
-              <CardContent className="px-4 pt-0 pb-4 overflow-y-auto h-60">
-                {mounted && (
-                  <div className="h-full">
-                    <PartnerCompanyChart refreshTrigger={refreshTrigger} />
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+              </div>
+
+              <Separator className="my-4" />
+
+              <div className="grid place-items-center h-[200px]">
+                {mounted && <PolarArea data={esgScoreData} options={esgScoreOptions} />}
+              </div>
+            </CardContent>
+          </Card> */}
+          <Link href="/managePartner">
+            <Card className="overflow-hidden transition-shadow h-72 hover:shadow-lg"></Card>
           </Link>
         </motion.div>
       </motion.div>
