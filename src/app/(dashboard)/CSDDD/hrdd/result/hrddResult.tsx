@@ -117,7 +117,7 @@ export default function Hrdddesult() {
   }
 
   return (
-    <div className="flex flex-col w-full h-full p-4">
+    <div className="flex flex-col w-full h-full p-4 pt-24">
       {/* 네비게이션 경로 */}
       <motion.div
         initial={{opacity: 0, y: -10}}

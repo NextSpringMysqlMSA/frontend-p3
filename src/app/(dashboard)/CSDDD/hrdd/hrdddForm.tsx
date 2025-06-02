@@ -573,7 +573,7 @@ export default function HrdddForm() {
   }
 
   return (
-    <div className="flex flex-col w-full h-full p-4">
+    <div className="flex flex-col w-full h-full p-4 pt-24">
       {/* 네비게이션 브레드크럼 */}
       <motion.div
         initial={{opacity: 0, y: -10}}

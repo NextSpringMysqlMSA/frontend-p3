@@ -263,7 +263,7 @@ export default function FinancialRiskForm() {
   const statusInfo = getStatusLabel(atRiskCount)
 
   return (
-    <div className="flex flex-col w-full h-full p-4">
+    <div className="flex flex-col w-full h-full p-4 pt-24">
       <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
         <Home className="w-4 h-4 mr-1" />
         <span>협력사 관리</span>

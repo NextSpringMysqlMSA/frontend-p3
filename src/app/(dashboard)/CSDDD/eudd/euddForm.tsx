@@ -577,7 +577,7 @@ export default function EuddForm() {
   // filepath: /Users/donghwan/Documents/code/ESGProject_2/frontend/src/app/(dashboard)/CSDDD/eudd/euddForm.tsx
   // main return 부분 개선
   return (
-    <div className="flex flex-col w-full h-full p-4">
+    <div className="flex flex-col w-full h-full p-4 pt-24">
       {/* 네비게이션 브레드크럼 */}
       <motion.div
         initial={{opacity: 0, y: -10}}
