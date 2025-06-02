@@ -89,12 +89,8 @@ export default function HomeNavbar() {
               <NavigationMenuLink
                 href="/home"
                 className={`px-4 py-2 rounded-full text-base ${
-                  pathname === '/home' &&
-                  !scopeOpen &&
-                  !TCFDOpen &&
-                  !partnerOpen &&
-                  !dropdownOpen
-                    ? 'bg-customG text-white'
+                  pathname === '/home'
+                    ? 'bg-customG text-white hover:bg-customG hover:text-white'
                     : 'hover:bg-gray-100'
                 }`}>
                 HOME
@@ -104,11 +100,8 @@ export default function HomeNavbar() {
             <NavigationMenuItem>
               <NavigationMenuTrigger
                 className={`px-4 py-2 rounded-full text-base ${
-                  (pathname === '/scope1' || pathname === '/scope2' || scopeOpen) &&
-                  !TCFDOpen &&
-                  !partnerOpen &&
-                  !dropdownOpen
-                    ? 'bg-customG text-white'
+                  pathname === '/scope1' || pathname === '/scope2'
+                    ? 'bg-customG text-white hover:bg-customG hover:text-white'
                     : 'hover:bg-gray-100'
                 }`}>
                 Scope
@@ -140,14 +133,10 @@ export default function HomeNavbar() {
             <NavigationMenuItem>
               <NavigationMenuTrigger
                 className={`px-4 py-2 rounded-full text-base ${
-                  (pathname === '/governance' ||
-                    pathname === '/strategy' ||
-                    pathname === '/goal' ||
-                    TCFDOpen) &&
-                  !scopeOpen &&
-                  !partnerOpen &&
-                  !dropdownOpen
-                    ? 'bg-customG text-white'
+                  pathname === '/governance' ||
+                  pathname === '/strategy' ||
+                  pathname === '/goal'
+                    ? 'bg-customG text-white hover:bg-customG hover:text-white'
                     : 'hover:bg-gray-100'
                 }`}>
                 {' '}
@@ -189,12 +178,8 @@ export default function HomeNavbar() {
               <NavigationMenuLink
                 href="/GRI"
                 className={`px-4 py-2 rounded-full text-base ${
-                  pathname === '/GRI' &&
-                  !scopeOpen &&
-                  !TCFDOpen &&
-                  !partnerOpen &&
-                  !dropdownOpen
-                    ? 'bg-customG text-white'
+                  pathname === '/GRI'
+                    ? 'bg-customG text-white hover:bg-customG hover:text-white'
                     : 'hover:bg-gray-100'
                 }`}>
                 GRI
@@ -205,12 +190,8 @@ export default function HomeNavbar() {
               <NavigationMenuLink
                 href="/CSDDD"
                 className={`px-4 py-2 rounded-full text-base ${
-                  pathname === '/CSDDD' &&
-                  !scopeOpen &&
-                  !TCFDOpen &&
-                  !partnerOpen &&
-                  !dropdownOpen
-                    ? 'bg-customG text-white'
+                  pathname === '/CSDDD'
+                    ? 'bg-customG text-white hover:bg-customG hover:text-white'
                     : 'hover:bg-gray-100 '
                 }`}>
                 공급망 실사
@@ -220,13 +201,8 @@ export default function HomeNavbar() {
             <NavigationMenuItem>
               <NavigationMenuTrigger
                 className={`px-4 py-2 rounded-full text-base ${
-                  (pathname === '/managePartner' ||
-                    pathname === '/financialRisk' ||
-                    partnerOpen) &&
-                  !scopeOpen &&
-                  !TCFDOpen &&
-                  !dropdownOpen
-                    ? 'bg-customG text-white'
+                  pathname === '/managePartner' || pathname === '/financialRisk'
+                    ? 'bg-customG text-white hover:bg-customG hover:text-white'
                     : 'hover:bg-gray-100'
                 }`}>
                 협력사 관리
