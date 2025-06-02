@@ -55,7 +55,7 @@ export default function Page() {
           ref={el => {
             if (el) sectionRefs.current[i] = el
           }}
-          className="w-full h-screen">
+          className="w-full h-full">
           {i === 0 ? <Home /> : <Results />}
         </section>
       ))}

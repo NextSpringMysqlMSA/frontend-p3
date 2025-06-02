@@ -12,7 +12,7 @@ export default function Layout({
       {/* <Reminder /> */}
       <div className="flex flex-col items-center w-full">
         <HomeNavbar />
-        <div className="flex flex-col w-full h-full max-w-screen-xl transition-all duration-300">
+        <div className="flex flex-col w-full h-full max-w-screen-xl pt-20 transition-all duration-300">
           {children}
         </div>
       </div>

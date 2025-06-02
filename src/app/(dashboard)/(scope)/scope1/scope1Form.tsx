@@ -28,7 +28,7 @@ export default function Scope1Form() {
   }, [])
 
   return (
-    <div className="flex flex-col w-full h-full p-4 md:p-8">
+    <div className="flex flex-col w-full h-full p-4">
       {/* 상단 네비게이션 추가 */}
       <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
         <Home className="w-4 h-4 mr-1" />

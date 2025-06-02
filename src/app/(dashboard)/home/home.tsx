@@ -313,14 +313,14 @@ export default function Home() {
   })
 
   return (
-    <div className="flex flex-col w-full h-full min-h-screen p-4 pt-24 bg-gray-50">
+    <div className="flex flex-col w-full h-full min-h-screen p-4">
       <motion.div
         initial={{opacity: 0, y: -10}}
         animate={{opacity: 1, y: 0}}
         transition={{duration: 0.5}}
         className="flex flex-col items-start justify-between mb-4 md:flex-row md:items-center">
         <div>
-          <h1 className="text-2xl tracking-tight text-gray-800 font-bold">
+          <h1 className="text-2xl font-bold tracking-tight text-gray-800">
             ESG 공시 대시보드
           </h1>
           <p className="text-gray-500">
@@ -468,9 +468,9 @@ export default function Home() {
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between mb-2">
-                <div className="text-5xl text-gray-500 font-bold">A</div>
+                <div className="text-5xl font-bold text-gray-500">A</div>
                 <ArrowRight className="w-12 h-12 mx-4 text-gray-400" />
-                <div className="text-5xl text-purple-600 font-bold">AA</div>
+                <div className="text-5xl font-bold text-purple-600">AA</div>
               </div>
 
               <div className="flex justify-center mb-6 text-center">
