@@ -1,3 +1,4 @@
+@import 'pretendard/dist/web/variable/pretendardvariable.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -111,4 +112,14 @@
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: #b0b0b0; /* 손잡이 */
   border-radius: 4px;
+}
+
+/* globals.css 또는 layout.tsx 상단에 포함 */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE, Edge */
+  scrollbar-width: none; /* Firefox */
 }

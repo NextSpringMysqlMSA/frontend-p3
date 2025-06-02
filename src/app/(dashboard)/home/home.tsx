@@ -313,14 +313,14 @@ export default function Home() {
   })
 
   return (
-    <div className="flex flex-col w-full h-full p-4 md:p-8 bg-gray-50">
+    <div className="flex flex-col w-full h-full min-h-screen p-4 pt-24 bg-gray-50">
       <motion.div
         initial={{opacity: 0, y: -10}}
         animate={{opacity: 1, y: 0}}
         transition={{duration: 0.5}}
-        className="flex flex-col items-start justify-between mb-6 md:flex-row md:items-center">
+        className="flex flex-col items-start justify-between mb-4 md:flex-row md:items-center">
         <div>
-          <h1 className="text-2xl tracking-tight text-gray-800 font-gmBold">
+          <h1 className="text-2xl tracking-tight text-gray-800 font-bold">
             ESG 공시 대시보드
           </h1>
           <p className="text-gray-500">
@@ -342,10 +342,10 @@ export default function Home() {
         variants={containerVariants}
         initial="hidden"
         animate="visible">
-        {/* IFRS S2 섹션 */}
+        {/* IFRS S2 섹션 ============================================================= */}
         <motion.div variants={itemVariants}>
           <Link href="/governance">
-            <Card className="overflow-hidden h-[320px] hover:shadow-lg transition-shadow">
+            <Card className="h-full overflow-hidden transition-shadow hover:shadow-lg">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
@@ -359,7 +359,7 @@ export default function Home() {
                 <CardDescription>기후 관련 공시(TCFD) 작성 현황</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center justify-between h-[220px]">
+                <div className="flex items-center justify-between h-full">
                   {mounted && <IfrsChart refreshTrigger={refreshTrigger} />}
                 </div>
               </CardContent>
@@ -370,7 +370,7 @@ export default function Home() {
         {/* GRI 섹션 */}
         <motion.div variants={itemVariants}>
           <Link href="/GRI">
-            <Card className="overflow-hidden h-[320px] hover:shadow-lg transition-shadow">
+            <Card className="h-full overflow-hidden transition-shadow hover:shadow-lg">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
@@ -386,7 +386,7 @@ export default function Home() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center justify-between h-[220px]">
+                <div className="flex items-center justify-between h-full">
                   {mounted && <GriChart refreshTrigger={refreshTrigger} />}
                 </div>
               </CardContent>
@@ -402,7 +402,7 @@ export default function Home() {
         animate="visible">
         {/* Net Zero 섹션 */}
         <motion.div variants={itemVariants}>
-          <Link href="/goal">
+          {/* <Link href="/goal">
             <Card className="h-full overflow-hidden transition-shadow hover:shadow-lg">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center text-lg text-[#4bc0c0]">
@@ -414,15 +414,18 @@ export default function Home() {
                   탄소 중립 목표 및 감축 경로
                 </CardDescription>
               </CardHeader>
-              <CardContent className="h-[320px]">
+              <CardContent className="h-full">
                 {mounted && <NetZeroChart refreshTrigger={refreshTrigger} />}
               </CardContent>
             </Card>
+          </Link> */}
+          <Link href="/Scope1">
+            <Card className="overflow-hidden transition-shadow h-72 hover:shadow-lg"></Card>
           </Link>
         </motion.div>
         {/* 협력사 ESG 정보 섹션 */}
         <motion.div variants={itemVariants}>
-          <Link href="/financialRisk">
+          {/* <Link href="/financialRisk">
             <Card className="h-full overflow-hidden transition-shadow hover:shadow-lg">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center text-lg text-rose-800">
@@ -437,20 +440,23 @@ export default function Home() {
                 <div className="relative mx-auto mb-8 w-36 h-36">
                   {mounted && <Pie data={supplierData} options={chartOptions} />}
                   <div className="absolute text-center transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
-                    <p className="text-2xl font-gmBold text-rose-800">80%</p>
+                    <p className="text-2xl font-bold text-rose-800">80%</p>
                   </div>
                 </div>
 
-                <div className="h-[150px]">
+                <div className="h-full">
                   {mounted && <Bar data={companyData} options={companyOptions} />}
                 </div>
               </CardContent>
             </Card>
+          </Link> */}
+          <Link href="/CSDDD">
+            <Card className="overflow-hidden transition-shadow h-72 hover:shadow-lg"></Card>
           </Link>
         </motion.div>
         {/* ESG Rating 섹션 */}
         <motion.div variants={itemVariants}>
-          <Card className="h-full overflow-hidden transition-shadow">
+          {/* <Card className="h-full overflow-hidden transition-shadow">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center text-lg text-purple-800">
                 <Award className="w-5 h-5 mr-2 text-purple-600" />
@@ -462,9 +468,9 @@ export default function Home() {
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between mb-2">
-                <div className="text-5xl text-gray-500 font-gmBold">A</div>
+                <div className="text-5xl text-gray-500 font-bold">A</div>
                 <ArrowRight className="w-12 h-12 mx-4 text-gray-400" />
-                <div className="text-5xl text-purple-600 font-gmBold">AA</div>
+                <div className="text-5xl text-purple-600 font-bold">AA</div>
               </div>
 
               <div className="flex justify-center mb-6 text-center">
@@ -480,7 +486,10 @@ export default function Home() {
                 {mounted && <PolarArea data={esgScoreData} options={esgScoreOptions} />}
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
+          <Link href="/managePartner">
+            <Card className="overflow-hidden transition-shadow h-72 hover:shadow-lg"></Card>
+          </Link>
         </motion.div>
       </motion.div>
     </div>
