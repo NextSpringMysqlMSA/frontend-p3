@@ -69,6 +69,14 @@ import {
   updatePartnerCompany,
   searchCompaniesFromDart
 } from '@/services/partnerCompany'
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator
+} from '@/components/ui/breadcrumb'
+
 
 // 디바운스 훅
 function useDebounce<T>(value: T, delay: number): T {
@@ -419,10 +427,18 @@ export default function ManagePartnerPage() {
     <div className="flex flex-col w-full h-full p-4 pt-24">
       {/* 상단 네비게이션 */}
       <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
-        <Home className="w-4 h-4 mr-1" />
-        <span>협력사 관리</span>
-        <ChevronRight className="w-4 h-4 mx-2" />
-        <span className="text-customG">파트너사 관리</span>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <Home className="w-4 h-4 mr-1" />
+              <BreadcrumbLink href="/home">대시보드</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/managePartner">파트너사 관리</BreadcrumbLink>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
       </div>
 
       {/* PageHeader + ArrowLeft */}

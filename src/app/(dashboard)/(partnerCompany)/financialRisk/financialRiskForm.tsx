@@ -42,6 +42,13 @@ import {
   fetchFinancialRiskAssessment,
   type FinancialRiskAssessment
 } from '@/services/partnerCompany'
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator
+} from '@/components/ui/breadcrumb'
 
 // API 응답 타입 정의
 interface RiskItem {
@@ -265,6 +272,21 @@ export default function FinancialRiskForm() {
   const router = useRouter()
   return (
     <div className="flex flex-col w-full h-full p-4 pt-24">
+            <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <Home className="w-4 h-4 mr-1" />
+              <BreadcrumbLink href="/home">대시보드</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/financialRisk">협력사 재무 위험 분석</BreadcrumbLink>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
+
       <div className="flex items-start gap-2 mb-2">
         <ArrowLeft
           onClick={() => router.push('/home')}
