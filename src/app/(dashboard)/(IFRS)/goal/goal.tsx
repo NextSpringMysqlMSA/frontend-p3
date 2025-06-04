@@ -1,8 +1,8 @@
 'use client'
 
-import {useRouter} from 'next/navigation'
 import KPIGoal from './kpiGoal'
 import NetZero from './netZero'
+import Link from 'next/link'
 import {
   Accordion,
   AccordionContent,
@@ -337,7 +337,7 @@ export default function Goal() {
   const handleNetZeroClose = () => {
     setIsAddOpen(false)
   }
-  const router = useRouter()
+
   return (
     <div className="flex flex-col w-full h-full p-4 pt-24">
       {/* 상단 네비게이션 - 유지 */}
@@ -353,18 +353,18 @@ export default function Goal() {
       </div>
 
       {/* 헤더 섹션 - PageHeader 컴포넌트 사용 */}
-      <div className="flex items-start gap-2 mb-2">
-        <ArrowLeft
-          onClick={() => router.push('/home')}
-          className="w-5 h-5 mt-3 mr-2 text-gray-400 cursor-pointer hover:text-blue-600"
-        />
-        <PageHeader
-          icon={<LineChart className="w-6 h-6 text-blue-600" />}
-          title="기후변화 전략 관리"
-          description="기후변화 관련 위험과 기회, 시나리오 분석을 통한 전략적 접근"
-          module="IFRS"
-          submodule="strategy"
-        />
+      <div className="flex flex-row w-full h-full mb-6">
+        <Link
+          href="/home"
+          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
+          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
+          <PageHeader
+            icon={<BarChart3 className="w-6 h-6" />}
+            title="목표 및 지표"
+            description="IFRS S2/TCFD 기반 기후 목표 및 지표 관리"
+            module="IFRS"
+            submodule="goal"></PageHeader>
+        </Link>
       </div>
 
       {/* 통계 카드 - governance.tsx와 유사하게 추가 */}

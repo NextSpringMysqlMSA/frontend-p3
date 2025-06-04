@@ -1,6 +1,5 @@
 'use client'
 
-import {useRouter} from 'next/navigation'
 import {useEffect, useState} from 'react'
 import {
   Zap,
@@ -12,6 +11,7 @@ import {
   Home,
   ArrowLeft
 } from 'lucide-react'
+import Link from 'next/link'
 import Scenario from './scenario'
 import Risk from './risk'
 import {BreadcrumbLink} from '@/components/ui/breadcrumb'
@@ -104,11 +104,11 @@ export default function Strategy() {
     '전환 리스크': RiskData?.filter(item => item.riskType === '전환 리스크').length || 0,
     '기회 요인': RiskData?.filter(item => item.riskType === '기회 요인').length || 0
   }
-  const router = useRouter()
+
   return (
-    <div className="flex flex-col w-full h-full p-4 pt-24 space-y-6">
+    <div className="flex flex-col w-full h-full p-4 pt-24">
       {/* 상단 네비게이션 */}
-      <div className="flex flex-row items-center p-2 px-2 mb-2 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
+      <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
         <Home className="w-4 h-4 mr-1" />
         <span>대시보드</span>
         <ChevronRight className="w-4 h-4 mx-2" />
@@ -122,17 +122,18 @@ export default function Strategy() {
       {/* 헤더 섹션 - PageHeader 컴포넌트 사용 */}
       {/* 헤더 섹션 - PageHeader 컴포넌트 사용 */}
       <div className="flex items-start gap-2 mb-2">
-        <ArrowLeft
-          onClick={() => router.push('/home')}
-          className="w-5 h-5 mt-3 mr-2 text-gray-400 cursor-pointer hover:text-blue-600"
-        />
-        <PageHeader
-          icon={<LineChart className="w-6 h-6 text-blue-600" />}
-          title="기후변화 전략 관리"
-          description="기후변화 관련 위험과 기회, 시나리오 분석을 통한 전략적 접근"
-          module="IFRS"
-          submodule="strategy"
-        />
+        <Link
+          href="/home"
+          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
+          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
+          <PageHeader
+            icon={<LineChart className="w-6 h-6 text-blue-600" />}
+            title="기후변화 전략 관리"
+            description="기후변화 관련 위험과 기회, 시나리오 분석을 통한 전략적 접근"
+            module="IFRS"
+            submodule="strategy"
+          />
+        </Link>
       </div>
 
       <LoadingState

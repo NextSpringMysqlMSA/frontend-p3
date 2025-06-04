@@ -1,6 +1,5 @@
 'use client'
 
-import {useRouter} from 'next/navigation'
 import {useState, useEffect, useCallback} from 'react'
 import {PageHeader} from '@/components/layout/PageHeader'
 import {
@@ -69,7 +68,7 @@ import {
   updatePartnerCompany,
   searchCompaniesFromDart
 } from '@/services/partnerCompany'
-
+import Link from 'next/link'
 // 디바운스 훅
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value)
@@ -413,7 +412,6 @@ export default function ManagePartnerPage() {
       </div>
     )
   }
-  const router = useRouter()
 
   return (
     <div className="flex flex-col w-full h-full p-4 pt-24">
@@ -426,17 +424,18 @@ export default function ManagePartnerPage() {
       </div>
 
       {/* PageHeader + ArrowLeft */}
-      <div className="flex items-start gap-2 mb-2">
-        <ArrowLeft
-          onClick={() => router.push('/home')}
-          className="w-5 h-5 mt-3 mb-1 text-gray-400 cursor-pointer hover:text-blue-600"
-        />
-        <PageHeader
-          icon={<Building2 className="w-8 h-8 text-customG" />}
-          title="파트너사 관리"
-          description="파트너사를 등록, 조회, 수정 및 삭제합니다."
-          module="CSDD"
-        />
+      <div className="flex flex-row w-full h-full mb-6">
+        <Link
+          href="/home"
+          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
+          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
+          <PageHeader
+            icon={<Building2 className="w-8 h-8 text-customG" />}
+            title="파트너사 관리"
+            description="파트너사를 등록, 조회, 수정 및 삭제합니다."
+            module="CSDD"
+          />
+        </Link>
       </div>
 
       <div className="flex flex-col gap-4 mt-6">

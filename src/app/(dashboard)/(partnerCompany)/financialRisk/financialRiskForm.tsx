@@ -1,5 +1,5 @@
 'use client'
-import {useRouter} from 'next/navigation'
+
 import {useState, useEffect} from 'react'
 import {
   ChevronRight,
@@ -42,6 +42,7 @@ import {
   fetchFinancialRiskAssessment,
   type FinancialRiskAssessment
 } from '@/services/partnerCompany'
+import Link from 'next/link'
 
 // API 응답 타입 정의
 interface RiskItem {
@@ -262,20 +263,29 @@ export default function FinancialRiskForm() {
   // 위험 항목 수 계산
   const atRiskCount = riskData?.riskItems?.filter(item => item.atRisk).length || 0
   const statusInfo = getStatusLabel(atRiskCount)
-  const router = useRouter()
+
   return (
     <div className="flex flex-col w-full h-full p-4 pt-24">
-      <div className="flex items-start gap-2 mb-2">
-        <ArrowLeft
-          onClick={() => router.push('/home')}
-          className="w-5 h-5 mt-3 mb-1 text-gray-400 cursor-pointer hover:text-blue-600"
-        />
-        <PageHeader
-          icon={<Building2 className="w-8 h-8" />}
-          title="협력사 재무 위험 분석"
-          description="사의 재무 건전성과 위험을 분석합니다."
-          module="CSDD"
-        />
+      {/* 상단 네비게이션 */}
+      <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
+        <Home className="w-4 h-4 mr-1" />
+        <span>협력사 관리</span>
+        <ChevronRight className="w-4 h-4 mx-2" />
+        <span className="text-customG">협력사 재무 위험 분석</span>
+      </div>
+
+      <div className="flex flex-row w-full h-full mb-6">
+        <Link
+          href="/home"
+          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
+          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
+          <PageHeader
+            icon={<Building2 className="w-8 h-8" />}
+            title="협력사 재무 위험 분석"
+            description="사의 재무 건전성과 위험을 분석합니다."
+            module="CSDD"
+          />
+        </Link>
       </div>
 
       <div className="grid grid-cols-4 gap-4">
