@@ -445,7 +445,7 @@ export default function Home() {
         </motion.div>
         {/* 협력사 등록 현황 섹션 ================================================================= */}
         <motion.div variants={itemVariants} className="flex-1">
-          <Link href="/partner-company">
+                    <Link href="/managePartner">
             <Card className="w-full h-full overflow-hidden transition-shadow hover:shadow-lg">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
