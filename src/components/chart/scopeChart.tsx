@@ -21,9 +21,9 @@ interface ProgressData {
 export default function ScopeChart({refreshTrigger = 0}: ScopeChartProps) {
   const [data, setData] = useState<ProgressData>({
     totalCount: 100,
-    completedCount: 40,
-    incompleteCount: 60,
-    completedRate: 40
+    completedCount: 66,
+    incompleteCount: 34,
+    completedRate: 66
   })
 
   const [loading, setLoading] = useState(true)
