@@ -2,8 +2,8 @@ import Image from 'next/image'
 
 export default function Main() {
   return (
-    <div className="flex justify-center items-center w-full min-h-[calc(100vh-64px)]">
-      <div className="flex flex-col w-full h-full max-w-screen-xl py-16 md:flex-row">
+    <div className="flex justify-center items-center w-full min-h-[calc(100vh-80px)]">
+      <div className="flex flex-col w-full h-full max-w-screen-xl pt-20 pb-16 md:flex-row">
         <div className="flex flex-col w-full md:w-[50%] h-full p-4 space-y-4">
           <div className="flex flex-col items-center w-full h-full p-8 space-y-4 bg-white shadow rounded-xl">
             <div className="flex flex-col justify-start w-full space-y-4">

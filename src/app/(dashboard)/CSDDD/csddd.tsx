@@ -51,7 +51,7 @@ export default function CSDDD() {
   const router = useRouter()
 
   return (
-    <div className="flex flex-col w-full h-full p-4 md:p-8">
+    <div className="flex flex-col w-full h-full p-4 pt-24">
       {/* 상단 네비게이션 */}
       <div className="flex flex-row items-center px-4 py-2 mb-4 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
         <Home className="w-4 h-4 mr-1" />
@@ -64,7 +64,7 @@ export default function CSDDD() {
           <BookOpen className="w-6 h-6 text-customG" />
         </div>
         <div>
-          <h1 className="text-2xl text-gray-800 font-bold">공급망 실사</h1>
+          <h1 className="text-2xl font-bold text-gray-800">공급망 실사</h1>
           <p className="mt-1 text-gray-500">
             공급망 실사 지침에 따른 인권 및 환경 실사 자가진단
           </p>
