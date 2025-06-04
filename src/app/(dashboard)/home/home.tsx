@@ -336,9 +336,9 @@ export default function Home() {
           데이터 새로고침
         </Button>
       </motion.div>
-      {/* 상단 두 개 카드 */}
+      {/* 상단 두 개 카드  ==========================================================================*/}
       <motion.div
-        className="grid grid-cols-1 gap-6 mb-6 md:grid-cols-2"
+        className="grid grid-cols-1 gap-6 mb-6 md:grid-cols-2 h-[(100%-152px)/2]"
         variants={containerVariants}
         initial="hidden"
         animate="visible">
@@ -394,9 +394,9 @@ export default function Home() {
           </Link>
         </motion.div>
       </motion.div>
-      {/* 하단 세 개 카드 */}
+      {/* 하단 세 개 카드 ==========================================================================*/}
       <motion.div
-        className="grid grid-cols-1 gap-6 md:grid-cols-3"
+        className="grid h-full grid-cols-1 gap-6 md:grid-cols-3"
         variants={containerVariants}
         initial="hidden"
         animate="visible">
@@ -420,7 +420,9 @@ export default function Home() {
             </Card>
           </Link> */}
           <Link href="/Scope1">
-            <Card className="overflow-hidden transition-shadow h-72 hover:shadow-lg"></Card>
+            <Card className="h-full overflow-hidden transition-shadow hover:shadow-lg">
+              Scope
+            </Card>
           </Link>
         </motion.div>
         {/* 협력사 ESG 정보 섹션 */}
@@ -451,7 +453,9 @@ export default function Home() {
             </Card>
           </Link> */}
           <Link href="/CSDDD">
-            <Card className="overflow-hidden transition-shadow h-72 hover:shadow-lg"></Card>
+            <Card className="h-full overflow-hidden transition-shadow hover:shadow-lg">
+              공급망 실사
+            </Card>
           </Link>
         </motion.div>
         {/* ESG Rating 섹션 */}
@@ -488,7 +492,9 @@ export default function Home() {
             </CardContent>
           </Card> */}
           <Link href="/managePartner">
-            <Card className="overflow-hidden transition-shadow h-72 hover:shadow-lg"></Card>
+            <Card className="h-full overflow-hidden transition-shadow hover:shadow-lg">
+              협력사 관리
+            </Card>
           </Link>
         </motion.div>
       </motion.div>
