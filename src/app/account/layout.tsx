@@ -7,7 +7,7 @@ export default function AccountLayout({children}: {children: ReactNode}) {
     <ProfileProvider>
       <div className="flex flex-col">
         <HomeNavbar />
-        <div className="mt-16">{children}</div>
+        <div className="mt-24">{children}</div>
       </div>
     </ProfileProvider>
   )

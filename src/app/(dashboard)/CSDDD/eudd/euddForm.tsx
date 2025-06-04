@@ -439,7 +439,7 @@ export default function EuddForm() {
           initial={{opacity: 0, y: -5}}
           animate={{opacity: 1, y: 0}}
           transition={{duration: 0.4}}
-          className="flex items-center mb-3 text-lg text-gray-700 font-bold">
+          className="flex items-center mb-3 text-lg font-bold text-gray-700">
           <div className="flex items-center justify-center w-8 h-8 mr-3 rounded-full bg-customG/10">
             <BadgeCheck className="w-5 h-5 text-customG" />
           </div>
@@ -577,7 +577,7 @@ export default function EuddForm() {
   // filepath: /Users/donghwan/Documents/code/ESGProject_2/frontend/src/app/(dashboard)/CSDDD/eudd/euddForm.tsx
   // main return 부분 개선
   return (
-    <div className="flex flex-col w-full h-full p-8">
+    <div className="flex flex-col w-full h-full p-4 pt-24">
       {/* 네비게이션 브레드크럼 */}
       <motion.div
         initial={{opacity: 0, y: -10}}

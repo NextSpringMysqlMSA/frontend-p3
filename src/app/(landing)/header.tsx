@@ -47,11 +47,11 @@ export default function Header({onArrowClick}: HeaderProps) {
   const visibleToasts = getStack()
 
   return (
-    <div className="flex justify-center items-center w-full min-h-[calc(100vh-64px)]">
+    <div className="flex justify-center items-center w-full min-h-[calc(100vh-80px)]">
       <div className="flex flex-col w-full max-w-screen-xl mt-16 md:space-y-32">
         {/* 헤더 글----------------------------------------------------------------------- */}
         <div className="flex flex-col w-full space-y-8 text-center">
-          <h1 className="text-7xl font-bold">신뢰할 수 있는 ESG 데이터 플랫폼</h1>
+          <h1 className="font-bold text-7xl">신뢰할 수 있는 ESG 데이터 플랫폼</h1>
           <h2 className="text-4xl">NSMM</h2>
           <p className="text-xl">정확한 분석, 실시간 알림, 공급망 리스크까지 한눈에.</p>
         </div>
