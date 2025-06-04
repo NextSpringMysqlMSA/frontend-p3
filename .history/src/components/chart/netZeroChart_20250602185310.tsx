@@ -205,13 +205,11 @@ export default function NetZeroChart({refreshTrigger = 0}: NetZeroChartProps) {
   )
 
   return (
-    <div className="relative w-full h-60">
-      <div className="absolute z-10 text-xs text-gray-500 right-2 top-2">
+    <div className="w-full h-60">
+      <Line data={lineData} options={options} />
+      <div className="pt-2 mt-2 text-xs text-right text-gray-500">
         📉 {reductionRate}% 감축 예정 ({first.year} → {last.year})
       </div>
-
-      {/* 차트 렌더링 */}
-      <Line data={lineData} options={options} />
     </div>
   )
 }

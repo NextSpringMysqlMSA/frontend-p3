@@ -206,6 +206,7 @@ export default function NetZeroChart({refreshTrigger = 0}: NetZeroChartProps) {
 
   return (
     <div className="relative w-full h-60">
+      {/* 감축 예정 문구 → 우측 상단 */}
       <div className="absolute z-10 text-xs text-gray-500 right-2 top-2">
         📉 {reductionRate}% 감축 예정 ({first.year} → {last.year})
       </div>

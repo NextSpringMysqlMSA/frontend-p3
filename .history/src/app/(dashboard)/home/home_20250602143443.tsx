@@ -1,6 +1,5 @@
 'use client'
 import {useState, useEffect, useCallback} from 'react'
-import {Building, Pencil} from 'lucide-react'
 import {
   Chart as ChartJS,
   ArcElement,
@@ -26,7 +25,18 @@ import {
 } from '@/components/ui/card'
 import {Badge} from '@/components/ui/badge'
 import {Separator} from '@/components/ui/separator'
-import {RefreshCcw, FileText, CloudSun, TrendingUp} from 'lucide-react'
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Award,
+  Zap,
+  Leaf,
+  ChevronUp,
+  RefreshCcw,
+  FileText,
+  CloudSun,
+  TrendingUp
+} from 'lucide-react'
 import {motion} from 'framer-motion'
 import GriChart from '@/components/chart/griChart'
 import IfrsChart from '@/components/chart/IfrsChart'
@@ -306,7 +316,7 @@ export default function Home() {
   })
 
   return (
-    <div className="flex flex-col w-full h-screen p-4 pt-24">
+    <div className="flex flex-col w-full h-full min-h-screen p-4 pt-24 bg-gray-50">
       <motion.div
         initial={{opacity: 0, y: -10}}
         animate={{opacity: 1, y: 0}}
@@ -329,9 +339,9 @@ export default function Home() {
           데이터 새로고침
         </Button>
       </motion.div>
-      {/* 상단 두 개 카드  ==========================================================================*/}
+      {/* 상단 두 개 카드 */}
       <motion.div
-        className="grid grid-cols-1 gap-6 mb-6 md:grid-cols-2 h-[(100%-152px)/2]"
+        className="grid grid-cols-1 gap-6 mb-6 md:grid-cols-2"
         variants={containerVariants}
         initial="hidden"
         animate="visible">
@@ -387,9 +397,9 @@ export default function Home() {
           </Link>
         </motion.div>
       </motion.div>
-      {/* 하단 세 개 카드 ==========================================================================*/}
+      {/* 하단 세 개 카드 */}
       <motion.div
-        className="grid h-full grid-cols-1 gap-6 md:grid-cols-3"
+        className="grid grid-cols-1 gap-6 md:grid-cols-3"
         variants={containerVariants}
         initial="hidden"
         animate="visible">
@@ -424,7 +434,7 @@ export default function Home() {
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
-                    <Pencil className="w-5 h-5 text-amber-600" />{' '}
+                    <Zap className="w-5 h-5 text-amber-600" />
                     <span className="text-xl text-amber-800">공급망 실사 자가진단</span>
                   </CardTitle>
                   <Badge variant="outline" className="text-amber-700 bg-amber-50">
@@ -445,28 +455,24 @@ export default function Home() {
             </Card>
           </Link>
         </motion.div>
-        {/* 협력사 */}
+        {/* ESG Rating 섹션 */}
         <motion.div variants={itemVariants}>
           <Link href="/partner-company">
             <Card className="h-full overflow-hidden transition-shadow hover:shadow-lg">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
-                    <Building className="w-5 h-5 text-[#ff1493]" /> {/* DeepPink */}
-                    <span className="text-xl text-[#e60073]">협력사 등록 현황</span>
+                    <Factory className="w-5 h-5 text-blue-600" />
+                    <span className="text-xl text-blue-800">협력사 등록 현황</span>
                   </CardTitle>
-                  <Badge variant="outline" className="text-[#d10068] bg-[#ffe0ef]">
+                  <Badge variant="outline" className="text-blue-700 bg-blue-50">
                     실시간 데이터
                   </Badge>
                 </div>
                 <CardDescription>등록된 협력사 리스트와 상태 확인</CardDescription>
               </CardHeader>
               <CardContent className="px-4 pt-0 pb-4 overflow-y-auto h-60">
-                {mounted && (
-                  <div className="h-full">
-                    <PartnerCompanyChart refreshTrigger={refreshTrigger} />
-                  </div>
-                )}
+                {mounted && <PartnerCompanyChart refreshTrigger={refreshTrigger} />}
               </CardContent>
             </Card>
           </Link>

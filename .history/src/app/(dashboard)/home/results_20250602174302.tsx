@@ -11,13 +11,13 @@ import {
   CardContent
 } from '@/components/ui/card'
 import {Badge} from '@/components/ui/badge'
-import {Pencil, CloudSun, FileText, TrendingUp, Leaf, Building} from 'lucide-react'
+import {Pencil, CloudSun, FileText, Building, TrendingUp} from 'lucide-react'
 import IfrsChart from '@/components/chart/IfrsChart'
 import GriChart from '@/components/chart/griChart'
+import PartnerCompanyChart from '@/components/chart/partnerCompanyChart'
 import CsdddChart from '@/components/chart/csdddResultChart'
 import ScopeResultChart from '@/components/chart/scopeResultChart'
 import NetZeroChart from '@/components/chart/netZeroChart'
-import PartnerCompanyChart from '@/components/chart/partnerCompanyChart'
 
 const containerVariants = {
   hidden: {opacity: 0},
@@ -50,15 +50,8 @@ export default function Results() {
 
   return (
     <div className="flex flex-col w-full h-full min-h-screen p-4 pt-24 bg-gray-50">
-      {/* 상단 2 + 하단 3 구성 */}
-      <motion.div
-        className="grid grid-cols-1 gap-6 mb-6 md:grid-cols-3"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible">
-        {/* Net Zero - col-span-2 */}
-        <motion.div variants={itemVariants} className="md:col-span-2">
-          <Link href="/goal">
+      <motion.div variants={itemVariants}>
+        {/* <Link href="/goal">
             <Card className="h-full overflow-hidden transition-shadow hover:shadow-lg">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center text-lg text-[#4bc0c0]">
@@ -74,17 +67,14 @@ export default function Results() {
                 {mounted && <NetZeroChart refreshTrigger={refreshTrigger} />}
               </CardContent>
             </Card>
-          </Link>
-        </motion.div>
-
-        {/* GRI */}
+          </Link> */}
         <motion.div variants={itemVariants}>
           <Card className="h-full overflow-hidden transition-shadow hover:shadow-lg">
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                   <FileText className="w-5 h-5 text-green-600" />
-                  <span className="text-xl text-green-800">여기도 아직 미정입니다.</span>
+                  <span className="text-xl text-green-800">GRI 작성 현황</span>
                 </CardTitle>
                 <Badge variant="outline" className="text-green-700 bg-green-50">
                   실시간 데이터
@@ -101,12 +91,12 @@ export default function Results() {
         </motion.div>
       </motion.div>
 
+      {/* 하단 세 개 카드 (4번째 카드 제외) */}
       <motion.div
         className="grid grid-cols-1 gap-6 md:grid-cols-3"
         variants={containerVariants}
         initial="hidden"
         animate="visible">
-        {/* Scope 결과 */}
         <motion.div variants={itemVariants}>
           <Link href="/scope1">
             <Card className="h-full overflow-hidden transition-shadow hover:shadow-lg">
@@ -122,14 +112,16 @@ export default function Results() {
                 </div>
                 <CardDescription>Scope1 / 2 배출량 구성 비율</CardDescription>
               </CardHeader>
-              <CardContent className="flex items-center justify-between h-60">
-                {mounted && <ScopeResultChart refreshTrigger={refreshTrigger} />}
+              <CardContent>
+                <div className="flex items-center justify-between h-60">
+                  {mounted && <ScopeResultChart refreshTrigger={refreshTrigger} />}
+                </div>
               </CardContent>
             </Card>
           </Link>
         </motion.div>
 
-        {/* CSDDD 결과 */}
+        {/* 기존에 있던 CSDDD 카드 유지 */}
         <motion.div variants={itemVariants}>
           <Card className="h-full overflow-hidden transition-shadow hover:shadow-lg">
             <CardHeader className="pb-2">
@@ -152,29 +144,12 @@ export default function Results() {
           </Card>
         </motion.div>
 
-        {/* 협력사 등록 현황 */}
         <motion.div variants={itemVariants}>
-          <Link href="/partner-company">
-            <Card className="h-full overflow-hidden transition-shadow hover:shadow-lg">
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    <Building className="w-5 h-5 text-[#ff1493]" />
-                    <span className="text-xl text-[#e60073]">
-                      이 부분은 아직 미정입니다
-                    </span>
-                  </CardTitle>
-                  <Badge variant="outline" className="text-[#d10068] bg-[#ffe0ef]">
-                    실시간 데이터
-                  </Badge>
-                </div>
-                <CardDescription>등록된 협력사 리스트와 상태 확인</CardDescription>
-              </CardHeader>
-              <CardContent className="px-4 pt-0 pb-4 overflow-y-auto h-60">
-                {mounted && <PartnerCompanyChart refreshTrigger={refreshTrigger} />}
-              </CardContent>
-            </Card>
-          </Link>
+          <Card className="h-full overflow-hidden transition-shadow hover:shadow-lg">
+            <CardContent className="flex items-center justify-center pt-2 h-60">
+              {/* 비워둠 */}
+            </CardContent>
+          </Card>
         </motion.div>
       </motion.div>
     </div>

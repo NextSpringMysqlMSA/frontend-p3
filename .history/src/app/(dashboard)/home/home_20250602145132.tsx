@@ -1,6 +1,6 @@
 'use client'
 import {useState, useEffect, useCallback} from 'react'
-import {Building, Pencil} from 'lucide-react'
+import {Building} from 'lucide-react'
 import {
   Chart as ChartJS,
   ArcElement,
@@ -26,7 +26,18 @@ import {
 } from '@/components/ui/card'
 import {Badge} from '@/components/ui/badge'
 import {Separator} from '@/components/ui/separator'
-import {RefreshCcw, FileText, CloudSun, TrendingUp} from 'lucide-react'
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Award,
+  Zap,
+  Leaf,
+  ChevronUp,
+  RefreshCcw,
+  FileText,
+  CloudSun,
+  TrendingUp
+} from 'lucide-react'
 import {motion} from 'framer-motion'
 import GriChart from '@/components/chart/griChart'
 import IfrsChart from '@/components/chart/IfrsChart'
@@ -306,7 +317,7 @@ export default function Home() {
   })
 
   return (
-    <div className="flex flex-col w-full h-screen p-4 pt-24">
+    <div className="flex flex-col w-full h-full min-h-screen p-4 pt-24 bg-gray-50">
       <motion.div
         initial={{opacity: 0, y: -10}}
         animate={{opacity: 1, y: 0}}
@@ -329,9 +340,9 @@ export default function Home() {
           데이터 새로고침
         </Button>
       </motion.div>
-      {/* 상단 두 개 카드  ==========================================================================*/}
+      {/* 상단 두 개 카드 */}
       <motion.div
-        className="grid grid-cols-1 gap-6 mb-6 md:grid-cols-2 h-[(100%-152px)/2]"
+        className="grid grid-cols-1 gap-6 mb-6 md:grid-cols-2"
         variants={containerVariants}
         initial="hidden"
         animate="visible">
@@ -387,9 +398,9 @@ export default function Home() {
           </Link>
         </motion.div>
       </motion.div>
-      {/* 하단 세 개 카드 ==========================================================================*/}
+      {/* 하단 세 개 카드 */}
       <motion.div
-        className="grid h-full grid-cols-1 gap-6 md:grid-cols-3"
+        className="grid grid-cols-1 gap-6 md:grid-cols-3"
         variants={containerVariants}
         initial="hidden"
         animate="visible">

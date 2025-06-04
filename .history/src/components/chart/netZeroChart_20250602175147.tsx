@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import {useEffect, useState} from 'react'
+import {fetchNetZeroEmission} from '@/services/dashboard'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -16,7 +17,6 @@ import {
 import ChartDataLabels from 'chartjs-plugin-datalabels'
 import type {ChartOptions, TooltipItem, ChartData} from 'chart.js'
 
-// Chart.js 요소 등록
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -29,7 +29,6 @@ ChartJS.register(
   ChartDataLabels
 )
 
-// Line 컴포넌트 동적 로딩 (Next.js SSR 대응)
 const Line = dynamic(() => import('react-chartjs-2').then(mod => mod.Line), {
   ssr: false,
   loading: () => (
@@ -59,7 +58,7 @@ export default function NetZeroChart({refreshTrigger = 0}: NetZeroChartProps) {
         setLoading(true)
         setError(null)
 
-        // ✅ 더미 데이터
+        // ✅ 더미 데이터 사용
         const dummyData: EmissionItem[] = [
           {year: 2020, emission: 9500},
           {year: 2021, emission: 8800},
@@ -102,9 +101,9 @@ export default function NetZeroChart({refreshTrigger = 0}: NetZeroChartProps) {
         label: ' CO₂e 배출량',
         data: data.map(item => item.emission),
         borderColor: '#4bc0c0',
-        backgroundColor: 'rgba(75, 192, 192, 0.4)',
+        backgroundColor: 'rgba(75, 192, 192, 0.5)',
         tension: 0.3,
-        pointRadius: 5,
+        pointRadius: 6,
         pointBackgroundColor: '#ffffff',
         pointBorderColor: '#059669',
         pointBorderWidth: 2,
@@ -113,7 +112,7 @@ export default function NetZeroChart({refreshTrigger = 0}: NetZeroChartProps) {
       {
         label: ' 목표 경로',
         data: calculateTargetPath(),
-        borderColor: '#10b981',
+        borderColor: '#4bc0c0',
         borderDash: [5, 5],
         backgroundColor: 'transparent',
         tension: 0.1,
@@ -133,20 +132,20 @@ export default function NetZeroChart({refreshTrigger = 0}: NetZeroChartProps) {
         labels: {
           usePointStyle: true,
           boxWidth: 6,
-          padding: 12
+          padding: 15
         }
       },
       tooltip: {
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        titleColor: '#000',
-        bodyColor: '#000',
-        borderColor: '#ccc',
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        titleColor: '#333',
+        bodyColor: '#333',
+        borderColor: '#e5e7eb',
         borderWidth: 1,
         padding: 10,
         callbacks: {
-          label: (ctx: TooltipItem<'line'>) => {
-            const value = ctx.raw as number
-            return `${ctx.dataset.label}: ${value.toLocaleString()} tCO₂e`
+          label: (context: TooltipItem<'line'>) => {
+            const value = context.raw as number
+            return `${context.dataset.label}: ${value.toLocaleString()} tCO₂e`
           }
         }
       },
@@ -167,7 +166,7 @@ export default function NetZeroChart({refreshTrigger = 0}: NetZeroChartProps) {
           callback: (val: string | number) => Number(val).toLocaleString(),
           font: {size: 8}
         },
-        grid: {color: 'rgba(0, 0, 0, 0.04)'},
+        grid: {color: 'rgba(0, 0, 0, 0.05)'},
         title: {display: true, text: 'tCO₂e', font: {size: 12}}
       },
       x: {
@@ -198,20 +197,17 @@ export default function NetZeroChart({refreshTrigger = 0}: NetZeroChartProps) {
     )
   }
 
-  const first = data[0]!
-  const last = data[data.length - 1]!
-  const reductionRate = Math.round(
-    ((first.emission - last.emission) / first.emission) * 100
-  )
-
   return (
-    <div className="relative w-full h-60">
-      <div className="absolute z-10 text-xs text-gray-500 right-2 top-2">
-        📉 {reductionRate}% 감축 예정 ({first.year} → {last.year})
-      </div>
-
-      {/* 차트 렌더링 */}
+    <div className="w-full h-60">
       <Line data={lineData} options={options} />
+      <div className="pt-2 mt-2 text-xs text-right text-gray-500">
+        <span>
+          {Math.round(
+            ((data[0].emission - data[data.length - 1].emission) / data[0].emission) * 100
+          )}
+          % 감축 ({data[0].year} → {data[data.length - 1].year})
+        </span>
+      </div>
     </div>
   )
 }
