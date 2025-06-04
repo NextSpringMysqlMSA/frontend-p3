@@ -306,7 +306,8 @@ export default function Home() {
   })
 
   return (
-    <div className="flex flex-col w-full h-screen p-4 pt-24">
+    <div className="flex flex-col w-full h-screen max-h-screen p-4 pt-24">
+      {/* 상단 제목 및 설명 ============================================================= */}
       <motion.div
         initial={{opacity: 0, y: -10}}
         animate={{opacity: 1, y: 0}}
@@ -329,16 +330,40 @@ export default function Home() {
           데이터 새로고침
         </Button>
       </motion.div>
-      {/* 상단 두 개 카드  ==========================================================================*/}
+      {/* 상단 두 개 카드  ==============================================================================================================================*/}
       <motion.div
-        className="grid grid-cols-1 gap-6 mb-6 md:grid-cols-2 h-[(100%-152px)/2]"
+        className="flex flex-row justify-between w-full h-full mb-6 space-x-6"
         variants={containerVariants}
         initial="hidden"
         animate="visible">
-        {/* IFRS S2 섹션 ============================================================= */}
-        <motion.div variants={itemVariants}>
+        {/* Scope 섹션 ================================================================= */}
+        <motion.div variants={itemVariants} className="flex-1">
+          <Link href="/scope1">
+            <Card className="w-full h-full overflow-hidden transition-shadow hover:shadow-lg">
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5 text-sky-600" />
+                    <span className="text-xl text-sky-800">Scope 작성 현황</span>
+                  </CardTitle>
+                  <Badge variant="outline" className="text-sky-700 bg-sky-50">
+                    실시간 데이터
+                  </Badge>
+                </div>
+                <CardDescription>Scope1 / 2 작성 진행률</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-center h-full">
+                  {mounted && <ScopeChart refreshTrigger={refreshTrigger} />}
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        </motion.div>
+        {/* IFRS S2 섹션 ================================ */}
+        <motion.div variants={itemVariants} className="flex-1">
           <Link href="/governance">
-            <Card className="h-full overflow-hidden transition-shadow hover:shadow-lg">
+            <Card className="w-full h-full overflow-hidden transition-shadow hover:shadow-lg">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
@@ -352,16 +377,15 @@ export default function Home() {
                 <CardDescription>기후 관련 공시(TCFD) 작성 현황</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center justify-between h-full">
+                <div className="flex items-center justify-center h-full">
                   {mounted && <IfrsChart refreshTrigger={refreshTrigger} />}
                 </div>
               </CardContent>
             </Card>
           </Link>
         </motion.div>
-
-        {/* GRI 섹션 */}
-        <motion.div variants={itemVariants}>
+        {/* GRI 섹션 ================================================================= */}
+        <motion.div variants={itemVariants} className="flex-1">
           <Link href="/GRI">
             <Card className="h-full overflow-hidden transition-shadow hover:shadow-lg">
               <CardHeader className="pb-2">
@@ -379,7 +403,7 @@ export default function Home() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center justify-between h-full">
+                <div className="flex items-center justify-center h-full">
                   {mounted && <GriChart refreshTrigger={refreshTrigger} />}
                 </div>
               </CardContent>
@@ -387,40 +411,16 @@ export default function Home() {
           </Link>
         </motion.div>
       </motion.div>
-      {/* 하단 세 개 카드 ==========================================================================*/}
+      {/* 하단 세 개 카드 ====================================================================================================================================*/}
       <motion.div
-        className="grid h-full grid-cols-1 gap-6 md:grid-cols-3"
+        className="flex flex-row justify-between w-full h-full space-x-6"
         variants={containerVariants}
         initial="hidden"
         animate="visible">
-        {/* Scope 섹션 */}
-        <motion.div variants={itemVariants}>
-          <Link href="/scope1">
-            <Card className="h-full overflow-hidden transition-shadow hover:shadow-lg">
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5 text-sky-600" />
-                    <span className="text-xl text-sky-800">Scope 작성 현황</span>
-                  </CardTitle>
-                  <Badge variant="outline" className="text-sky-700 bg-sky-50">
-                    실시간 데이터
-                  </Badge>
-                </div>
-                <CardDescription>Scope1 / 2 작성 진행률</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between h-60">
-                  {mounted && <ScopeChart refreshTrigger={refreshTrigger} />}
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        </motion.div>
-        {/* CSDDD */}
-        <motion.div variants={itemVariants}>
+        {/* CSDDD 섹션 ================================================================= */}
+        <motion.div variants={itemVariants} className="flex-1">
           <Link href="/CSDDD">
-            <Card className="h-full overflow-hidden transition-shadow hover:shadow-lg">
+            <Card className="w-full h-full overflow-hidden transition-shadow hover:shadow-lg">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
@@ -436,19 +436,17 @@ export default function Home() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center justify-center pt-2 h-60">
-                  <div className="flex flex-col gap-3 w-[280px]">
-                    {mounted && <CsdddChart refreshTrigger={refreshTrigger} />}
-                  </div>
+                <div className="flex items-center justify-center h-full p-4">
+                  {mounted && <CsdddChart refreshTrigger={refreshTrigger} />}
                 </div>
               </CardContent>
             </Card>
           </Link>
         </motion.div>
-        {/* 협력사 */}
-        <motion.div variants={itemVariants}>
-          <Link href="/partner-company">
-            <Card className="h-full overflow-hidden transition-shadow hover:shadow-lg">
+        {/* 협력사 등록 현황 섹션 ================================================================= */}
+        <motion.div variants={itemVariants} className="flex-1">
+                    <Link href="/managePartner">
+            <Card className="w-full h-full overflow-hidden transition-shadow hover:shadow-lg">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
@@ -461,12 +459,10 @@ export default function Home() {
                 </div>
                 <CardDescription>등록된 협력사 리스트와 상태 확인</CardDescription>
               </CardHeader>
-              <CardContent className="px-4 pt-0 pb-4 overflow-y-auto h-60">
-                {mounted && (
-                  <div className="h-full">
-                    <PartnerCompanyChart refreshTrigger={refreshTrigger} />
-                  </div>
-                )}
+              <CardContent>
+                <div className="px-4 pt-0 pb-4 overflow-y-auto">
+                  {mounted && <PartnerCompanyChart refreshTrigger={refreshTrigger} />}
+                </div>
               </CardContent>
             </Card>
           </Link>
