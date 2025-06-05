@@ -339,7 +339,7 @@ export default function Home() {
         {/* Scope 섹션 ================================================================= */}
         <motion.div variants={itemVariants} className="flex-1">
           <Link href="/scope1">
-            <Card className="w-full h-full overflow-hidden transition-shadow hover:shadow-lg">
+            <Card className="flex flex-col w-full h-full overflow-hidden transition-shadow hover:shadow-lg">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
@@ -352,8 +352,8 @@ export default function Home() {
                 </div>
                 <CardDescription>Scope1 / 2 작성 진행률</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-center h-full">
+              <CardContent className="flex items-center justify-center flex-1 p-4">
+                <div className="flex items-center justify-between w-full h-full">
                   {mounted && <ScopeChart refreshTrigger={refreshTrigger} />}
                 </div>
               </CardContent>
@@ -363,7 +363,7 @@ export default function Home() {
         {/* IFRS S2 섹션 ================================ */}
         <motion.div variants={itemVariants} className="flex-1">
           <Link href="/governance">
-            <Card className="w-full h-full overflow-hidden transition-shadow hover:shadow-lg">
+            <Card className="flex flex-col w-full h-full overflow-hidden transition-shadow hover:shadow-lg">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
@@ -376,8 +376,8 @@ export default function Home() {
                 </div>
                 <CardDescription>기후 관련 공시(TCFD) 작성 현황</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-center h-full">
+              <CardContent className="flex items-center justify-center flex-1 p-4">
+                <div className="flex items-center justify-between w-full h-full">
                   {mounted && <IfrsChart refreshTrigger={refreshTrigger} />}
                 </div>
               </CardContent>
@@ -387,7 +387,7 @@ export default function Home() {
         {/* GRI 섹션 ================================================================= */}
         <motion.div variants={itemVariants} className="flex-1">
           <Link href="/GRI">
-            <Card className="h-full overflow-hidden transition-shadow hover:shadow-lg">
+            <Card className="flex flex-col h-full overflow-hidden transition-shadow hover:shadow-lg">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
@@ -402,8 +402,8 @@ export default function Home() {
                   Global Reporting Initiative 지표 작성 현황
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-center h-full">
+              <CardContent className="flex items-center justify-center flex-1 p-4">
+                <div className="flex items-center justify-between w-full h-full">
                   {mounted && <GriChart refreshTrigger={refreshTrigger} />}
                 </div>
               </CardContent>
@@ -420,7 +420,7 @@ export default function Home() {
         {/* CSDDD 섹션 ================================================================= */}
         <motion.div variants={itemVariants} className="flex-1">
           <Link href="/CSDDD">
-            <Card className="w-full h-full overflow-hidden transition-shadow hover:shadow-lg">
+            <Card className="flex flex-col w-full h-full overflow-hidden transition-shadow hover:shadow-lg">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
@@ -435,8 +435,8 @@ export default function Home() {
                   (EU공급망 / 인권 / 환경) 실사 자가진단 현황
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-center h-full p-4">
+              <CardContent className="flex items-center justify-center flex-1 p-4">
+                <div className="flex items-center justify-center w-full px-4">
                   {mounted && <CsdddChart refreshTrigger={refreshTrigger} />}
                 </div>
               </CardContent>
@@ -445,8 +445,8 @@ export default function Home() {
         </motion.div>
         {/* 협력사 등록 현황 섹션 ================================================================= */}
         <motion.div variants={itemVariants} className="flex-1">
-                    <Link href="/managePartner">
-            <Card className="w-full h-full overflow-hidden transition-shadow hover:shadow-lg">
+          <Link href="/managePartner">
+            <Card className="flex-1 w-full overflow-hidden transition-shadow hover:shadow-lg">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
@@ -459,8 +459,8 @@ export default function Home() {
                 </div>
                 <CardDescription>등록된 협력사 리스트와 상태 확인</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="px-4 pt-0 pb-4 overflow-y-auto">
+              <CardContent className="flex items-center justify-center flex-1 p-4">
+                <div className="flex w-full h-full px-4 pt-0 pb-4 overflow-hidden">
                   {mounted && <PartnerCompanyChart refreshTrigger={refreshTrigger} />}
                 </div>
               </CardContent>
