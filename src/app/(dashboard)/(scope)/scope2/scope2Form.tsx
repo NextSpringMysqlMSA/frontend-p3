@@ -12,6 +12,7 @@ import {
   BreadcrumbSeparator
 } from '@/components/ui/breadcrumb'
 import Link from 'next/link'
+import {DirectionButton} from '@/components/layout/direction'
 
 export default function Scope2Form() {
   const [loading, setLoading] = useState(true)
@@ -83,6 +84,14 @@ export default function Scope2Form() {
         }}>
         <div className="space-y-4">{/* 폼 컴포넌트들 */}</div>
       </LoadingState>
+      <DirectionButton
+        direction="left"
+        tooltip="Scope 1로 이동"
+        href="/scope1"
+        fixed
+        position="middle-left"
+        size={48}
+      />
     </div>
   )
 }

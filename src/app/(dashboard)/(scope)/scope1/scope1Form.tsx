@@ -11,9 +11,9 @@ import {
   BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbLink,
-  BreadcrumbSeparator,
-  BreadcrumbPage
+  BreadcrumbSeparator
 } from '@/components/ui/breadcrumb'
+import {DirectionButton} from '@/components/layout/direction'
 
 export default function Scope1Form() {
   const [loading, setLoading] = useState(true)
@@ -55,6 +55,7 @@ export default function Scope1Form() {
         </Breadcrumb>
       </div>
 
+      {/* 페이지 헤더 및 뒤로가기 */}
       <div className="flex flex-row w-full h-full mb-6">
         <Link
           href="/home"
@@ -85,6 +86,16 @@ export default function Scope1Form() {
         }}>
         <div className="space-y-4">{/* 폼 컴포넌트들 */}</div>
       </LoadingState>
+
+      {/* ✅ 고정된 Scope 2 이동 버튼 */}
+      <DirectionButton
+        direction="right"
+        tooltip="Scope 2로 이동"
+        href="/scope2"
+        fixed
+        position="middle-right"
+        size={48} // ← 16px × 3배
+      />
     </div>
   )
 }

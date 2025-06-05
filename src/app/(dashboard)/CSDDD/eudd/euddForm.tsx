@@ -13,12 +13,14 @@ import {
   BreadcrumbSeparator
 } from '@/components/ui/breadcrumb'
 import {showError, showSuccess} from '@/util/toast'
-import {BadgeCheck, ChevronRight, FileQuestion, Home} from 'lucide-react'
+import {BadgeCheck, ChevronRight, FileQuestion, Home, ArrowLeft} from 'lucide-react'
+import Link from 'next/link'
 import {useRouter} from 'next/navigation'
 import {fetchEuddResult, updateEuddAnswers} from '@/services/csddd'
 import type {EuddViolationDto} from '@/types/IFRS/csddd'
 import {AxiosError} from 'axios'
 import {AnimatePresence, motion} from 'framer-motion'
+import {PageHeader} from '@/components/layout/PageHeader'
 
 const questions: Record<
   string,
@@ -602,29 +604,24 @@ export default function EuddForm() {
         </Breadcrumb>
       </motion.div>
 
-      <div className="w-full mx-auto max-w-7xl">
-        {/* 헤더 섹션 - 컴팩트 버전으로 개선 */}
-        <motion.div
-          initial={{opacity: 0, scale: 0.98}}
-          animate={{opacity: 1, scale: 1}}
-          transition={{duration: 0.4}}
-          className="p-5 mb-6 bg-white border border-gray-100 shadow-sm rounded-xl">
-          <div className="flex items-center">
-            <div className="p-2 mr-4 rounded-full bg-customG/10">
-              <BadgeCheck className="w-6 h-6 text-customG" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-customG">
-                EU 공급망 실사 지침 요구사항 이행 자가진단
-              </h1>
-              <p className="text-sm text-gray-600">
-                기업의 EU 공급망 실사 준비 수준을 확인하고 개선할 수 있도록 도움을
-                제공합니다.
-              </p>
-            </div>
-          </div>
-        </motion.div>
+      {/* 페이지 헤더 및 뒤로가기 */}
+      <div className="flex flex-row w-full h-full mb-6">
+        <Link
+          href="/CSDDD"
+          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
+          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
+          <PageHeader
+            icon={<BadgeCheck className="w-6 h-6 text-customG" />}
+            title="EU 공급망 실사 진단"
+            description="기업의 EU 공급망 실사 준비 수준을 확인하고 개선할 수 있도록 도움을 제공합니다"
+            module="CSDDD"
+            submodule="eudd"
+          />
+        </Link>
+      </div>
 
+      {/* 기존의 컨테이너 시작 */}
+      <div className="w-full mx-auto max-w-7xl">
         {/* 단계 인디케이터 */}
         <motion.div
           initial={{opacity: 0}}

@@ -87,7 +87,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle
 } from '@/components/ui/alert-dialog'
-
+import {DirectionButton} from '@/components/layout/direction'
 // 커스텀 훅
 import {useToast} from '@/hooks/use-toast'
 
@@ -1113,6 +1113,14 @@ export default function ManagePartnerPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      <DirectionButton
+        direction="right"
+        tooltip="재무제표 리스트 관리로 이동"
+        href="/financialRisk"
+        fixed
+        position="middle-right"
+        size={48}
+      />
     </div>
   )
 }

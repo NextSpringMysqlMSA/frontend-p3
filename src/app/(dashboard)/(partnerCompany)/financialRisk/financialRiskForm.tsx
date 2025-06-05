@@ -60,6 +60,7 @@ import {
 } from '@/components/ui/breadcrumb'
 import Link from 'next/link'
 import {FinancialRiskAssessment} from '@/types/IFRS/partnerCompany'
+import {DirectionButton} from '@/components/layout/direction'
 import router from 'next/router'
 import {motion} from 'framer-motion'
 
@@ -865,6 +866,14 @@ export default function FinancialRiskForm() {
           </div>
         )}
       </LoadingState>
+      <DirectionButton
+        direction="left"
+        tooltip="파트너사 관리로 이동"
+        href="/managePartner"
+        fixed
+        position="middle-left"
+        size={48}
+      />
     </div>
   )
 }

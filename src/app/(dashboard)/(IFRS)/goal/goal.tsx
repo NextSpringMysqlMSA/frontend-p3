@@ -67,6 +67,7 @@ import {
   BreadcrumbLink,
   BreadcrumbSeparator
 } from '@/components/ui/breadcrumb'
+import {DirectionButton} from '@/components/layout/direction'
 
 ChartJS.register(
   ArcElement,
@@ -807,6 +808,14 @@ export default function Goal() {
           </Card>
         </motion.div>
       </LoadingState>
+      <DirectionButton
+        direction="left"
+        tooltip="전략로 이동"
+        href="/strategy"
+        fixed
+        position="middle-left"
+        size={48}
+      />
     </div>
   )
 }
