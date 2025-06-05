@@ -41,8 +41,14 @@ import {LoadingState} from '@/components/ui/loading-state'
 import {StatusBadge} from '@/components/ui/status-badge'
 import {Button} from '@/components/ui/button'
 import {useUIStore} from '@/stores/IFRS/strategy/UIState'
-import {Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbLink, BreadcrumbSeparator} from '@/components/ui/breadcrumb'
-
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbLink,
+  BreadcrumbSeparator
+} from '@/components/ui/breadcrumb'
+import {DirectionButton} from '@/components/layout/direction'
 export default function Strategy() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -122,6 +128,7 @@ export default function Strategy() {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
+      </div>
 
       {/* 헤더 섹션 - PageHeader 컴포넌트 사용 */}
       {/* 헤더 섹션 - PageHeader 컴포넌트 사용 */}
@@ -417,6 +424,26 @@ export default function Strategy() {
           </CardContent>
         </div>
       </LoadingState>
+
+      {/* 👈 왼쪽: 거버넌스로 이동 */}
+      <DirectionButton
+        direction="left"
+        tooltip="거버넌스로 이동"
+        href="/governance"
+        fixed
+        position="middle-left"
+        size={48}
+      />
+
+      {/* 👉 오른쪽: 골로 이동 */}
+      <DirectionButton
+        direction="right"
+        tooltip="목표 및 지표로 이동"
+        href="/goal"
+        fixed
+        position="middle-right"
+        size={48}
+      />
     </div>
   )
 }

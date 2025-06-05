@@ -19,6 +19,10 @@ import {fetchEddResult, updateEddAnswers} from '@/services/csddd'
 import {useRouter} from 'next/navigation'
 import type {EddViolationDto} from '@/types/IFRS/csddd'
 import {AxiosError} from 'axios'
+import {PageHeader} from '@/components/layout/PageHeader'
+import Link from 'next/link'
+import {ArrowLeft} from 'lucide-react'
+
 const questions: Record<
   string,
   {type: 'title' | 'question'; text: string; id?: string}[]
@@ -489,39 +493,44 @@ export default function EddForm() {
 
   return (
     <div className="flex flex-col w-full h-full p-4 pt-24">
-      {/* 네비게이션 브레드크럼 */}
-      <motion.div
-        initial={{opacity: 0, y: -10}}
-        animate={{opacity: 1, y: 0}}
-        transition={{duration: 0.3}}
-        className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
-        <Home className="w-4 h-4 mr-1" />
-        <span>공급망 실사</span>
-        <ChevronRight className="w-4 h-4 mx-2" />
-        <span className="font-medium text-customG">환경 실사 진단</span>
-      </motion.div>
-      <div className="w-full mx-auto max-w-7xl">
-        {/* 헤더 섹션 - 컴팩트 버전으로 개선 */}
-        <motion.div
-          initial={{opacity: 0, scale: 0.98}}
-          animate={{opacity: 1, scale: 1}}
-          transition={{duration: 0.4}}
-          className="p-5 mb-6 bg-white border border-gray-100 shadow-sm rounded-xl">
-          <div className="flex items-center">
-            <div className="p-2 mr-4 rounded-full bg-customG/10">
-              <BadgeCheck className="w-6 h-6 text-customG" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-customG">
-                환경 실사 지침 요구사항 이행 자가진단
-              </h1>
-              <p className="text-sm text-gray-600">
-                기업의 환경 실사 준비 수준을 확인하고 개선할 수 있도록 도움을 제공합니다.
-              </p>
-            </div>
-          </div>
-        </motion.div>
+      {/* 상단 네비게이션 */}
+      <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <Home className="w-4 h-4 mr-1" />
+              <BreadcrumbLink href="/home">대시보드</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/CSDDD">공급망 실사</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/CSDDD/edd">환경 실사 진단</BreadcrumbLink>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
 
+      {/* 페이지 헤더 및 뒤로가기 */}
+      <div className="flex flex-row w-full h-full mb-6">
+        <Link
+          href="/CSDDD"
+          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
+          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
+          <PageHeader
+            icon={<BadgeCheck className="w-6 h-6 text-customG" />}
+            title="환경 실사 지침 이행 자가진단"
+            description="기업의 환경 실사 준비 수준을 확인하고 개선할 수 있도록 도움을 제공합니다"
+            module="CSDDD"
+            submodule="edd"
+          />
+        </Link>
+      </div>
+
+      {/* 기존의 컨테이너 시작 */}
+      <div className="w-full mx-auto max-w-7xl">
         {/* 단계 인디케이터 - 원래 버전으로 복원 */}
         <motion.div
           initial={{opacity: 0}}

@@ -23,7 +23,8 @@ import {
   FileSearch,
   Check,
   ChevronsUpDown,
-  RefreshCcw
+  RefreshCcw,
+  ArrowLeft
 } from 'lucide-react'
 import {Button} from '@/components/ui/button'
 import {
@@ -59,7 +60,7 @@ import {
 } from '@/components/ui/breadcrumb'
 import Link from 'next/link'
 import {FinancialRiskAssessment} from '@/types/IFRS/partnerCompany'
-
+import {DirectionButton} from '@/components/layout/direction'
 /**
  * 개별 위험 항목 데이터 구조
  * @interface RiskItem
@@ -456,7 +457,7 @@ export default function FinancialRiskForm() {
 
   return (
     <div className="flex flex-col w-full h-full p-4 pt-24">
-            <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
+      <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -469,19 +470,6 @@ export default function FinancialRiskForm() {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-      </div>
-
-      <div className="flex items-start gap-2 mb-2">
-        <ArrowLeft
-          onClick={() => router.push('/home')}
-          className="w-5 h-5 mt-3 mb-1 text-gray-400 cursor-pointer hover:text-blue-600"
-        />
-        <PageHeader
-          icon={<Building2 className="w-8 h-8" />}
-          title="협력사 재무 위험 분석"
-          description="사의 재무 건전성과 위험을 분석합니다."
-          module="CSDD"
-        />
       </div>
 
       <div className="flex flex-row w-full h-full mb-6">
@@ -871,6 +859,14 @@ export default function FinancialRiskForm() {
           </div>
         )}
       </LoadingState>
+      <DirectionButton
+        direction="left"
+        tooltip="파트너사 관리로 이동"
+        href="/managePartner"
+        fixed
+        position="middle-left"
+        size={48}
+      />
     </div>
   )
 }
