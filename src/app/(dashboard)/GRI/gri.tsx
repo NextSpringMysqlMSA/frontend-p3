@@ -1,6 +1,5 @@
 'use client'
 
-import {useRouter} from 'next/navigation'
 import {useState, useEffect} from 'react'
 import {
   Check,
@@ -11,6 +10,7 @@ import {
   Home,
   BookOpen
 } from 'lucide-react'
+import Link from 'next/link'
 import {cn} from '@/lib/utils'
 import {Button} from '@/components/ui/button'
 import {Command, CommandGroup, CommandItem, CommandList} from '@/components/ui/command'
@@ -24,7 +24,7 @@ import {
   CardTitle
 } from '@/components/ui/card'
 import {motion} from 'framer-motion'
-import {BreadcrumbLink} from '@/components/ui/breadcrumb'
+
 import {PageHeader} from '@/components/layout/PageHeader'
 import {LoadingState} from '@/components/ui/loading-state'
 
@@ -34,6 +34,15 @@ import GRI3 from './(tables)/gri3'
 import GRI200 from './(tables)/gri200'
 import GRI300 from './(tables)/gri300'
 import GRI400 from './(tables)/gri400'
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+  BreadcrumbPage
+} from '@/components/ui/breadcrumb'
+
 
 // key는 내부 처리용, label은 사용자에게 보여질 이름
 const tableOptions = [
@@ -275,31 +284,38 @@ export default function GRI() {
       </div>
     )
   }
-  const router = useRouter()
+
   return (
     <div className="flex flex-col w-full h-full p-4 pt-24">
       {/* 상단 네비게이션 */}
       <div className="flex flex-row items-center px-4 py-2 mb-4 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
-        <Home className="w-4 h-4 mr-1" />
-        <span>대시보드</span>
-        <ChevronRight className="w-4 h-4 mx-2" />
-        <span>ESG 공시</span>
-        <ChevronRight className="w-4 h-4 mx-2" />
-        <span className="font-medium text-customG">GRI</span>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <Home className="w-4 h-4 mr-1" />
+              <BreadcrumbLink href="/home">대시보드</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/gri">ESG 공시</BreadcrumbLink>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
       </div>
 
       {/* 제목 및 설명 - PageHeader 컴포넌트 사용 */}
-      <div className="flex items-start gap-2 mb-2">
-        <ArrowLeft
-          onClick={() => router.push('/home')}
-          className="w-5 h-5 mt-3 mb-1 text-gray-400 cursor-pointer hover:text-blue-600"
-        />
-        <PageHeader
-          icon={<BookOpen className="w-6 h-6" />}
-          title="GRI 표준"
-          description="Global Reporting Initiative(GRI) 표준에 따른 ESG 공시 요구사항"
-          module="GRI"
-        />
+      <div className="flex flex-row w-full h-full mb-6">
+        <Link
+          href="/home"
+          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
+          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
+          <PageHeader
+            icon={<BookOpen className="w-6 h-6" />}
+            title="GRI 표준"
+            description="Global Reporting Initiative(GRI) 표준에 따른 ESG 공시 요구사항"
+            module="GRI"
+          />
+        </Link>
       </div>
 
       {/* 메인 컨텐츠 카드 */}

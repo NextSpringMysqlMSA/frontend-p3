@@ -14,7 +14,15 @@ import {
 import {motion} from 'framer-motion'
 import {useRouter} from 'next/navigation'
 import {PageHeader} from '@/components/layout/PageHeader'
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator
+} from '@/components/ui/breadcrumb'
 
+import Link from 'next/link'
 const dueDiligenceOptions = [
   {
     key: 'eudd',
@@ -55,22 +63,33 @@ export default function CSDDD() {
     <div className="flex flex-col w-full h-full p-4 pt-24">
       {/* 상단 네비게이션 */}
       <div className="flex flex-row items-center px-4 py-2 mb-4 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
-        <Home className="w-4 h-4 mr-1" />
-        <span className="font-medium text-customG">공급망 실사</span>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <Home className="w-4 h-4 mr-1" />
+              <BreadcrumbLink href="/home">대시보드</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/CSDD">공급망 실사사</BreadcrumbLink>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
       </div>
 
-      <div className="flex items-start gap-2 mb-2">
-        <ArrowLeft
-          onClick={() => router.push('/home')}
-          className="w-5 h-5 mt-3 mb-1 text-gray-400 cursor-pointer hover:text-blue-600"
-        />
-        <PageHeader
-          icon={<BookOpen className="w-6 h-6 text-customG" />}
-          title="공급망 실사"
-          description="공급망 실사 지침에 따른 인권 및 환경 실사 자가진단"
-          module="CSDDD"
-          submodule="eudd"
-        />
+      <div className="flex flex-row w-full h-full mb-6">
+        <Link
+          href="/home"
+          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
+          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
+          <PageHeader
+            icon={<BookOpen className="w-6 h-6 text-customG" />}
+            title="공급망 실사"
+            description="공급망 실사 지침에 따른 인권 및 환경 실사 자가진단"
+            module="CSDDD"
+            submodule="eudd"
+          />
+        </Link>
       </div>
 
       {/* 메인 컨텐츠 카드 */}
