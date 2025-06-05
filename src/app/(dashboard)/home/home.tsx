@@ -446,7 +446,7 @@ export default function Home() {
         {/* 협력사 등록 현황 섹션 ================================================================= */}
         <motion.div variants={itemVariants} className="flex-1">
           <Link href="/managePartner">
-            <Card className="flex-1 w-full overflow-hidden transition-shadow hover:shadow-lg">
+            <Card className="flex flex-col w-full h-full overflow-hidden transition-shadow hover:shadow-lg">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
@@ -460,7 +460,7 @@ export default function Home() {
                 <CardDescription>등록된 협력사 리스트와 상태 확인</CardDescription>
               </CardHeader>
               <CardContent className="flex items-center justify-center flex-1 p-4">
-                <div className="flex w-full h-full px-4 pt-0 pb-4 overflow-hidden">
+                <div className="w-full h-48 p-4 overflow-y-auto border-2 rounded-lg">
                   {mounted && <PartnerCompanyChart refreshTrigger={refreshTrigger} />}
                 </div>
               </CardContent>
