@@ -23,7 +23,8 @@ import {
   FileSearch,
   Check,
   ChevronsUpDown,
-  RefreshCcw
+  RefreshCcw,
+  ArrowLeft
 } from 'lucide-react'
 import {Button} from '@/components/ui/button'
 import {
@@ -59,6 +60,7 @@ import {
 } from '@/components/ui/breadcrumb'
 import Link from 'next/link'
 import {FinancialRiskAssessment} from '@/types/IFRS/partnerCompany'
+import router from 'next/router'
 
 /**
  * 개별 위험 항목 데이터 구조
@@ -456,7 +458,7 @@ export default function FinancialRiskForm() {
 
   return (
     <div className="flex flex-col w-full h-full p-4 pt-24">
-            <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
+      <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>

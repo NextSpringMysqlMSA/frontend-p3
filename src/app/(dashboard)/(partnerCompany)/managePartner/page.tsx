@@ -45,7 +45,8 @@ import {
   Home, // 홈 아이콘 (브레드크럼)
   ChevronRight, // 오른쪽 화살표 (브레드크럼)
   ChevronLeft, // 왼쪽 화살표 (페이지네이션)
-  Users // 사용자 그룹 아이콘
+  Users, // 사용자 그룹 아이콘
+  ArrowLeft
 } from 'lucide-react'
 
 // UI 컴포넌트들
@@ -551,7 +552,7 @@ export default function ManagePartnerPage() {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-  {/* PageHeader + ArrowLeft */}
+      {/* PageHeader + ArrowLeft */}
       <div className="flex flex-row w-full h-full mb-6">
         <Link
           href="/home"
