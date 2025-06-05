@@ -59,6 +59,7 @@ import {
   BreadcrumbSeparator
 } from '@/components/ui/breadcrumb'
 import {DirectionButton} from '@/components/layout/direction'
+
 /**
  * Governance 컴포넌트
  *
@@ -152,7 +153,7 @@ export default function Governance() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/governance">거버넌스</BreadcrumbLink>
+              <span className="font-bold text-customG">거버넌스</span>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>

@@ -48,7 +48,9 @@ import {
   BreadcrumbLink,
   BreadcrumbSeparator
 } from '@/components/ui/breadcrumb'
+
 import {DirectionButton} from '@/components/layout/direction'
+
 export default function Strategy() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -124,7 +126,7 @@ export default function Strategy() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/strategy">전략</BreadcrumbLink>
+              <span className="font-bold text-customG">전략</span>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>

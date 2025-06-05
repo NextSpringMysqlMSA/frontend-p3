@@ -43,7 +43,6 @@ import {
   BreadcrumbPage
 } from '@/components/ui/breadcrumb'
 
-
 // key는 내부 처리용, label은 사용자에게 보여질 이름
 const tableOptions = [
   {
@@ -297,7 +296,7 @@ export default function GRI() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/gri">ESG 공시</BreadcrumbLink>
+              <span className="font-bold text-customG">GRI</span>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>

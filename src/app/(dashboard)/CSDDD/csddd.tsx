@@ -71,7 +71,7 @@ export default function CSDDD() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/CSDD">공급망 실사사</BreadcrumbLink>
+              <span className="font-bold text-customG">공급망 실사</span>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>

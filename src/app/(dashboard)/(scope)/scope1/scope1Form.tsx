@@ -49,7 +49,7 @@ export default function Scope1Form() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/scope1">Scope 1</BreadcrumbLink>
+              <span className="font-bold text-customG">Scope 1</span>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>

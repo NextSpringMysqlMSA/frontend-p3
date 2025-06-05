@@ -111,6 +111,7 @@ import Link from 'next/link'
 
 // 타입 정의
 import {DartCorpInfo, PartnerCompany} from '@/types/IFRS/partnerCompany'
+import {motion} from 'framer-motion'
 
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value)
@@ -537,8 +538,12 @@ export default function ManagePartnerPage() {
   }
 
   return (
-    <div className="flex flex-col w-full h-full p-4 md:p-8">
-      <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
+    <div className="flex flex-col w-full h-full p-4 pt-24">
+      <motion.div
+        initial={{opacity: 0, y: -10}}
+        animate={{opacity: 1, y: 0}}
+        transition={{duration: 0.3}}
+        className="flex flex-row items-center px-4 py-2 mb-4 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -547,11 +552,11 @@ export default function ManagePartnerPage() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/managePartner">파트너사 관리</BreadcrumbLink>
+              <span className="font-bold text-customG">파트너사 관리</span>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-      </div>
+      </motion.div>
       {/* PageHeader + ArrowLeft */}
       <div className="flex flex-row w-full h-full mb-6">
         <Link

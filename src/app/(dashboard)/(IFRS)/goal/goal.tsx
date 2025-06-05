@@ -358,7 +358,7 @@ export default function Goal() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/goal">목표 및 지표</BreadcrumbLink>
+              <span className="font-bold text-customG">목표 및 지표</span>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>

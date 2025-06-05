@@ -493,8 +493,12 @@ export default function EddForm() {
 
   return (
     <div className="flex flex-col w-full h-full p-4 pt-24">
-      {/* 상단 네비게이션 */}
-      <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
+      {/* 네비게이션 브레드크럼 */}
+      <motion.div
+        initial={{opacity: 0, y: -10}}
+        animate={{opacity: 1, y: 0}}
+        transition={{duration: 0.3}}
+        className="flex flex-row items-center px-4 py-2 mb-4 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -507,11 +511,12 @@ export default function EddForm() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/CSDDD/edd">환경 실사 진단</BreadcrumbLink>
+              <span className="font-bold text-customG">환경 실사 자가진단</span>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-      </div>
+      </motion.div>
+        
 
       {/* 페이지 헤더 및 뒤로가기 */}
       <div className="flex flex-row w-full h-full mb-6">
