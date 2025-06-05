@@ -28,7 +28,6 @@
 // React 핵심 라이브러리
 import React, {useState, useEffect, useCallback} from 'react'
 
-// 레이아웃 컴포넌트
 import {PageHeader} from '@/components/layout/PageHeader'
 
 // 아이콘 라이브러리
@@ -99,22 +98,12 @@ import {
   updatePartnerCompany, // 파트너사 정보 수정
   searchCompaniesFromDart // DART API 기업 검색
 } from '@/services/partnerCompany'
+import Link from 'next/link'
+// 디바운스 훅
 
 // 타입 정의
 import {DartCorpInfo, PartnerCompany} from '@/types/IFRS/partnerCompany'
 
-/**
- * ===================================================================
- * 커스텀 훅 및 유틸리티 (Custom Hooks & Utilities)
- * ===================================================================
- */
-
-/**
- * 입력값의 변경을 지연시켜 불필요한 API 호출을 방지하는 디바운스 훅
- * @param value - 디바운스할 값
- * @param delay - 지연 시간 (밀리초)
- * @returns 디바운스된 값
- */
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value)
 
@@ -547,13 +536,20 @@ export default function ManagePartnerPage() {
         <ChevronRight className="w-4 h-4 mx-2" />
         <span className="text-customG">파트너사 관리</span>
       </div>
-
-      <PageHeader
-        icon={<Building2 className="w-8 h-8" />}
-        title="파트너사 관리"
-        description="파트너사를 등록, 조회, 수정 및 삭제합니다."
-        module="CSDD"
-      />
+  {/* PageHeader + ArrowLeft */}
+      <div className="flex flex-row w-full h-full mb-6">
+        <Link
+          href="/home"
+          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
+          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
+          <PageHeader
+            icon={<Building2 className="w-8 h-8 text-customG" />}
+            title="파트너사 관리"
+            description="파트너사를 등록, 조회, 수정 및 삭제합니다."
+            module="CSDD"
+          />
+        </Link>
+      </div>
 
       <div className="flex flex-col gap-6 mt-8">
         {/* 검색 및 추가 버튼 섹션 */}

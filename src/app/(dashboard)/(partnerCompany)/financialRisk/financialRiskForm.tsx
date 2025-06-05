@@ -50,13 +50,9 @@ import {
   fetchFinancialRiskAssessment,
   fetchPartnerCompanies
 } from '@/services/partnerCompany'
+import Link from 'next/link'
 import {FinancialRiskAssessment} from '@/types/IFRS/partnerCompany'
 
-/**
- * ===================================================================
- * 타입 정의 (Type Definitions)
- * ===================================================================
- */
 
 /**
  * 개별 위험 항목 데이터 구조
@@ -452,43 +448,28 @@ export default function FinancialRiskForm() {
   // 전체 위험 상태 정보
   const statusInfo = getStatusLabel(atRiskCount)
 
-  /**
-   * ===================================================================
-   * 렌더링 (Rendering)
-   * ===================================================================
-   */
-
   return (
-    <div className="flex flex-col w-full h-full min-h-screen p-4 md:p-8 bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50">
-      {/* 
-        ===============================================================
-        브레드크럼 네비게이션 (Breadcrumb Navigation)
-        =============================================================== 
-      */}
-      <div className="flex flex-row items-center p-4 px-6 mb-8 text-sm border shadow-lg text-slate-600 bg-white/80 backdrop-blur-sm rounded-2xl border-slate-200/50">
-        <div className="flex items-center justify-center w-8 h-8 mr-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl">
-          <Home className="w-4 h-4 text-white" />
-        </div>
-        <span className="font-semibold text-slate-700">협력사 관리</span>
-        <ChevronRight className="w-4 h-4 mx-3 text-slate-400" />
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-gradient-to-r from-emerald-400 to-teal-500"></div>
-          <span className="font-bold text-customG">재무제표 리스크 관리</span>
-        </div>
+    <div className="flex flex-col w-full h-full p-4 pt-24">
+      {/* 상단 네비게이션 */}
+      <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
+        <Home className="w-4 h-4 mr-1" />
+        <span>협력사 관리</span>
+        <ChevronRight className="w-4 h-4 mx-2" />
+        <span className="text-customG">협력사 재무 위험 분석</span>
       </div>
 
-      {/* 
-        ===============================================================
-        페이지 헤더 (Page Header)
-        =============================================================== 
-      */}
-      <div className="mb-8">
-        <PageHeader
-          icon={<Building2 className="w-8 h-8" />}
-          title="협력사 재무 위험 분석"
-          description="파트너사의 재무 건전성과 위험을 실시간으로 분석합니다."
-          module="CSDD"
-        />
+      <div className="flex flex-row w-full h-full mb-6">
+        <Link
+          href="/home"
+          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
+          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
+          <PageHeader
+            icon={<Building2 className="w-8 h-8" />}
+            title="협력사 재무 위험 분석"
+            description="사의 재무 건전성과 위험을 분석합니다."
+            module="CSDD"
+          />
+        </Link>
       </div>
 
       {/* 
