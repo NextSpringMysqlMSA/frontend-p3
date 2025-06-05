@@ -98,6 +98,13 @@ import {
   updatePartnerCompany, // 파트너사 정보 수정
   searchCompaniesFromDart // DART API 기업 검색
 } from '@/services/partnerCompany'
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator
+} from '@/components/ui/breadcrumb'
 import Link from 'next/link'
 // 디바운스 훅
 
@@ -531,10 +538,18 @@ export default function ManagePartnerPage() {
   return (
     <div className="flex flex-col w-full h-full p-4 md:p-8">
       <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
-        <Home className="w-4 h-4 mr-1" />
-        <span>협력사 관리</span>
-        <ChevronRight className="w-4 h-4 mx-2" />
-        <span className="text-customG">파트너사 관리</span>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <Home className="w-4 h-4 mr-1" />
+              <BreadcrumbLink href="/home">대시보드</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/managePartner">파트너사 관리</BreadcrumbLink>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
       </div>
   {/* PageHeader + ArrowLeft */}
       <div className="flex flex-row w-full h-full mb-6">

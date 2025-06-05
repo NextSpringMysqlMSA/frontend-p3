@@ -50,9 +50,15 @@ import {
   fetchFinancialRiskAssessment,
   fetchPartnerCompanies
 } from '@/services/partnerCompany'
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator
+} from '@/components/ui/breadcrumb'
 import Link from 'next/link'
 import {FinancialRiskAssessment} from '@/types/IFRS/partnerCompany'
-
 
 /**
  * 개별 위험 항목 데이터 구조
@@ -450,12 +456,32 @@ export default function FinancialRiskForm() {
 
   return (
     <div className="flex flex-col w-full h-full p-4 pt-24">
-      {/* 상단 네비게이션 */}
-      <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
-        <Home className="w-4 h-4 mr-1" />
-        <span>협력사 관리</span>
-        <ChevronRight className="w-4 h-4 mx-2" />
-        <span className="text-customG">협력사 재무 위험 분석</span>
+            <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <Home className="w-4 h-4 mr-1" />
+              <BreadcrumbLink href="/home">대시보드</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/financialRisk">협력사 재무 위험 분석</BreadcrumbLink>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
+
+      <div className="flex items-start gap-2 mb-2">
+        <ArrowLeft
+          onClick={() => router.push('/home')}
+          className="w-5 h-5 mt-3 mb-1 text-gray-400 cursor-pointer hover:text-blue-600"
+        />
+        <PageHeader
+          icon={<Building2 className="w-8 h-8" />}
+          title="협력사 재무 위험 분석"
+          description="사의 재무 건전성과 위험을 분석합니다."
+          module="CSDD"
+        />
       </div>
 
       <div className="flex flex-row w-full h-full mb-6">

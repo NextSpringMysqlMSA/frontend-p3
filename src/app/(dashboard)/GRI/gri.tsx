@@ -24,7 +24,7 @@ import {
   CardTitle
 } from '@/components/ui/card'
 import {motion} from 'framer-motion'
-import {BreadcrumbLink} from '@/components/ui/breadcrumb'
+
 import {PageHeader} from '@/components/layout/PageHeader'
 import {LoadingState} from '@/components/ui/loading-state'
 
@@ -34,6 +34,15 @@ import GRI3 from './(tables)/gri3'
 import GRI200 from './(tables)/gri200'
 import GRI300 from './(tables)/gri300'
 import GRI400 from './(tables)/gri400'
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+  BreadcrumbPage
+} from '@/components/ui/breadcrumb'
+
 
 // key는 내부 처리용, label은 사용자에게 보여질 이름
 const tableOptions = [
@@ -280,12 +289,18 @@ export default function GRI() {
     <div className="flex flex-col w-full h-full p-4 pt-24">
       {/* 상단 네비게이션 */}
       <div className="flex flex-row items-center px-4 py-2 mb-4 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
-        <Home className="w-4 h-4 mr-1" />
-        <span>대시보드</span>
-        <ChevronRight className="w-4 h-4 mx-2" />
-        <span>ESG 공시</span>
-        <ChevronRight className="w-4 h-4 mx-2" />
-        <span className="font-medium text-customG">GRI</span>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <Home className="w-4 h-4 mr-1" />
+              <BreadcrumbLink href="/home">대시보드</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/gri">ESG 공시</BreadcrumbLink>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
       </div>
 
       {/* 제목 및 설명 - PageHeader 컴포넌트 사용 */}

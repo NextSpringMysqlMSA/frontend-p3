@@ -52,6 +52,7 @@ import {
   fetchKpiList,
   fetchEducationList
 } from '@/services/governance'
+import {Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbSeparator} from '@/components/ui/breadcrumb'
 
 /**
  * Governance 컴포넌트
@@ -138,14 +139,18 @@ export default function Governance() {
     <div className="flex flex-col w-full h-full p-4 pt-24">
       {/* 상단 네비게이션 */}
       <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
-        <Home className="w-4 h-4 mr-1" />
-        <span>대시보드</span>
-        <ChevronRight className="w-4 h-4 mx-2" />
-        <span>ESG 공시</span>
-        <ChevronRight className="w-4 h-4 mx-2" />
-        <span>IFRS S2</span>
-        <ChevronRight className="w-4 h-4 mx-2" />
-        <span className="text-customG">거버넌스</span>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <Home className="w-4 h-4 mr-1" />
+              <BreadcrumbLink href="/home">대시보드</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/governance">거버넌스</BreadcrumbLink>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
       </div>
 
       {/* 헤더 섹션 */}

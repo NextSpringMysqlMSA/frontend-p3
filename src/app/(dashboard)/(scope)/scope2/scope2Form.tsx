@@ -4,6 +4,13 @@ import {useState, useEffect} from 'react'
 import {LoadingState} from '@/components/ui/loading-state'
 import {PageHeader} from '@/components/layout/PageHeader'
 import {Home, ChevronRight, Factory, ArrowLeft} from 'lucide-react'
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator
+} from '@/components/ui/breadcrumb'
 import Link from 'next/link'
 
 export default function Scope2Form() {
@@ -32,14 +39,18 @@ export default function Scope2Form() {
     <div className="flex flex-col w-full h-full p-4 pt-24">
       {/* 상단 네비게이션 */}
       <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
-        <Home className="w-4 h-4 mr-1" />
-        <span>대시보드</span>
-        <ChevronRight className="w-4 h-4 mx-2" />
-        <span>ESG 공시</span>
-        <ChevronRight className="w-4 h-4 mx-2" />
-        <span>Scope</span>
-        <ChevronRight className="w-4 h-4 mx-2" />
-        <span className="text-customG">Scope 2</span>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <Home className="w-4 h-4 mr-1" />
+              <BreadcrumbLink href="/home">대시보드</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/scope2">Scope 2</BreadcrumbLink>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
       </div>
 
       {/* ← PageHeader 왼쪽에 위치 */}

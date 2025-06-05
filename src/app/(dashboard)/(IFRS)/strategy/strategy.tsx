@@ -14,7 +14,7 @@ import {
 import Link from 'next/link'
 import Scenario from './scenario'
 import Risk from './risk'
-import {BreadcrumbLink} from '@/components/ui/breadcrumb'
+
 import CollapsibleWindow from '@/components/tools/collapsibleWindow'
 import {
   Accordion,
@@ -41,6 +41,7 @@ import {LoadingState} from '@/components/ui/loading-state'
 import {StatusBadge} from '@/components/ui/status-badge'
 import {Button} from '@/components/ui/button'
 import {useUIStore} from '@/stores/IFRS/strategy/UIState'
+import {Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbLink, BreadcrumbSeparator} from '@/components/ui/breadcrumb'
 
 export default function Strategy() {
   const [loading, setLoading] = useState(true)
@@ -108,16 +109,19 @@ export default function Strategy() {
   return (
     <div className="flex flex-col w-full h-full p-4 pt-24">
       {/* 상단 네비게이션 */}
-      <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
-        <Home className="w-4 h-4 mr-1" />
-        <span>대시보드</span>
-        <ChevronRight className="w-4 h-4 mx-2" />
-        <span>ESG 공시</span>
-        <ChevronRight className="w-4 h-4 mx-2" />
-        <span>IFRS S2</span>
-        <ChevronRight className="w-4 h-4 mx-2" />
-        <span className="text-customG">전략</span>
-      </div>
+      <div className="flex flex-row items-center p-2 px-2 mb-2 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <Home className="w-4 h-4 mr-1" />
+              <BreadcrumbLink href="/home">대시보드</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/strategy">전략</BreadcrumbLink>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
 
       {/* 헤더 섹션 - PageHeader 컴포넌트 사용 */}
       {/* 헤더 섹션 - PageHeader 컴포넌트 사용 */}
