@@ -60,8 +60,13 @@ import {PageHeader} from '@/components/layout/PageHeader'
 import {Skeleton} from '@/components/ui/skeleton'
 import {LoadingState} from '@/components/ui/loading-state'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
-import {Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbLink,  BreadcrumbSeparator} from '@/components/ui/breadcrumb'
-
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbLink,
+  BreadcrumbSeparator
+} from '@/components/ui/breadcrumb'
 
 ChartJS.register(
   ArcElement,
@@ -352,7 +357,7 @@ export default function Goal() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/goal">목표 및 지표</BreadcrumbLink>
+              <span className="font-bold text-customG">목표 및 지표</span>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>

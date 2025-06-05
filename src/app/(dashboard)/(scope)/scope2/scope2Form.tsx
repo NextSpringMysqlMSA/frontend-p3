@@ -47,7 +47,7 @@ export default function Scope2Form() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/scope2">Scope 2</BreadcrumbLink>
+              <span className="font-bold text-customG">Scope 2</span>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
