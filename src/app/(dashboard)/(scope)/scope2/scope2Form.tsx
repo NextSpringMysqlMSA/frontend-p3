@@ -1,14 +1,34 @@
 'use client'
 
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useCallback} from 'react'
+import {motion} from 'framer-motion'
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card'
+  Building,
+  Zap,
+  Wind,
+  Plus,
+  Search,
+  TrendingUp,
+  Edit,
+  Trash2,
+  Home,
+  ArrowLeft,
+  Landmark,
+  BarChart,
+  CalendarDays,
+  GraduationCap
+} from 'lucide-react'
+
 import {Button} from '@/components/ui/button'
+import {Card, CardContent} from '@/components/ui/card'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from '@/components/ui/dialog'
 import {Input} from '@/components/ui/input'
 import {Label} from '@/components/ui/label'
 import {
@@ -18,31 +38,6 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import {Badge} from '@/components/ui/badge'
-import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs'
-import {LoadingState} from '@/components/ui/loading-state'
-import {PageHeader} from '@/components/layout/PageHeader'
-import {
-  Home,
-  Zap,
-  ArrowLeft,
-  Plus,
-  Trash2,
-  Edit,
-  Wind,
-  TrendingUp,
-  Factory,
-  Building
-} from 'lucide-react'
-import Link from 'next/link'
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbSeparator,
-  BreadcrumbPage
-} from '@/components/ui/breadcrumb'
 import {
   Table,
   TableBody,
@@ -51,317 +46,399 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
+import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs'
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle
-} from '@/components/ui/dialog'
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+  BreadcrumbLink
+} from '@/components/ui/breadcrumb'
+import {useToast} from '@/hooks/use-toast'
+import Link from 'next/link'
 
-// 타입과 서비스 import
-import type {
+import {LoadingState} from '@/components/ui/loading-state'
+import {PartnerSelector} from '@/components/scope/PartnerSelector'
+import {MonthSelector} from '@/components/scope/MonthSelector'
+
+import {
   ElectricityUsage,
   SteamUsage,
-  PartnerCompany,
   ElectricityUsageForm,
-  SteamUsageForm
+  SteamUsageForm,
+  PartnerCompany
 } from '@/types/scope'
+
 import {
   fetchElectricityUsageByPartnerAndYear,
   fetchSteamUsageByPartnerAndYear,
   createElectricityUsage,
-  createSteamUsage,
   updateElectricityUsage,
-  updateSteamUsage,
   deleteElectricityUsage,
+  createSteamUsage,
+  updateSteamUsage,
   deleteSteamUsage
 } from '@/services/scope'
-import {fetchActivePartnerCompanies} from '@/services/partner'
-import {PartnerSelector} from '@/components/scope/PartnerSelector'
-import {MonthSelector} from '@/components/scope/MonthSelector'
 
-// 폼 데이터 타입 정의
+// 폼 인터페이스 정의
 interface ElectricityFormData {
-  partnerCompanyId: number
-  partnerCompanyName: string
-  reportingMonth: string
+  partnerCompanyId: number | null
   facilityName: string
-  usage: string
+  electricityUsage: number
+  reportingMonth: number
+  unit: string
   isRenewable: boolean
 }
 
 interface SteamFormData {
-  partnerCompanyId: number
-  partnerCompanyName: string
-  reportingMonth: string
+  partnerCompanyId: number | null
   facilityName: string
-  usage: string
+  steamUsage: number
+  reportingMonth: number
+  unit: string
 }
 
-export default function Scope2Form() {
-  // State management
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+const Scope2Form = () => {
+  const {toast} = useToast()
+
+  // 상태 관리
+  const [selectedPartnerId, setSelectedPartnerId] = useState<number | null>(null)
+  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear())
   const [activeTab, setActiveTab] = useState('electricity')
 
-  // Partner and year selection
-  const [selectedPartner, setSelectedPartner] = useState<PartnerCompany | null>(null)
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
-
-  // Data states
+  // 데이터 상태
   const [electricityData, setElectricityData] = useState<ElectricityUsage[]>([])
   const [steamData, setSteamData] = useState<SteamUsage[]>([])
+  const [loading, setLoading] = useState(false)
 
-  // Form states
-  const [showElectricityDialog, setShowElectricityDialog] = useState(false)
-  const [showSteamDialog, setShowSteamDialog] = useState(false)
-  const [editingElectricityId, setEditingElectricityId] = useState<number | null>(null)
-  const [editingSteamId, setEditingSteamId] = useState<number | null>(null)
+  // 다이얼로그 상태
+  const [electricityDialogOpen, setElectricityDialogOpen] = useState(false)
+  const [steamDialogOpen, setSteamDialogOpen] = useState(false)
+  const [editingElectricity, setEditingElectricity] = useState<ElectricityUsage | null>(
+    null
+  )
+  const [editingSteam, setEditingSteam] = useState<SteamUsage | null>(null)
 
-  // Form data
-  const [electricityForm, setElectricityForm] = useState({
-    partnerCompanyId: 0,
-    partnerCompanyName: '',
-    reportingMonth: '',
+  // 폼 상태
+  const [electricityForm, setElectricityForm] = useState<ElectricityFormData>({
+    partnerCompanyId: null,
     facilityName: '',
-    usage: '',
+    electricityUsage: 0,
+    reportingMonth: new Date().getMonth() + 1,
+    unit: 'kWh',
     isRenewable: false
   })
 
-  const [steamForm, setSteamForm] = useState({
-    partnerCompanyId: 0,
-    partnerCompanyName: '',
-    reportingMonth: '',
+  const [steamForm, setSteamForm] = useState<SteamFormData>({
+    partnerCompanyId: null,
     facilityName: '',
-    usage: ''
+    steamUsage: 0,
+    reportingMonth: new Date().getMonth() + 1,
+    unit: 'GJ'
   })
 
-  // API 호출 함수들
-  const fetchElectricityData = async () => {
-    if (!selectedPartner) return
+  // 연도 옵션
+  const years = Array.from({length: 10}, (_, i) => new Date().getFullYear() - i)
 
+  // 데이터 로드
+  const loadData = useCallback(async () => {
+    if (!selectedPartnerId) return
+
+    setLoading(true)
     try {
-      const data = await fetchElectricityUsageByPartnerAndYear(
-        selectedPartner.id,
-        selectedYear
-      )
-      setElectricityData(data)
-    } catch (err) {
-      console.error('전력 사용량 데이터 조회 실패:', err)
-      setElectricityData([])
+      const [electricityResponse, steamResponse] = await Promise.all([
+        fetchElectricityUsageByPartnerAndYear(selectedPartnerId, selectedYear),
+        fetchSteamUsageByPartnerAndYear(selectedPartnerId, selectedYear)
+      ])
+
+      setElectricityData(electricityResponse)
+      setSteamData(steamResponse)
+    } catch (error) {
+      console.error('데이터 로드 실패:', error)
+      toast({
+        title: '오류',
+        description: '데이터를 불러오는데 실패했습니다.',
+        variant: 'destructive'
+      })
+    } finally {
+      setLoading(false)
     }
+  }, [selectedPartnerId, selectedYear, toast])
+
+  // 효과
+  useEffect(() => {
+    if (selectedPartnerId) {
+      loadData()
+    }
+  }, [selectedPartnerId, selectedYear, loadData])
+
+  // 파트너 선택 핸들러
+  const handlePartnerSelect = (partner: PartnerCompany | null) => {
+    const partnerId = partner?.id || null
+    setSelectedPartnerId(partnerId)
+    setElectricityForm(prev => ({...prev, partnerCompanyId: partnerId}))
+    setSteamForm(prev => ({...prev, partnerCompanyId: partnerId}))
   }
 
-  const fetchSteamData = async () => {
-    if (!selectedPartner) return
-
-    try {
-      const data = await fetchSteamUsageByPartnerAndYear(selectedPartner.id, selectedYear)
-      setSteamData(data)
-    } catch (err) {
-      console.error('스팀 사용량 데이터 조회 실패:', err)
-      setSteamData([])
-    }
-  }
-
-  // 폼 제출 함수들
-  const handleElectricitySubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!selectedPartner) return
-
-    try {
-      const formData: ElectricityUsage = {
-        partnerCompanyId: selectedPartner.id,
-        partnerCompanyName: selectedPartner.name,
-        reportingYear: selectedYear,
-        reportingMonth: parseInt(electricityForm.reportingMonth),
-        facilityName: electricityForm.facilityName,
-        electricityUsage: parseFloat(electricityForm.usage),
-        unit: 'kWh',
-        isRenewable: electricityForm.isRenewable,
-        createdBy: 'current-user'
-      }
-
-      if (editingElectricityId) {
-        await updateElectricityUsage(editingElectricityId, formData)
-      } else {
-        await createElectricityUsage(formData)
-      }
-
-      await fetchElectricityData()
-      setShowElectricityDialog(false)
-      resetElectricityForm()
-    } catch (err) {
-      console.error('저장 실패:', err)
-      setError('저장 중 오류가 발생했습니다.')
-    }
-  }
-
-  const handleSteamSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!selectedPartner) return
-
-    try {
-      const formData: SteamUsage = {
-        partnerCompanyId: selectedPartner.id,
-        partnerCompanyName: selectedPartner.name,
-        reportingYear: selectedYear,
-        reportingMonth: parseInt(steamForm.reportingMonth),
-        facilityName: steamForm.facilityName,
-        steamUsage: parseFloat(steamForm.usage),
-        unit: 'GJ',
-        createdBy: 'current-user'
-      }
-
-      if (editingSteamId) {
-        await updateSteamUsage(editingSteamId, formData)
-      } else {
-        await createSteamUsage(formData)
-      }
-
-      await fetchSteamData()
-      setShowSteamDialog(false)
-      resetSteamForm()
-    } catch (err) {
-      console.error('저장 실패:', err)
-      setError('저장 중 오류가 발생했습니다.')
-    }
-  }
-
-  // 폼 리셋 함수들
+  // 폼 리셋 함수
   const resetElectricityForm = () => {
     setElectricityForm({
-      partnerCompanyId: selectedPartner?.id || 0,
-      partnerCompanyName: selectedPartner?.name || '',
-      reportingMonth: '',
+      partnerCompanyId: selectedPartnerId,
       facilityName: '',
-      usage: '',
+      electricityUsage: 0,
+      reportingMonth: new Date().getMonth() + 1,
+      unit: 'kWh',
       isRenewable: false
     })
-    setEditingElectricityId(null)
+    setEditingElectricity(null)
   }
 
   const resetSteamForm = () => {
     setSteamForm({
-      partnerCompanyId: selectedPartner?.id || 0,
-      partnerCompanyName: selectedPartner?.name || '',
-      reportingMonth: '',
+      partnerCompanyId: selectedPartnerId,
       facilityName: '',
-      usage: ''
+      steamUsage: 0,
+      reportingMonth: new Date().getMonth() + 1,
+      unit: 'GJ'
     })
-    setEditingSteamId(null)
+    setEditingSteam(null)
   }
 
-  // 편집 함수들
-  const handleEditElectricity = (item: ElectricityUsage) => {
-    setElectricityForm({
-      partnerCompanyId: item.partnerCompanyId,
-      partnerCompanyName: item.partnerCompanyName || '',
-      reportingMonth: item.reportingMonth.toString(),
-      facilityName: item.facilityName,
-      usage: item.electricityUsage.toString(),
-      isRenewable: item.isRenewable
-    })
-    setEditingElectricityId(item.id!)
-    setShowElectricityDialog(true)
+  // CRUD 함수들 - 전력
+  const handleCreateElectricity = async () => {
+    if (!electricityForm.partnerCompanyId) {
+      toast({
+        title: '오류',
+        description: '협력사를 선택해주세요.',
+        variant: 'destructive'
+      })
+      return
+    }
+
+    try {
+      const formData: ElectricityUsageForm = {
+        partnerCompanyId: electricityForm.partnerCompanyId,
+        reportingYear: selectedYear,
+        reportingMonth: electricityForm.reportingMonth,
+        facilityName: electricityForm.facilityName,
+        electricityUsage: electricityForm.electricityUsage.toString(),
+        unit: electricityForm.unit,
+        isRenewable: electricityForm.isRenewable,
+        createdBy: 'user'
+      }
+
+      await createElectricityUsage(formData)
+      await loadData()
+      setElectricityDialogOpen(false)
+      resetElectricityForm()
+
+      toast({
+        title: '성공',
+        description: '전력 사용량 데이터가 추가되었습니다.'
+      })
+    } catch (error) {
+      console.error('전력 데이터 생성 실패:', error)
+      toast({
+        title: '오류',
+        description: '데이터 추가에 실패했습니다.',
+        variant: 'destructive'
+      })
+    }
   }
 
-  const handleEditSteam = (item: SteamUsage) => {
-    setSteamForm({
-      partnerCompanyId: item.partnerCompanyId,
-      partnerCompanyName: item.partnerCompanyName || '',
-      reportingMonth: item.reportingMonth.toString(),
-      facilityName: item.facilityName,
-      usage: item.steamUsage.toString()
-    })
-    setEditingSteamId(item.id!)
-    setShowSteamDialog(true)
+  const handleUpdateElectricity = async () => {
+    if (!editingElectricity?.id || !electricityForm.partnerCompanyId) return
+
+    try {
+      const formData: ElectricityUsageForm = {
+        partnerCompanyId: electricityForm.partnerCompanyId,
+        reportingYear: selectedYear,
+        reportingMonth: electricityForm.reportingMonth,
+        facilityName: electricityForm.facilityName,
+        electricityUsage: electricityForm.electricityUsage.toString(),
+        unit: electricityForm.unit,
+        isRenewable: electricityForm.isRenewable,
+        createdBy: 'user'
+      }
+
+      await updateElectricityUsage(editingElectricity.id, formData)
+      await loadData()
+      setElectricityDialogOpen(false)
+      resetElectricityForm()
+
+      toast({
+        title: '성공',
+        description: '전력 사용량 데이터가 수정되었습니다.'
+      })
+    } catch (error) {
+      console.error('전력 데이터 수정 실패:', error)
+      toast({
+        title: '오류',
+        description: '데이터 수정에 실패했습니다.',
+        variant: 'destructive'
+      })
+    }
   }
 
-  // 삭제 함수들
   const handleDeleteElectricity = async (id: number) => {
-    if (!confirm('정말 삭제하시겠습니까?')) return
+    if (!confirm('정말로 삭제하시겠습니까?')) return
 
     try {
       await deleteElectricityUsage(id)
-      await fetchElectricityData()
-    } catch (err) {
-      console.error('삭제 실패:', err)
-      setError('삭제 중 오류가 발생했습니다.')
+      await loadData()
+
+      toast({
+        title: '성공',
+        description: '전력 사용량 데이터가 삭제되었습니다.'
+      })
+    } catch (error) {
+      console.error('전력 데이터 삭제 실패:', error)
+      toast({
+        title: '오류',
+        description: '데이터 삭제에 실패했습니다.',
+        variant: 'destructive'
+      })
+    }
+  }
+
+  // CRUD 함수들 - 스팀
+  const handleCreateSteam = async () => {
+    if (!steamForm.partnerCompanyId) {
+      toast({
+        title: '오류',
+        description: '협력사를 선택해주세요.',
+        variant: 'destructive'
+      })
+      return
+    }
+
+    try {
+      const formData: SteamUsageForm = {
+        partnerCompanyId: steamForm.partnerCompanyId,
+        reportingYear: selectedYear,
+        reportingMonth: steamForm.reportingMonth,
+        facilityName: steamForm.facilityName,
+        steamUsage: steamForm.steamUsage.toString(),
+        unit: steamForm.unit,
+        createdBy: 'user'
+      }
+
+      await createSteamUsage(formData)
+      await loadData()
+      setSteamDialogOpen(false)
+      resetSteamForm()
+
+      toast({
+        title: '성공',
+        description: '스팀 사용량 데이터가 추가되었습니다.'
+      })
+    } catch (error) {
+      console.error('스팀 데이터 생성 실패:', error)
+      toast({
+        title: '오류',
+        description: '데이터 추가에 실패했습니다.',
+        variant: 'destructive'
+      })
+    }
+  }
+
+  const handleUpdateSteam = async () => {
+    if (!editingSteam?.id || !steamForm.partnerCompanyId) return
+
+    try {
+      const formData: SteamUsageForm = {
+        partnerCompanyId: steamForm.partnerCompanyId,
+        reportingYear: selectedYear,
+        reportingMonth: steamForm.reportingMonth,
+        facilityName: steamForm.facilityName,
+        steamUsage: steamForm.steamUsage.toString(),
+        unit: steamForm.unit,
+        createdBy: 'user'
+      }
+
+      await updateSteamUsage(editingSteam.id, formData)
+      await loadData()
+      setSteamDialogOpen(false)
+      resetSteamForm()
+
+      toast({
+        title: '성공',
+        description: '스팀 사용량 데이터가 수정되었습니다.'
+      })
+    } catch (error) {
+      console.error('스팀 데이터 수정 실패:', error)
+      toast({
+        title: '오류',
+        description: '데이터 수정에 실패했습니다.',
+        variant: 'destructive'
+      })
     }
   }
 
   const handleDeleteSteam = async (id: number) => {
-    if (!confirm('정말 삭제하시겠습니까?')) return
+    if (!confirm('정말로 삭제하시겠습니까?')) return
 
     try {
       await deleteSteamUsage(id)
-      await fetchSteamData()
-    } catch (err) {
-      console.error('삭제 실패:', err)
-      setError('삭제 중 오류가 발생했습니다.')
+      await loadData()
+
+      toast({
+        title: '성공',
+        description: '스팀 사용량 데이터가 삭제되었습니다.'
+      })
+    } catch (error) {
+      console.error('스팀 데이터 삭제 실패:', error)
+      toast({
+        title: '오류',
+        description: '데이터 삭제에 실패했습니다.',
+        variant: 'destructive'
+      })
     }
   }
 
-  // 요약 데이터 계산
-  const totalElectricityUsage = electricityData.reduce(
-    (sum, item) => sum + item.electricityUsage,
-    0
-  )
-  const renewableElectricityUsage = electricityData
-    .filter(item => item.isRenewable)
-    .reduce((sum, item) => sum + item.electricityUsage, 0)
-  const totalElectricityCO2 = electricityData.reduce(
-    (sum, item) => sum + (item.co2Emission || 0),
-    0
-  )
-  const totalSteamCO2 = steamData.reduce((sum, item) => sum + (item.co2Emission || 0), 0)
-
-  // 초기 데이터 로드
-  useEffect(() => {
-    setLoading(false)
-  }, [])
-
-  // 협력사나 연도 변경 시 데이터 다시 로드
-  useEffect(() => {
-    if (selectedPartner && selectedYear) {
-      const loadPartnerData = async () => {
-        setLoading(true)
-        try {
-          await Promise.all([fetchElectricityData(), fetchSteamData()])
-        } catch (e) {
-          console.error('협력사 데이터 불러오기 실패:', e)
-          setError('데이터를 불러오는 중 오류가 발생했습니다.')
-        } finally {
-          setLoading(false)
-        }
-      }
-
-      loadPartnerData()
-    }
-  }, [selectedPartner, selectedYear])
-
-  // 협력사 선택 핸들러
-  const handlePartnerSelect = (partner: PartnerCompany | null) => {
-    setSelectedPartner(partner)
-    setElectricityData([])
-    setSteamData([])
-    setError(null)
+  // 편집 핸들러
+  const handleEditElectricity = (data: ElectricityUsage) => {
+    setEditingElectricity(data)
+    setElectricityForm({
+      partnerCompanyId: data.partnerCompanyId,
+      facilityName: data.facilityName,
+      electricityUsage: data.electricityUsage,
+      reportingMonth: data.reportingMonth,
+      unit: data.unit,
+      isRenewable: data.isRenewable
+    })
+    setElectricityDialogOpen(true)
   }
 
-  if (loading) {
-    return (
-      <LoadingState
-        isLoading={true}
-        error={null}
-        emptyMessage=""
-        isEmpty={false}
-        showFormWhenEmpty={false}>
-        <div />
-      </LoadingState>
+  const handleEditSteam = (data: SteamUsage) => {
+    setEditingSteam(data)
+    setSteamForm({
+      partnerCompanyId: data.partnerCompanyId,
+      facilityName: data.facilityName,
+      steamUsage: data.steamUsage,
+      reportingMonth: data.reportingMonth,
+      unit: data.unit
+    })
+    setSteamDialogOpen(true)
+  }
+
+  // 총 배출량 계산
+  const getTotalEmissions = () => {
+    const electricityTotal = electricityData.reduce(
+      (sum, item) => sum + (item.co2Emission || 0),
+      0
     )
+    const steamTotal = steamData.reduce((sum, item) => sum + (item.co2Emission || 0), 0)
+    return electricityTotal + steamTotal
+  }
+
+  const getTotalElectricityUsage = () => {
+    return electricityData.reduce((sum, item) => sum + item.electricityUsage, 0)
+  }
+
+  const getTotalSteamUsage = () => {
+    return steamData.reduce((sum, item) => sum + item.steamUsage, 0)
   }
 
   return (
@@ -372,433 +449,639 @@ export default function Scope2Form() {
           <BreadcrumbList>
             <BreadcrumbItem>
               <Home className="w-4 h-4 mr-1" />
-              <BreadcrumbLink href="/home">대시보드</BreadcrumbLink>
+              <BreadcrumbLink
+                href="/home"
+                className="text-gray-600 transition-colors hover:text-blue-600">
+                대시보드
+              </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Scope 2</BreadcrumbPage>
+              <BreadcrumbLink
+                href="/scope"
+                className="text-gray-600 transition-colors hover:text-blue-600">
+                Scope
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage className="font-medium text-blue-600">
+                Scope 2
+              </BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </div>
 
-      {/* 페이지 헤더 */}
-      <div className="flex flex-row items-center mb-6">
+      {/* 헤더 섹션 */}
+      <div className="flex flex-row w-full h-full mb-6">
         <Link
-          href="/home"
+          href="/scope"
           className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
           <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
-          <PageHeader
-            icon={<Factory className="w-6 h-6 text-blue-600" />}
-            title="Scope 2"
-            description="간접 배출량 관리 및 모니터링"
-            module="ESG"
-            submodule="scope2"
-          />
+          <div className="flex items-center space-x-4">
+            <div className="p-2 rounded-full bg-blue-50">
+              <Zap className="w-6 h-6 text-blue-600" />
+            </div>
+            <div>
+              <h1 className="text-xl font-semibold text-gray-800">Scope 2 배출량 관리</h1>
+              <p className="text-sm text-gray-600">
+                간접 배출량 데이터를 협력사별로 관리합니다
+              </p>
+            </div>
+          </div>
         </Link>
       </div>
 
-      {/* 협력사 및 연도 선택 */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Building className="w-5 h-5" />
-            협력사 및 연도 선택
-          </CardTitle>
-          <CardDescription>데이터를 조회할 협력사와 연도를 선택하세요</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>협력사</Label>
-              <PartnerSelector
-                selectedPartnerId={selectedPartner?.id}
-                onSelect={handlePartnerSelect}
-                placeholder="협력사를 선택하세요"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>연도</Label>
-              <Select
-                value={selectedYear.toString()}
-                onValueChange={value => setSelectedYear(parseInt(value))}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Array.from({length: 5}, (_, i) => {
-                    const year = new Date().getFullYear() - i
-                    return (
-                      <SelectItem key={year} value={year.toString()}>
-                        {year}년
-                      </SelectItem>
-                    )
-                  })}
-                </SelectContent>
-              </Select>
-            </div>
+      {/* 협력사 및 연도 선택 섹션 */}
+      <div className="p-6 mb-6 bg-white rounded-lg shadow-sm">
+        <div className="flex items-center mb-6 space-x-3">
+          <div className="p-2 rounded-full bg-blue-50">
+            <Building className="w-5 h-5 text-blue-600" />
           </div>
-        </CardContent>
-      </Card>
-
-      {/* 협력사가 선택되지 않은 경우 */}
-      {!selectedPartner && (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <Building className="w-12 h-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-600 mb-2">
-              협력사를 선택하세요
-            </h3>
-            <p className="text-gray-500 text-center">
-              Scope 2 데이터를 조회하려면 먼저 협력사를 선택해주세요.
+          <div>
+            <h2 className="text-lg font-semibold text-gray-800">협력사 및 연도 선택</h2>
+            <p className="text-gray-600">
+              배출량 데이터를 관리할 협력사와 연도를 선택하세요
             </p>
-          </CardContent>
-        </Card>
-      )}
+          </div>
+        </div>
 
-      {/* 협력사가 선택된 경우 데이터 표시 */}
-      {selectedPartner && (
-        <>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          {/* 협력사 선택 */}
+          <div className="space-y-2">
+            <Label className="text-sm font-medium text-gray-700">협력사 선택</Label>
+            <PartnerSelector
+              selectedPartnerId={selectedPartnerId || undefined}
+              onSelect={handlePartnerSelect}
+            />
+          </div>
+
+          {/* 연도 선택 */}
+          <div className="space-y-2">
+            <Label className="text-sm font-medium text-gray-700">보고연도</Label>
+            <Select
+              value={selectedYear.toString()}
+              onValueChange={value => setSelectedYear(parseInt(value))}>
+              <SelectTrigger className="bg-white border border-gray-200 hover:border-blue-300 focus-visible:ring-blue-500">
+                <SelectValue placeholder="연도를 선택하세요" />
+              </SelectTrigger>
+              <SelectContent>
+                {years.map(year => (
+                  <SelectItem key={year} value={year.toString()}>
+                    {year}년
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </div>
+
+      {/* 메인 콘텐츠 */}
+      {!selectedPartnerId ? (
+        <div className="p-6 bg-white rounded-lg shadow-sm">
+          <div className="flex items-center justify-center h-80">
+            <div className="text-center">
+              <div className="inline-flex p-6 mb-6 rounded-full bg-blue-50">
+                <Search className="w-12 h-12 text-blue-600" />
+              </div>
+              <h3 className="mb-2 text-xl font-semibold text-gray-900">
+                협력사를 선택해주세요
+              </h3>
+              <p className="max-w-md text-gray-600">
+                먼저 협력사를 선택하여 해당 협력사의 배출량 데이터를 관리하세요
+              </p>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-8">
           {/* 요약 카드 */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">총 전력 사용량</CardTitle>
-                <Zap className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  {totalElectricityUsage.toLocaleString()}
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <Card className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <div className="flex items-center space-x-4">
+                <div className="p-3 rounded-lg bg-blue-50">
+                  <TrendingUp className="w-6 h-6 text-blue-600" />
                 </div>
-                <p className="text-xs text-muted-foreground">kWh</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">재생에너지</CardTitle>
-                <Wind className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  {renewableElectricityUsage.toLocaleString()}
+                <div>
+                  <p className="text-sm font-medium text-gray-600">총 배출량</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {getTotalEmissions().toFixed(2)}
+                    <span className="ml-1 text-sm font-normal text-gray-500">tCO2eq</span>
+                  </p>
                 </div>
-                <p className="text-xs text-muted-foreground">kWh</p>
-              </CardContent>
+              </div>
             </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">전력 CO2 배출량</CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{totalElectricityCO2.toFixed(2)}</div>
-                <p className="text-xs text-muted-foreground">tCO2eq</p>
-              </CardContent>
+
+            <Card className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <div className="flex items-center space-x-4">
+                <div className="p-3 rounded-lg bg-blue-50">
+                  <Zap className="w-6 h-6 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">전력사용</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {getTotalElectricityUsage().toLocaleString()}
+                    <span className="ml-1 text-sm font-normal text-gray-500">kWh</span>
+                  </p>
+                </div>
+              </div>
             </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">스팀 CO2 배출량</CardTitle>
-                <Factory className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{totalSteamCO2.toFixed(2)}</div>
-                <p className="text-xs text-muted-foreground">tCO2eq</p>
-              </CardContent>
+
+            <Card className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <div className="flex items-center space-x-4">
+                <div className="p-3 rounded-lg bg-amber-50">
+                  <Wind className="w-6 h-6 text-amber-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-600">스팀사용</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {getTotalSteamUsage().toLocaleString()}
+                    <span className="ml-1 text-sm font-normal text-gray-500">GJ</span>
+                  </p>
+                </div>
+              </div>
             </Card>
           </div>
 
-          {/* 에러 메시지 */}
-          {error && (
-            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
-              <p className="text-red-600">{error}</p>
+          {/* 데이터 테이블 */}
+          <div className="p-6 bg-white rounded-lg shadow-sm">
+            <div className="flex items-center mb-6 space-x-3">
+              <div className="p-2 rounded-full bg-blue-50">
+                <Zap className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold text-gray-800">배출량 데이터</h2>
+                <p className="text-gray-600">협력사의 간접 배출량 데이터를 관리하세요</p>
+              </div>
             </div>
-          )}
 
-          {/* 탭 컨텐츠 */}
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="electricity">전력 사용량</TabsTrigger>
-              <TabsTrigger value="steam">스팀 사용량</TabsTrigger>
-            </TabsList>
+            <div className="mt-6">
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <TabsList className="grid w-full grid-cols-2 bg-gray-50">
+                  <TabsTrigger
+                    value="electricity"
+                    className="data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-sm transition-all duration-200">
+                    <Zap className="w-4 h-4 mr-2" />
+                    전력사용
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="steam"
+                    className="data-[state=active]:bg-white data-[state=active]:text-amber-600 data-[state=active]:shadow-sm transition-all duration-200">
+                    <Wind className="w-4 h-4 mr-2" />
+                    스팀사용
+                  </TabsTrigger>
+                </TabsList>
 
-            {/* 전력 사용량 탭 */}
-            <TabsContent value="electricity" className="space-y-4">
-              <Card>
-                <CardHeader>
+                {/* 전력사용 탭 */}
+                <TabsContent value="electricity" className="mt-6 space-y-6">
                   <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle>전력 사용량 관리</CardTitle>
-                      <CardDescription>시설별 전력 사용량을 관리합니다</CardDescription>
-                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900">전력 사용량</h3>
                     <Button
                       onClick={() => {
                         resetElectricityForm()
-                        setShowElectricityDialog(true)
-                      }}>
-                      <Plus className="mr-2 h-4 w-4" />
-                      전력 사용량 추가
+                        setElectricityDialogOpen(true)
+                      }}
+                      className="text-white bg-blue-600 shadow-sm hover:bg-blue-700">
+                      <Plus className="w-4 h-4 mr-2" />
+                      데이터 추가
                     </Button>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>보고월</TableHead>
-                        <TableHead>시설명</TableHead>
-                        <TableHead>사용량 (kWh)</TableHead>
-                        <TableHead>재생에너지</TableHead>
-                        <TableHead>CO2 배출량 (tCO2eq)</TableHead>
-                        <TableHead className="text-right">작업</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {electricityData.map(item => (
-                        <TableRow key={item.id}>
-                          <TableCell>{item.reportingMonth}월</TableCell>
-                          <TableCell>{item.facilityName}</TableCell>
-                          <TableCell>{item.electricityUsage.toLocaleString()}</TableCell>
-                          <TableCell>
-                            {item.isRenewable ? (
-                              <Badge variant="secondary">재생에너지</Badge>
-                            ) : (
-                              <Badge variant="outline">일반전력</Badge>
-                            )}
-                          </TableCell>
-                          <TableCell>{item.co2Emission?.toFixed(2) || 0}</TableCell>
-                          <TableCell className="text-right">
-                            <div className="flex justify-end space-x-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleEditElectricity(item)}>
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleDeleteElectricity(item.id!)}>
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
-            </TabsContent>
 
-            {/* 스팀 사용량 탭 */}
-            <TabsContent value="steam" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle>스팀 사용량 관리</CardTitle>
-                      <CardDescription>시설별 스팀 사용량을 관리합니다</CardDescription>
+                  {loading ? (
+                    <LoadingState isLoading={true} error={null}>
+                      <div>데이터를 불러오는 중...</div>
+                    </LoadingState>
+                  ) : electricityData.length === 0 ? (
+                    <div className="py-16 text-center">
+                      <div className="inline-flex p-4 mb-4 rounded-full bg-blue-50">
+                        <Zap className="w-8 h-8 text-blue-500" />
+                      </div>
+                      <h4 className="mb-2 text-lg font-medium text-gray-900">
+                        등록된 전력 사용량 데이터가 없습니다
+                      </h4>
+                      <p className="mb-6 text-gray-600">
+                        새로운 전력 사용량 데이터를 추가해보세요
+                      </p>
+                      <Button
+                        onClick={() => {
+                          resetElectricityForm()
+                          setElectricityDialogOpen(true)
+                        }}
+                        className="text-white bg-blue-600 shadow-sm hover:bg-blue-700">
+                        <Plus className="w-4 h-4 mr-2" />첫 번째 데이터 추가
+                      </Button>
                     </div>
+                  ) : (
+                    <div className="overflow-hidden bg-white border border-gray-200 rounded-lg">
+                      <Table>
+                        <TableHeader>
+                          <TableRow className="bg-gray-50">
+                            <TableHead className="py-3 font-medium text-gray-700">
+                              시설명
+                            </TableHead>
+                            <TableHead className="py-3 font-medium text-gray-700">
+                              보고월
+                            </TableHead>
+                            <TableHead className="py-3 font-medium text-gray-700">
+                              전력사용량
+                            </TableHead>
+                            <TableHead className="py-3 font-medium text-gray-700">
+                              재생에너지
+                            </TableHead>
+                            <TableHead className="py-3 font-medium text-gray-700">
+                              배출량 (tCO2eq)
+                            </TableHead>
+                            <TableHead className="py-3 font-medium text-gray-700">
+                              작업
+                            </TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {electricityData.map(item => (
+                            <TableRow
+                              key={item.id}
+                              className="transition-colors hover:bg-blue-50/30">
+                              <TableCell className="font-medium text-gray-900">
+                                {item.facilityName}
+                              </TableCell>
+                              <TableCell className="text-gray-700">
+                                {item.reportingMonth}월
+                              </TableCell>
+                              <TableCell className="text-gray-700">
+                                {item.electricityUsage?.toLocaleString()} kWh
+                              </TableCell>
+                              <TableCell>
+                                <span
+                                  className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                                    item.isRenewable
+                                      ? 'bg-green-100 text-green-800'
+                                      : 'bg-gray-100 text-gray-800'
+                                  }`}>
+                                  {item.isRenewable ? '재생' : '일반'}
+                                </span>
+                              </TableCell>
+                              <TableCell className="font-semibold text-blue-600">
+                                {item.co2Emission?.toFixed(2)}
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex space-x-2">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleEditElectricity(item)}
+                                    className="text-blue-600 transition-colors border-blue-200 hover:bg-blue-50">
+                                    <Edit className="w-4 h-4" />
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() =>
+                                      item.id && handleDeleteElectricity(item.id)
+                                    }
+                                    className="text-red-600 transition-colors border-red-200 hover:bg-red-50">
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
+                </TabsContent>
+
+                {/* 스팀사용 탭 */}
+                <TabsContent value="steam" className="mt-6 space-y-6">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-gray-900">스팀 사용량</h3>
                     <Button
                       onClick={() => {
                         resetSteamForm()
-                        setShowSteamDialog(true)
-                      }}>
-                      <Plus className="mr-2 h-4 w-4" />
-                      스팀 사용량 추가
+                        setSteamDialogOpen(true)
+                      }}
+                      className="text-white shadow-sm bg-amber-600 hover:bg-amber-700">
+                      <Plus className="w-4 h-4 mr-2" />
+                      데이터 추가
                     </Button>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>시설명</TableHead>
-                        <TableHead>보고월</TableHead>
-                        <TableHead>사용량 (GJ)</TableHead>
-                        <TableHead>CO2 배출량 (tCO2eq)</TableHead>
-                        <TableHead className="text-right">작업</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {steamData.map(item => (
-                        <TableRow key={item.id}>
-                          <TableCell>{item.facilityName}</TableCell>
-                          <TableCell>{`${item.reportingMonth}월`}</TableCell>
-                          <TableCell>{item.steamUsage.toLocaleString()}</TableCell>
-                          <TableCell>{item.co2Emission?.toFixed(2) || 0}</TableCell>
-                          <TableCell className="text-right">
-                            <div className="flex justify-end space-x-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleEditSteam(item)}>
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleDeleteSteam(item.id!)}>
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-        </>
+
+                  {loading ? (
+                    <LoadingState isLoading={true} error={null}>
+                      <div>데이터를 불러오는 중...</div>
+                    </LoadingState>
+                  ) : steamData.length === 0 ? (
+                    <div className="py-16 text-center">
+                      <div className="inline-flex p-4 mb-4 rounded-full bg-amber-50">
+                        <Wind className="w-8 h-8 text-amber-500" />
+                      </div>
+                      <h4 className="mb-2 text-lg font-medium text-gray-900">
+                        등록된 스팀 사용량 데이터가 없습니다
+                      </h4>
+                      <p className="mb-6 text-gray-600">
+                        새로운 스팀 사용량 데이터를 추가해보세요
+                      </p>
+                      <Button
+                        onClick={() => {
+                          resetSteamForm()
+                          setSteamDialogOpen(true)
+                        }}
+                        className="text-white shadow-sm bg-amber-600 hover:bg-amber-700">
+                        <Plus className="w-4 h-4 mr-2" />첫 번째 데이터 추가
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="overflow-hidden bg-white border border-gray-200 rounded-lg">
+                      <Table>
+                        <TableHeader>
+                          <TableRow className="bg-gray-50">
+                            <TableHead className="py-3 font-medium text-gray-700">
+                              시설명
+                            </TableHead>
+                            <TableHead className="py-3 font-medium text-gray-700">
+                              보고월
+                            </TableHead>
+                            <TableHead className="py-3 font-medium text-gray-700">
+                              스팀사용량
+                            </TableHead>
+                            <TableHead className="py-3 font-medium text-gray-700">
+                              배출량 (tCO2eq)
+                            </TableHead>
+                            <TableHead className="py-3 font-medium text-gray-700">
+                              작업
+                            </TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {steamData.map(item => (
+                            <TableRow
+                              key={item.id}
+                              className="transition-colors hover:bg-amber-50/30">
+                              <TableCell className="font-medium text-gray-900">
+                                {item.facilityName}
+                              </TableCell>
+                              <TableCell className="text-gray-700">
+                                {item.reportingMonth}월
+                              </TableCell>
+                              <TableCell className="text-gray-700">
+                                {item.steamUsage?.toLocaleString()} GJ
+                              </TableCell>
+                              <TableCell className="font-semibold text-amber-600">
+                                {item.co2Emission?.toFixed(2)}
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex space-x-2">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleEditSteam(item)}
+                                    className="transition-colors text-amber-600 border-amber-200 hover:bg-amber-50">
+                                    <Edit className="w-4 h-4" />
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => item.id && handleDeleteSteam(item.id)}
+                                    className="text-red-600 transition-colors border-red-200 hover:bg-red-50">
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
+                </TabsContent>
+              </Tabs>
+            </div>
+          </div>
+        </div>
       )}
 
-      {/* 전력 사용량 대화상자 */}
-      <Dialog open={showElectricityDialog} onOpenChange={setShowElectricityDialog}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>
-              {editingElectricityId ? '전력 사용량 수정' : '전력 사용량 추가'}
-            </DialogTitle>
-            <DialogDescription>시설의 전력 사용량 정보를 입력하세요.</DialogDescription>
+      {/* 전력사용 다이얼로그 */}
+      <Dialog open={electricityDialogOpen} onOpenChange={setElectricityDialogOpen}>
+        <DialogContent className="max-w-2xl bg-white border border-gray-200 shadow-lg">
+          <DialogHeader className="pb-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-full bg-blue-50">
+                <Zap className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <DialogTitle className="text-xl font-semibold text-gray-900">
+                  {editingElectricity
+                    ? '전력 사용량 데이터 수정'
+                    : '전력 사용량 데이터 추가'}
+                </DialogTitle>
+                <DialogDescription className="text-gray-600">
+                  {editingElectricity
+                    ? '전력 사용량 데이터를 수정합니다'
+                    : '새로운 전력 사용량 데이터를 추가합니다'}
+                </DialogDescription>
+              </div>
+            </div>
           </DialogHeader>
-          <form onSubmit={handleElectricitySubmit} className="space-y-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="reportingMonth" className="text-right">
-                보고 월
-              </Label>
-              <MonthSelector
-                selectedMonth={
-                  electricityForm.reportingMonth
-                    ? parseInt(electricityForm.reportingMonth)
-                    : undefined
-                }
-                onSelect={month =>
-                  setElectricityForm({
-                    ...electricityForm,
-                    reportingMonth: month.toString()
-                  })
-                }
-                className="col-span-3"
-              />
+          <div className="grid gap-6 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-3">
+                <Label htmlFor="facilityName" className="text-sm font-medium">
+                  시설명
+                </Label>
+                <Input
+                  id="facilityName"
+                  value={electricityForm.facilityName}
+                  onChange={e =>
+                    setElectricityForm({...electricityForm, facilityName: e.target.value})
+                  }
+                  placeholder="시설명을 입력하세요"
+                  className="bg-white border border-gray-200 hover:border-blue-300 focus-visible:ring-blue-500"
+                />
+              </div>
+              <div className="space-y-3">
+                <Label htmlFor="reportingMonth" className="text-sm font-medium">
+                  보고월
+                </Label>
+                <MonthSelector
+                  selectedMonth={electricityForm.reportingMonth}
+                  onSelect={(month: number) =>
+                    setElectricityForm({...electricityForm, reportingMonth: month})
+                  }
+                />
+              </div>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="facilityName" className="text-right">
-                시설명
-              </Label>
-              <Input
-                id="facilityName"
-                value={electricityForm.facilityName}
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-3">
+                <Label htmlFor="electricityUsage" className="text-sm font-medium">
+                  전력사용량
+                </Label>
+                <Input
+                  id="electricityUsage"
+                  type="number"
+                  value={electricityForm.electricityUsage}
+                  onChange={e =>
+                    setElectricityForm({
+                      ...electricityForm,
+                      electricityUsage: parseFloat(e.target.value) || 0
+                    })
+                  }
+                  placeholder="전력사용량을 입력하세요"
+                  className="bg-white border border-gray-200 hover:border-blue-300 focus-visible:ring-blue-500"
+                />
+              </div>
+              <div className="space-y-3">
+                <Label htmlFor="unit" className="text-sm font-medium">
+                  단위
+                </Label>
+                <Input
+                  id="unit"
+                  value={electricityForm.unit}
+                  onChange={e =>
+                    setElectricityForm({...electricityForm, unit: e.target.value})
+                  }
+                  placeholder="단위를 입력하세요"
+                  className="bg-white border border-gray-200 hover:border-blue-300 focus-visible:ring-blue-500"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="isRenewable"
+                checked={electricityForm.isRenewable}
                 onChange={e =>
-                  setElectricityForm({...electricityForm, facilityName: e.target.value})
+                  setElectricityForm({...electricityForm, isRenewable: e.target.checked})
                 }
-                className="col-span-3"
-                required
+                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
               />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="usage" className="text-right">
-                사용량 (kWh)
+              <Label htmlFor="isRenewable" className="text-sm font-medium">
+                재생에너지 사용
               </Label>
-              <Input
-                id="usage"
-                type="number"
-                step="0.01"
-                value={electricityForm.usage}
-                onChange={e =>
-                  setElectricityForm({...electricityForm, usage: e.target.value})
-                }
-                className="col-span-3"
-                required
-              />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="isRenewable" className="text-right">
-                재생에너지
-              </Label>
-              <Select
-                value={electricityForm.isRenewable ? 'true' : 'false'}
-                onValueChange={value =>
-                  setElectricityForm({
-                    ...electricityForm,
-                    isRenewable: value === 'true'
-                  })
-                }>
-                <SelectTrigger className="col-span-3">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="true">재생에너지</SelectItem>
-                  <SelectItem value="false">일반전력</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <DialogFooter>
-              <Button type="submit">{editingElectricityId ? '수정' : '추가'}</Button>
-            </DialogFooter>
-          </form>
+          </div>
+
+          <DialogFooter className="pt-6 border-t border-gray-100">
+            <Button
+              variant="outline"
+              onClick={() => setElectricityDialogOpen(false)}
+              className="text-gray-700 border-gray-300 hover:bg-gray-50 hover:text-gray-900">
+              취소
+            </Button>
+            <Button
+              onClick={
+                editingElectricity ? handleUpdateElectricity : handleCreateElectricity
+              }
+              className="text-white bg-blue-600 shadow-sm hover:bg-blue-700">
+              {editingElectricity ? '수정' : '추가'}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* 스팀 사용량 대화상자 */}
-      <Dialog open={showSteamDialog} onOpenChange={setShowSteamDialog}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>
-              {editingSteamId ? '스팀 사용량 수정' : '스팀 사용량 추가'}
-            </DialogTitle>
-            <DialogDescription>시설의 스팀 사용량 정보를 입력하세요.</DialogDescription>
+      {/* 스팀사용 다이얼로그 */}
+      <Dialog open={steamDialogOpen} onOpenChange={setSteamDialogOpen}>
+        <DialogContent className="max-w-2xl bg-white border border-gray-200 shadow-lg">
+          <DialogHeader className="pb-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-full bg-amber-50">
+                <Wind className="w-5 h-5 text-amber-600" />
+              </div>
+              <div>
+                <DialogTitle className="text-xl font-semibold text-gray-900">
+                  {editingSteam ? '스팀 사용량 데이터 수정' : '스팀 사용량 데이터 추가'}
+                </DialogTitle>
+                <DialogDescription className="text-gray-600">
+                  {editingSteam
+                    ? '스팀 사용량 데이터를 수정합니다'
+                    : '새로운 스팀 사용량 데이터를 추가합니다'}
+                </DialogDescription>
+              </div>
+            </div>
           </DialogHeader>
-          <form onSubmit={handleSteamSubmit} className="space-y-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="steamReportingMonth" className="text-right">
-                보고 월
-              </Label>
-              <MonthSelector
-                selectedMonth={
-                  steamForm.reportingMonth
-                    ? parseInt(steamForm.reportingMonth)
-                    : undefined
-                }
-                onSelect={month =>
-                  setSteamForm({...steamForm, reportingMonth: month.toString()})
-                }
-                className="col-span-3"
-              />
+          <div className="grid gap-6 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-3">
+                <Label htmlFor="steamFacilityName" className="text-sm font-medium">
+                  시설명
+                </Label>
+                <Input
+                  id="steamFacilityName"
+                  value={steamForm.facilityName}
+                  onChange={e =>
+                    setSteamForm({...steamForm, facilityName: e.target.value})
+                  }
+                  placeholder="시설명을 입력하세요"
+                  className="bg-white border border-gray-200 hover:border-amber-300 focus-visible:ring-amber-500"
+                />
+              </div>
+              <div className="space-y-3">
+                <Label htmlFor="steamReportingMonth" className="text-sm font-medium">
+                  보고월
+                </Label>
+                <MonthSelector
+                  selectedMonth={steamForm.reportingMonth}
+                  onSelect={(month: number) =>
+                    setSteamForm({...steamForm, reportingMonth: month})
+                  }
+                />
+              </div>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="steamFacilityName" className="text-right">
-                시설명
-              </Label>
-              <Input
-                id="steamFacilityName"
-                value={steamForm.facilityName}
-                onChange={e => setSteamForm({...steamForm, facilityName: e.target.value})}
-                className="col-span-3"
-                required
-              />
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-3">
+                <Label htmlFor="steamUsage" className="text-sm font-medium">
+                  스팀사용량
+                </Label>
+                <Input
+                  id="steamUsage"
+                  type="number"
+                  value={steamForm.steamUsage}
+                  onChange={e =>
+                    setSteamForm({
+                      ...steamForm,
+                      steamUsage: parseFloat(e.target.value) || 0
+                    })
+                  }
+                  placeholder="스팀사용량을 입력하세요"
+                  className="bg-white border border-gray-200 hover:border-amber-300 focus-visible:ring-amber-500"
+                />
+              </div>
+              <div className="space-y-3">
+                <Label htmlFor="steamUnit" className="text-sm font-medium">
+                  단위
+                </Label>
+                <Input
+                  id="steamUnit"
+                  value={steamForm.unit}
+                  onChange={e => setSteamForm({...steamForm, unit: e.target.value})}
+                  placeholder="단위를 입력하세요"
+                  className="bg-white border border-gray-200 hover:border-amber-300 focus-visible:ring-amber-500"
+                />
+              </div>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="steamUsage" className="text-right">
-                사용량 (GJ)
-              </Label>
-              <Input
-                id="steamUsage"
-                type="number"
-                step="0.01"
-                value={steamForm.usage}
-                onChange={e => setSteamForm({...steamForm, usage: e.target.value})}
-                className="col-span-3"
-                required
-              />
-            </div>
-            <DialogFooter>
-              <Button type="submit">{editingSteamId ? '수정' : '추가'}</Button>
-            </DialogFooter>
-          </form>
+          </div>
+
+          <DialogFooter className="pt-6 border-t border-gray-100">
+            <Button
+              variant="outline"
+              onClick={() => setSteamDialogOpen(false)}
+              className="text-gray-700 border-gray-300 hover:bg-gray-50 hover:text-gray-900">
+              취소
+            </Button>
+            <Button
+              onClick={editingSteam ? handleUpdateSteam : handleCreateSteam}
+              className="text-white shadow-sm bg-amber-600 hover:bg-amber-700">
+              {editingSteam ? '수정' : '추가'}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
   )
 }
+
+export default Scope2Form
