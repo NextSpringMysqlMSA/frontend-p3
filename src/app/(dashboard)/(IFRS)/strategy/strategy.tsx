@@ -41,7 +41,13 @@ import {LoadingState} from '@/components/ui/loading-state'
 import {StatusBadge} from '@/components/ui/status-badge'
 import {Button} from '@/components/ui/button'
 import {useUIStore} from '@/stores/IFRS/strategy/UIState'
-import {Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbLink, BreadcrumbSeparator} from '@/components/ui/breadcrumb'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbLink,
+  BreadcrumbSeparator
+} from '@/components/ui/breadcrumb'
 
 export default function Strategy() {
   const [loading, setLoading] = useState(true)
@@ -122,8 +128,8 @@ export default function Strategy() {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
+      </div>
 
-      {/* 헤더 섹션 - PageHeader 컴포넌트 사용 */}
       {/* 헤더 섹션 - PageHeader 컴포넌트 사용 */}
       <div className="flex items-start gap-2 mb-2">
         <Link
