@@ -59,14 +59,14 @@ export const getStationaryCombustionById = async (
 // =============================================================================
 
 export const fetchMobileCombustionList = async (): Promise<MobileCombustion[]> => {
-  const response = await api.get('/api/mobile-combustion')
+  const response = await api.get('/api/v1/scope/mobile-combustion')
   return response.data
 }
 
 export const createMobileCombustion = async (
   data: MobileCombustionForm
 ): Promise<ScopeApiResponse<MobileCombustion>> => {
-  const response = await api.post('/api/mobile-combustion', data)
+  const response = await api.post('/api/v1/scope/mobile-combustion', data)
   return response.data
 }
 
@@ -74,19 +74,19 @@ export const updateMobileCombustion = async (
   id: number,
   data: MobileCombustionForm
 ): Promise<ScopeApiResponse<MobileCombustion>> => {
-  const response = await api.put(`/api/mobile-combustion/${id}`, data)
+  const response = await api.put(`/api/v1/scope/mobile-combustion/${id}`, data)
   return response.data
 }
 
 export const deleteMobileCombustion = async (
   id: number
 ): Promise<ScopeApiResponse<void>> => {
-  const response = await api.delete(`/api/mobile-combustion/${id}`)
+  const response = await api.delete(`/api/v1/scope/mobile-combustion/${id}`)
   return response.data
 }
 
 export const getMobileCombustionById = async (id: number): Promise<MobileCombustion> => {
-  const response = await api.get(`/api/mobile-combustion/${id}`)
+  const response = await api.get(`/api/v1/scope/mobile-combustion/${id}`)
   return response.data
 }
 
@@ -131,14 +131,14 @@ export const getElectricityUsageById = async (id: number): Promise<ElectricityUs
 // =============================================================================
 
 export const fetchSteamUsageList = async (): Promise<SteamUsage[]> => {
-  const response = await api.get('/api/steam-usage')
+  const response = await api.get('/api/v1/scope/steam-usage')
   return response.data
 }
 
 export const createSteamUsage = async (
   data: SteamUsageForm
 ): Promise<ScopeApiResponse<SteamUsage>> => {
-  const response = await api.post('/api/steam-usage', data)
+  const response = await api.post('/api/v1/scope/steam-usage', data)
   return response.data
 }
 
@@ -146,17 +146,17 @@ export const updateSteamUsage = async (
   id: number,
   data: SteamUsageForm
 ): Promise<ScopeApiResponse<SteamUsage>> => {
-  const response = await api.put(`/api/steam-usage/${id}`, data)
+  const response = await api.put(`/api/v1/scope/steam-usage/${id}`, data)
   return response.data
 }
 
 export const deleteSteamUsage = async (id: number): Promise<ScopeApiResponse<void>> => {
-  const response = await api.delete(`/api/steam-usage/${id}`)
+  const response = await api.delete(`/api/v1/scope/steam-usage/${id}`)
   return response.data
 }
 
 export const getSteamUsageById = async (id: number): Promise<SteamUsage> => {
-  const response = await api.get(`/api/steam-usage/${id}`)
+  const response = await api.get(`/api/v1/scope/steam-usage/${id}`)
   return response.data
 }
 
@@ -165,14 +165,14 @@ export const getSteamUsageById = async (id: number): Promise<SteamUsage> => {
 // =============================================================================
 
 export const fetchFuelTypeList = async (): Promise<FuelType[]> => {
-  const response = await api.get('/api/fuel-types')
+  const response = await api.get('/api/v1/scope/fuel-types')
   return response.data
 }
 
 export const createFuelType = async (
   data: Omit<FuelType, 'id'>
 ): Promise<ScopeApiResponse<FuelType>> => {
-  const response = await api.post('/api/fuel-types', data)
+  const response = await api.post('/api/v1/scope/fuel-types', data)
   return response.data
 }
 
@@ -180,17 +180,17 @@ export const updateFuelType = async (
   id: number,
   data: Omit<FuelType, 'id'>
 ): Promise<ScopeApiResponse<FuelType>> => {
-  const response = await api.put(`/api/fuel-types/${id}`, data)
+  const response = await api.put(`/api/v1/scope/fuel-types/${id}`, data)
   return response.data
 }
 
 export const deleteFuelType = async (id: number): Promise<ScopeApiResponse<void>> => {
-  const response = await api.delete(`/api/fuel-types/${id}`)
+  const response = await api.delete(`/api/v1/scope/fuel-types/${id}`)
   return response.data
 }
 
 export const getFuelTypeById = async (id: number): Promise<FuelType> => {
-  const response = await api.get(`/api/fuel-types/${id}`)
+  const response = await api.get(`/api/v1/scope/fuel-types/${id}`)
   return response.data
 }
 
@@ -250,7 +250,7 @@ export const fetchMobileCombustionByCompanyAndYear = async (
   year: number
 ): Promise<MobileCombustion[]> => {
   const response = await api.get(
-    `/api/mobile-combustion/company/${companyId}/year/${year}`
+    `/api/v1/scope/mobile-combustion/company/${companyId}/year/${year}`
   )
   return response.data
 }
@@ -269,7 +269,9 @@ export const fetchSteamUsageByCompanyAndYear = async (
   companyId: number,
   year: number
 ): Promise<SteamUsage[]> => {
-  const response = await api.get(`/api/steam-usage/company/${companyId}/year/${year}`)
+  const response = await api.get(
+    `/api/v1/scope/steam-usage/company/${companyId}/year/${year}`
+  )
   return response.data
 }
 

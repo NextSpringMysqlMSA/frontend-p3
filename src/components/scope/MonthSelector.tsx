@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
+import {cn} from '@/lib/utils'
 
 interface MonthSelectorProps {
   selectedMonth?: number
@@ -43,12 +44,19 @@ export function MonthSelector({
       value={selectedMonth?.toString()}
       onValueChange={value => onSelect(parseInt(value))}
       disabled={disabled}>
-      <SelectTrigger className={className}>
+      <SelectTrigger
+        className={cn(
+          'bg-white border-gray-200 hover:border-indigo-300 focus-visible:ring-indigo-500 transition-all duration-200',
+          className
+        )}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="border shadow-xl bg-white/95 backdrop-blur-sm border-white/50">
         {MONTHS.map(month => (
-          <SelectItem key={month.value} value={month.value.toString()}>
+          <SelectItem
+            key={month.value}
+            value={month.value.toString()}
+            className="transition-all duration-200 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50">
             {month.label}
           </SelectItem>
         ))}

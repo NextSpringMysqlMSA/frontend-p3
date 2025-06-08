@@ -113,56 +113,64 @@ export function PartnerSelector({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            'w-full justify-between',
+            'w-full justify-between bg-white border-gray-200 hover:border-indigo-300 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 transition-all duration-200',
             !selectedPartner && 'text-muted-foreground',
             className
           )}
           disabled={disabled}>
           {selectedPartner ? (
             <div className="flex items-center gap-2">
-              <Building2 className="h-4 w-4" />
-              <span className="truncate">{selectedPartner.name}</span>
+              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100">
+                <Building2 className="w-3 h-3 text-indigo-600" />
+              </div>
+              <span className="text-gray-800 truncate">{selectedPartner.name}</span>
               <Badge
                 variant={getStatusBadgeVariant(selectedPartner.status)}
-                className="ml-auto">
+                className="ml-auto text-green-700 border-green-200 bg-gradient-to-r from-green-100 to-emerald-100">
                 {getStatusText(selectedPartner.status)}
               </Badge>
             </div>
           ) : (
-            placeholder
+            <div className="flex items-center gap-2">
+              <Building2 className="w-4 h-4 text-gray-400" />
+              <span>{placeholder}</span>
+            </div>
           )}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[400px] p-0">
+      <PopoverContent className="w-[400px] p-0 bg-white/95 backdrop-blur-sm border border-white/50 shadow-xl">
         <Command>
           <CommandInput
             placeholder="협력사 검색..."
             value={searchTerm}
             onValueChange={setSearchTerm}
+            className="border-0 focus-visible:ring-1 focus-visible:ring-indigo-500"
           />
-          <CommandEmpty>
+          <CommandEmpty className="py-6 text-center text-gray-500">
             {loading ? '로딩 중...' : '협력사를 찾을 수 없습니다.'}
           </CommandEmpty>
-          <CommandGroup className="max-h-64 overflow-auto">
+          <CommandGroup className="p-2 overflow-auto max-h-64">
             {partners.map(partner => (
               <CommandItem
                 key={partner.id}
                 value={`${partner.name} ${partner.businessNumber} ${partner.companyType}`}
                 onSelect={() => handleSelect(partner)}
-                className="flex items-center justify-between">
-                <div className="flex items-center gap-3 flex-1">
-                  <Building2 className="h-4 w-4 text-muted-foreground" />
+                className="flex items-center justify-between p-3 m-1 transition-all duration-200 rounded-lg cursor-pointer hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50">
+                <div className="flex items-center flex-1 gap-3">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100">
+                    <Building2 className="w-4 h-4 text-indigo-600" />
+                  </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-medium">{partner.name}</span>
+                      <span className="font-medium text-gray-800">{partner.name}</span>
                       <Badge
                         variant={getStatusBadgeVariant(partner.status)}
-                        className="text-xs">
+                        className="text-xs text-green-700 border-green-200 bg-gradient-to-r from-green-100 to-emerald-100">
                         {getStatusText(partner.status)}
                       </Badge>
                     </div>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-sm text-gray-500">
                       {partner.businessNumber} • {partner.companyType}
                     </div>
                   </div>

@@ -106,7 +106,7 @@ export interface FuelType {
   description?: string
 }
 
-// 폼 데이터 타입들
+// 폼 데이터 타입들 (백엔드 API 요청용)
 export interface StationaryCombustionForm {
   partnerCompanyId: number
   reportingYear: number
@@ -115,6 +115,7 @@ export interface StationaryCombustionForm {
   facilityType: string
   fuelTypeId: string
   fuelUsage: string
+  unit: string
   createdBy: string
 }
 
@@ -125,30 +126,29 @@ export interface MobileCombustionForm {
   vehicleType: string
   fuelTypeId: string
   fuelUsage: string
+  unit: string
   createdBy: string
 }
 
 export interface ElectricityUsageForm {
   partnerCompanyId: number
-  partnerCompanyName?: string
   reportingYear: number
   reportingMonth: number
   facilityName: string
-  electricityUsage: number
-  unit?: string
+  electricityUsage: string
+  unit: string
   isRenewable: boolean
-  createdBy?: string
+  createdBy: string
 }
 
 export interface SteamUsageForm {
   partnerCompanyId: number
-  partnerCompanyName?: string
   reportingYear: number
   reportingMonth: number
   facilityName: string
-  steamUsage: number
-  unit?: string
-  createdBy?: string
+  steamUsage: string
+  unit: string
+  createdBy: string
 }
 
 // API 응답 타입들
