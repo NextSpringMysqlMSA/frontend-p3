@@ -61,7 +61,7 @@ interface ScopeModalProps {
   onClose: () => void
   onSubmit: (data: ScopeFormData) => void
   partnerCompanies: PartnerCompany[]
-  defaultPartnerId?: number
+  defaultPartnerId?: string
   defaultYear?: number
   defaultMonth?: number
   scope: 'SCOPE1' | 'SCOPE2'
@@ -186,7 +186,7 @@ export default function ScopeModal({
   )
 
   const [formData, setFormData] = useState<ScopeFormData>({
-    partnerCompanyId: defaultPartnerId || 0,
+    partnerCompanyId: defaultPartnerId || '',
     reportingYear: defaultYear,
     reportingMonth: defaultMonth,
     emissionActivityType: scope === 'SCOPE1' ? 'STATIONARY_COMBUSTION' : 'ELECTRICITY'
@@ -349,16 +349,16 @@ export default function ScopeModal({
               <span className="text-red-500">*</span>
             </Label>
             <Select
-              value={formData.partnerCompanyId.toString()}
+              value={formData.partnerCompanyId}
               onValueChange={value =>
-                setFormData({...formData, partnerCompanyId: parseInt(value)})
+                setFormData({...formData, partnerCompanyId: value})
               }>
               <SelectTrigger className="border-gray-300 h-11 focus:border-blue-500 focus:ring-blue-500/20">
                 <SelectValue placeholder="협력사를 선택해주세요" />
               </SelectTrigger>
               <SelectContent>
                 {partnerCompanies.map(company => (
-                  <SelectItem key={company.id} value={company.id.toString()}>
+                  <SelectItem key={company.id} value={company.id}>
                     {company.name}
                   </SelectItem>
                 ))}
@@ -1322,7 +1322,7 @@ export default function ScopeModal({
   useEffect(() => {
     if (isOpen) {
       setFormData({
-        partnerCompanyId: defaultPartnerId || 0,
+        partnerCompanyId: defaultPartnerId || '',
         reportingYear: defaultYear,
         reportingMonth: defaultMonth,
         emissionActivityType: 'STATIONARY_COMBUSTION'
@@ -1471,7 +1471,7 @@ export default function ScopeModal({
                   계산 중...
                 </>
               ) : (
-                '배출량 계산'
+                '배출량 계산 미리 보기'
               )}
             </Button>
           </div>

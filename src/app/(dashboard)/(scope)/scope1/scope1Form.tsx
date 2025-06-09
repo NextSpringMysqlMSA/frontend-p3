@@ -56,11 +56,11 @@ import {Badge} from '@/components/ui/badge'
 // 커스텀 컴포넌트 임포트
 import ScopeModal from '@/components/scope/ScopeModal' // Scope 데이터 입력 모달
 import {MonthSelector} from '@/components/scope/MonthSelector' // 월 선택기
-import {PartnerSelector} from '@/components/scope/PartnerSelector' // 협력사 선택기
+import {PartnerSelector} from '@/components/scope/PartnerSelector' // Scope용 협력사 선택기 (UUID 지원)
 
 // 타입 정의 임포트
 import type {
-  PartnerCompany, // 협력사 정보 타입
+  PartnerCompanyForScope, // 협력사 정보 타입 (Scope용)
   StationaryCombustion, // 고정연소 배출량 타입
   MobileCombustion, // 이동연소 배출량 타입
   ScopeFormData // Scope 폼 데이터 타입
@@ -87,29 +87,34 @@ import {
  * 목업 협력사 데이터
  * 실제 운영 환경에서는 API를 통해 동적으로 로드됩니다.
  */
-const MOCK_PARTNERS: PartnerCompany[] = [
+const MOCK_PARTNERS: PartnerCompanyForScope[] = [
   {
-    id: 1,
+    id: '550e8400-e29b-41d4-a716-446655440001',
     name: '삼성전자',
-    businessNumber: '123-45-67890',
-    status: 'ACTIVE',
-    companyType: '제조업'
+    status: 'ACTIVE'
   },
   {
-    id: 2,
+    id: '550e8400-e29b-41d4-a716-446655440002',
     name: 'LG전자',
-    businessNumber: '234-56-78901',
-    status: 'ACTIVE',
-    companyType: '제조업'
+    status: 'ACTIVE'
   },
   {
-    id: 3,
+    id: '550e8400-e29b-41d4-a716-446655440003',
     name: '현대자동차',
-    businessNumber: '345-67-89012',
-    status: 'ACTIVE',
-    companyType: '자동차'
+    status: 'ACTIVE'
   }
 ]
+
+// PartnerCompanyForScope를 PartnerCompany로 변환하는 함수 (ScopeModal용)
+const convertToPartnerCompany = (partner: PartnerCompanyForScope) => {
+  return {
+    id: partner.id, // UUID 그대로 사용
+    name: partner.name,
+    businessNumber: '',
+    status: partner.status,
+    companyType: '일반기업'
+  }
+}
 
 /**
  * Scope 1 배출량 관리 메인 컴포넌트
@@ -126,7 +131,7 @@ export default function Scope1Form() {
   // ============================================================================
 
   // 필터 관련 상태
-  const [selectedPartnerId, setSelectedPartnerId] = useState<number | null>(null) // 선택된 협력사 ID
+  const [selectedPartnerId, setSelectedPartnerId] = useState<string | null>(null) // 선택된 협력사 ID (UUID)
   const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear()) // 선택된 연도
   const [selectedMonth, setSelectedMonth] = useState<number | null>(null) // 선택된 월 (null이면 전체)
 
@@ -366,7 +371,7 @@ export default function Scope1Form() {
                 <div className="relative">
                   <PartnerSelector
                     selectedPartnerId={selectedPartnerId}
-                    onSelect={partner => setSelectedPartnerId(partner?.id || null)}
+                    onSelect={setSelectedPartnerId}
                   />
                 </div>
               </motion.div>
@@ -915,7 +920,7 @@ export default function Scope1Form() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleFormSubmit}
-        partnerCompanies={MOCK_PARTNERS}
+        partnerCompanies={MOCK_PARTNERS.map(convertToPartnerCompany)}
         defaultPartnerId={selectedPartnerId || undefined}
         defaultYear={selectedYear}
         defaultMonth={selectedMonth || new Date().getMonth() + 1}

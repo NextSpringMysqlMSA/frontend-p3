@@ -18,6 +18,7 @@ export interface PartnerCompanyRaw {
   stock_code?: string
   contract_start_date?: string
   modify_date?: string
+  is_restored?: boolean
 }
 
 /**
@@ -35,6 +36,7 @@ export interface PartnerCompany {
   stockCode?: string
   contractStartDate?: Date | string
   modifyDate?: string
+  isRestored?: boolean
 
   // 서버 호환성을 위한 추가 필드
   corp_code?: string
@@ -184,6 +186,7 @@ export function mapPartnerCompany(raw: PartnerCompanyRaw): PartnerCompany {
       ? new Date(raw.contract_start_date)
       : undefined,
     modifyDate: raw.modify_date,
+    isRestored: raw.is_restored,
 
     // 원본 필드 유지 (서버 호환성)
     corp_code: raw.corp_code,

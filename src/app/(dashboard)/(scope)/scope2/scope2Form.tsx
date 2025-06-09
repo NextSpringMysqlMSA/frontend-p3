@@ -71,32 +71,45 @@ import {
 import ScopeModal from '@/components/scope/ScopeModal'
 
 // 타입 정의 및 API 서비스 임포트
-import {ElectricityUsage, SteamUsage} from '@/types/scope'
-import {PartnerCompany as IFRSPartnerCompany} from '@/types/IFRS/partnerCompany'
-import {PartnerCompany as ScopePartnerCompany} from '@/types/scope'
+import {ElectricityUsage, SteamUsage, PartnerCompanyForScope} from '@/types/scope'
 import {
   submitScopeData,
   fetchElectricityUsageByPartnerAndYear,
   fetchSteamUsageByPartnerAndYear
 } from '@/services/scope'
-import {fetchPartnerCompanies} from '@/services/partnerCompany'
+import {fetchPartnerCompaniesForScope} from '@/services/partnerCompany'
 import {PartnerSelector} from '@/components/scope/PartnerSelector'
 
-// IFRS PartnerCompany를 Scope PartnerCompany로 변환하는 함수
-const convertToScopePartnerCompany = (
-  partner: IFRSPartnerCompany
-): ScopePartnerCompany => {
+/**
+ * 목업 협력사 데이터
+ * 실제 운영 환경에서는 API를 통해 동적으로 로드됩니다.
+ */
+const MOCK_PARTNERS: PartnerCompanyForScope[] = [
+  {
+    id: '550e8400-e29b-41d4-a716-446655440001',
+    name: '삼성전자',
+    status: 'ACTIVE'
+  },
+  {
+    id: '550e8400-e29b-41d4-a716-446655440002',
+    name: 'LG전자',
+    status: 'ACTIVE'
+  },
+  {
+    id: '550e8400-e29b-41d4-a716-446655440003',
+    name: '현대자동차',
+    status: 'ACTIVE'
+  }
+]
+
+// PartnerCompanyForScope를 PartnerCompany로 변환하는 함수 (ScopeModal용)
+const convertToPartnerCompany = (partner: PartnerCompanyForScope) => {
   return {
-    id: parseInt(partner.id || partner.corpCode || '0'),
-    name: partner.companyName || partner.corpName || '',
-    businessNumber: partner.corpCode || '',
-    status:
-      partner.status === 'ACTIVE'
-        ? 'ACTIVE'
-        : partner.status === 'INACTIVE'
-        ? 'INACTIVE'
-        : 'SUSPENDED',
-    companyType: partner.industry || '일반기업'
+    id: partner.id, // UUID 그대로 사용
+    name: partner.name,
+    businessNumber: '',
+    status: partner.status,
+    companyType: '일반기업'
   }
 }
 
@@ -114,11 +127,11 @@ const Scope2Form: React.FC = () => {
   // 데이터 상태
   const [electricityData, setElectricityData] = useState<ElectricityUsage[]>([])
   const [steamData, setSteamData] = useState<SteamUsage[]>([])
-  const [partners, setPartners] = useState<IFRSPartnerCompany[]>([])
+  const [partners, setPartners] = useState<PartnerCompanyForScope[]>([])
   const [loading, setLoading] = useState(false)
 
   // 필터 상태
-  const [selectedPartnerId, setSelectedPartnerId] = useState<string>('')
+  const [selectedPartnerId, setSelectedPartnerId] = useState<string | null>(null)
   const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear())
   const [selectedMonth, setSelectedMonth] = useState<number>(0) // 0은 전체
   const [searchTerm, setSearchTerm] = useState('')
@@ -140,10 +153,9 @@ const Scope2Form: React.FC = () => {
 
     setLoading(true)
     try {
-      const partnerIdNum = parseInt(selectedPartnerId)
       const [electricity, steam] = await Promise.all([
-        fetchElectricityUsageByPartnerAndYear(partnerIdNum, selectedYear),
-        fetchSteamUsageByPartnerAndYear(partnerIdNum, selectedYear)
+        fetchElectricityUsageByPartnerAndYear(selectedPartnerId, selectedYear),
+        fetchSteamUsageByPartnerAndYear(selectedPartnerId, selectedYear)
       ])
       setElectricityData(electricity)
       setSteamData(steam)
@@ -157,10 +169,23 @@ const Scope2Form: React.FC = () => {
   // 협력사 목록 로딩
   const loadPartners = async () => {
     try {
-      const response = await fetchPartnerCompanies(1, 100)
-      setPartners(response.content)
+      const response = await fetchPartnerCompaniesForScope()
+      // PartnerCompanyResponse에서 content 추출하여 PartnerCompanyForScope로 변환
+      const partnersData = response.content.map(p => ({
+        id: p.id || '',
+        name: p.companyName || p.corpName || '',
+        status:
+          p.status === 'ACTIVE'
+            ? ('ACTIVE' as const)
+            : p.status === 'INACTIVE'
+            ? ('INACTIVE' as const)
+            : ('SUSPENDED' as const)
+      }))
+      setPartners(partnersData)
     } catch (error) {
       console.error('협력사 목록 로딩 실패:', error)
+      // 에러 시 목업 데이터 사용
+      setPartners(MOCK_PARTNERS)
     }
   }
 
@@ -283,10 +308,14 @@ const Scope2Form: React.FC = () => {
         }
       } else {
         // 생성 로직 - TODO: 실제 생성 API 구현 필요
+        if (!selectedPartnerId) {
+          console.error('협력사가 선택되지 않았습니다.')
+          return
+        }
         const newData = {
           ...data,
           id: Date.now(), // 임시 ID
-          partnerCompanyId: parseInt(selectedPartnerId)
+          partnerCompanyId: selectedPartnerId
         }
         if (editingType === 'ELECTRICITY') {
           setElectricityData(prev => [...prev, newData])
@@ -388,12 +417,8 @@ const Scope2Form: React.FC = () => {
                 </label>
                 <div className="relative">
                   <PartnerSelector
-                    selectedPartnerId={
-                      selectedPartnerId ? parseInt(selectedPartnerId) : undefined
-                    }
-                    onSelect={partner =>
-                      setSelectedPartnerId(partner?.id ? partner.id.toString() : '')
-                    }
+                    selectedPartnerId={selectedPartnerId}
+                    onSelect={setSelectedPartnerId}
                   />
                 </div>
               </motion.div>
@@ -881,11 +906,11 @@ const Scope2Form: React.FC = () => {
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         onSubmit={handleModalSubmit}
-        defaultPartnerId={selectedPartnerId ? parseInt(selectedPartnerId) : undefined}
+        defaultPartnerId={selectedPartnerId || undefined}
         defaultYear={selectedYear}
         defaultMonth={editingItem?.reportingMonth || new Date().getMonth() + 1}
         scope="SCOPE2"
-        partnerCompanies={partners.map(convertToScopePartnerCompany)}
+        partnerCompanies={partners.map(convertToPartnerCompany)}
       />
     </div>
   )

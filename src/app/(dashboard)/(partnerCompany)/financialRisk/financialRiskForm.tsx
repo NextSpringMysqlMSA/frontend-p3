@@ -61,9 +61,6 @@ interface FinancialRiskData {
   riskItems: RiskItem[]
 }
 
-// 협력사 데이터는 이제 API에서 동적으로 가져옵니다.
-// const partners = [...] 제거됨
-
 // 상태 레이블 유틸리티 함수
 function getStatusLabel(atRiskCount: number) {
   if (atRiskCount === 0) {
