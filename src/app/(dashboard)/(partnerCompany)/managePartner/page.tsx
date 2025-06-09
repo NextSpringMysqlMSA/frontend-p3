@@ -33,53 +33,28 @@ import {PageHeader} from '@/components/layout/PageHeader'
 // 아이콘 라이브러리
 import {
   Building2, // 빌딩 아이콘 (파트너사 표시)
-  Plus, // 플러스 아이콘 (추가 버튼)
-  Search, // 검색 아이콘
-  X, // 닫기 아이콘
-  Loader2, // 로딩 스피너
-  AlertCircle, // 경고 원형 아이콘
-  MoreHorizontal, // 더보기 메뉴 아이콘
-  Trash, // 삭제 아이콘
-  Edit3, // 편집 아이콘
   Home, // 홈 아이콘 (브레드크럼)
-  ChevronRight, // 오른쪽 화살표 (브레드크럼)
-  ChevronLeft, // 왼쪽 화살표 (페이지네이션)
-  Users, // 사용자 그룹 아이콘
   ArrowLeft
 } from 'lucide-react'
 
 // UI 컴포넌트들
-import {Badge} from '@/components/ui/badge'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table'
 import {Button} from '@/components/ui/button'
-import {Input} from '@/components/ui/input'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle
-} from '@/components/ui/alert-dialog'
 
 // 파트너사 관련 컴포넌트
 import {PartnerCompanyModal} from '@/components/partner/PartnerCompanyModal'
 import {EditPartnerModal} from '@/components/partner/EditPartnerModal'
+import {PartnerSearchSection} from '@/components/partner/PartnerSearchSection'
+import {PartnerTable} from '@/components/partner/PartnerTable'
+import {
+  EmptyPartnerState,
+  SearchEmptyState
+} from '@/components/partner/PartnerEmptyStates'
+import {PartnerPagination} from '@/components/partner/PartnerPagination'
+import {
+  PartnerLoadingState,
+  PageLoadingState
+} from '@/components/partner/PartnerLoadingStates'
+import {PartnerDeleteDialog} from '@/components/partner/PartnerDeleteDialog'
 
 // 토스트 유틸리티
 import {showError, showWarning, showPartnerRestore, showSuccess} from '@/util/toast'
@@ -101,26 +76,12 @@ import {
   BreadcrumbSeparator
 } from '@/components/ui/breadcrumb'
 import Link from 'next/link'
-// 디바운스 훅
+
+// 커스텀 훅
+import {useDebounce} from '@/hooks/useDebounce'
 
 // 타입 정의
 import {DartCorpInfo, PartnerCompany} from '@/types/IFRS/partnerCompany'
-
-function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value)
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value)
-    }, delay)
-
-    return () => {
-      clearTimeout(handler)
-    }
-  }, [value, delay])
-
-  return debouncedValue
-}
 
 /**
  * ===================================================================
@@ -653,11 +614,7 @@ export default function ManagePartnerPage() {
   // 로딩 UI
   if (isPageLoading && partners.length === 0) {
     // 초기 전체 페이지 로딩
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader2 className="w-12 h-12 animate-spin text-customG" />
-      </div>
-    )
+    return <PageLoadingState />
   }
 
   return (
@@ -693,29 +650,11 @@ export default function ManagePartnerPage() {
 
       <div className="flex flex-col gap-6">
         {/* 검색 및 필터 섹션 */}
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          {/* 검색 영역 */}
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-            <div className="relative flex-1 min-w-0 sm:w-96">
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute inset-y-0 right-0 flex items-center pr-4 transition-colors text-slate-400 hover:text-slate-600">
-                  <X className="w-5 h-5" />
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* 액션 버튼 영역 */}
-          <div className="flex items-center gap-3">
-            <Button
-              onClick={openAddDialog}
-              className="h-12 px-6 font-semibold text-white transition-all duration-200 transform shadow-lg bg-gradient-to-r from-customG to-emerald-600 hover:from-customGDark hover:to-emerald-700 rounded-xl hover:shadow-xl hover:scale-105">
-              <Plus className="w-5 h-5 mr-2" />새 파트너사 추가
-            </Button>
-          </div>
-        </div>
+        <PartnerSearchSection
+          searchQuery={searchQuery}
+          onSearchQueryChange={setSearchQuery}
+          onOpenAddDialog={openAddDialog}
+        />
 
         {/* 파트너사 추가 모달 */}
         <PartnerCompanyModal
@@ -743,279 +682,37 @@ export default function ManagePartnerPage() {
         />
 
         {isLoading && partners.length === 0 && !isPageLoading ? (
-          <div className="flex items-center justify-center p-16">
-            <div className="text-center">
-              <Loader2 className="w-12 h-12 mx-auto mb-4 animate-spin text-customG" />
-              <p className="text-lg font-medium text-slate-700">
-                파트너사 목록을 불러오는 중...
-              </p>
-              <p className="mt-1 text-sm text-slate-500">잠시만 기다려주세요</p>
-            </div>
-          </div>
+          <PartnerLoadingState />
         ) : partners.length === 0 && !searchQuery ? (
-          <div className="bg-white border-2 shadow-sm border-slate-200 rounded-2xl">
-            <div className="py-16 text-center">
-              <div className="flex items-center justify-center w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl">
-                <Users className="w-12 h-12 text-slate-400" />
-              </div>
-              <h3 className="mb-2 text-2xl font-bold text-slate-800">
-                아직 등록된 파트너사가 없습니다
-              </h3>
-              <p className="max-w-md mx-auto mb-8 text-base text-slate-500">
-                ESG 경영을 함께할 파트너사를 등록해보세요. DART 데이터베이스와 연동하여
-                손쉽게 관리할 수 있습니다.
-              </p>
-              <Button
-                onClick={openAddDialog}
-                className="h-12 px-8 font-semibold text-white transition-all duration-200 transform shadow-sm bg-gradient-to-r from-customG to-emerald-600 hover:from-customGDark hover:to-emerald-700 rounded-xl hover:shadow-sm hover:scale-105">
-                <Plus className="w-5 h-5 mr-2" />첫 번째 파트너사 등록하기
-              </Button>
-            </div>
-          </div>
+          <EmptyPartnerState onOpenAddDialog={openAddDialog} />
         ) : partners.length === 0 && searchQuery ? (
-          <div className="bg-white border-2 shadow-sm border-slate-200 rounded-2xl">
-            <div className="py-16 text-center">
-              <div className="flex items-center justify-center w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl">
-                <Search className="w-12 h-12 text-slate-400" />
-              </div>
-              <h3 className="mb-2 text-2xl font-bold text-slate-800">
-                검색 결과가 없습니다
-              </h3>
-              <p className="mb-2 text-base text-slate-500">
-                '<span className="font-semibold text-slate-700">{searchQuery}</span>'와
-                일치하는 파트너사를 찾을 수 없습니다.
-              </p>
-              <p className="text-sm text-slate-400">
-                다른 검색어로 시도해보시거나, 새로운 파트너사를 등록해보세요.
-              </p>
-            </div>
-          </div>
+          <SearchEmptyState searchQuery={searchQuery} />
         ) : (
-          <div className="overflow-hidden bg-white border-2 shadow-sm border-slate-200 rounded-2xl">
-            <Table>
-              <TableHeader>
-                <TableRow className="border-b-2 bg-gradient-to-r from-slate-50 to-slate-100 hover:from-slate-100 hover:to-slate-150 border-slate-200">
-                  <TableHead className="px-6 text-base font-bold h-14 text-slate-800">
-                    회사명
-                  </TableHead>
-                  <TableHead className="px-6 text-base font-bold h-14 text-slate-800">
-                    DART 코드
-                  </TableHead>
-                  <TableHead className="px-6 text-base font-bold h-14 text-slate-800">
-                    상장 정보
-                  </TableHead>
-                  <TableHead className="px-6 text-base font-bold h-14 text-slate-800">
-                    계약 시작일
-                  </TableHead>
-                  <TableHead className="px-6 text-base font-bold text-center h-14 text-slate-800">
-                    관리
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {partners.map((partner, index) => (
-                  <TableRow
-                    key={partner.id || `partner-${index}`}
-                    className="transition-all duration-200 border-b hover:bg-slate-50/80 border-slate-100 last:border-b-0">
-                    <TableCell className="h-16 px-6 text-base font-semibold text-slate-800">
-                      <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 rounded-full bg-customG"></div>
-                        {partner.corpName || partner.companyName}
-                      </div>
-                    </TableCell>
-                    <TableCell className="h-16 px-6">
-                      <code className="px-3 py-1 font-mono text-sm font-medium rounded-lg bg-slate-100 text-slate-700">
-                        {partner.corpCode || partner.corp_code}
-                      </code>
-                    </TableCell>
-                    <TableCell className="h-16 px-6">
-                      {(() => {
-                        const stockCode = partner.stockCode || partner.stock_code
-
-                        // 개선된 주식코드 검증 로직
-                        const isValidStockCode = (() => {
-                          // null, undefined 체크
-                          if (!stockCode) return false
-
-                          // 문자열로 변환하여 처리
-                          const codeStr = String(stockCode).trim()
-
-                          // 빈 문자열 또는 공백만 있는 경우
-                          if (codeStr === '') return false
-
-                          // 무효한 값들 체크
-                          const invalidValues = ['n/a', 'null', 'undefined', '000000']
-                          if (invalidValues.includes(codeStr.toLowerCase())) return false
-
-                          // 모든 자리가 0인 경우 (000000 외에 다른 길이도 체크)
-                          if (/^0+$/.test(codeStr)) return false
-
-                          // 유효한 주식코드로 판단 (숫자 6자리)
-                          return /^\d{6}$/.test(codeStr)
-                        })()
-
-                        if (isValidStockCode) {
-                          return (
-                            <Badge
-                              variant="outline"
-                              className="px-3 py-1 font-semibold border-2 rounded-lg text-emerald-700 bg-emerald-50 border-emerald-200">
-                              <div className="w-2 h-2 mr-2 rounded-full bg-emerald-500"></div>
-                              {String(stockCode).trim()}
-                            </Badge>
-                          )
-                        } else {
-                          return (
-                            <Badge
-                              variant="secondary"
-                              className="px-3 py-1 font-semibold border-2 rounded-lg text-slate-600 bg-slate-100 border-slate-200">
-                              <div className="w-2 h-2 mr-2 rounded-full bg-slate-400"></div>
-                              비상장
-                            </Badge>
-                          )
-                        }
-                      })()}
-                    </TableCell>
-                    <TableCell className="h-16 px-6 font-medium text-slate-600">
-                      {partner.contract_start_date || partner.contractStartDate
-                        ? new Date(
-                            (partner.contract_start_date || partner.contractStartDate)!
-                          ).toLocaleDateString('ko-KR', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                          })
-                        : '-'}
-                    </TableCell>
-                    <TableCell className="h-16 px-6 text-center">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="w-10 h-10 transition-colors rounded-lg hover:bg-slate-100">
-                            <MoreHorizontal className="w-5 h-5 text-slate-600" />
-                            <span className="sr-only">메뉴 열기</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent
-                          align="end"
-                          className="w-48 p-2 bg-white border-2 shadow-xl border-slate-200 rounded-xl">
-                          <DropdownMenuItem
-                            onClick={() => openEditDialog(partner)}
-                            className="flex items-center gap-3 px-4 py-3 transition-colors rounded-lg cursor-pointer hover:bg-slate-50">
-                            <Edit3 className="w-4 h-4 text-slate-600" />
-                            <span className="font-medium text-slate-700">정보 수정</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => {
-                              setSelectedPartner(partner)
-                              setIsDeleteDialogOpen(true)
-                            }}
-                            className="flex items-center gap-3 px-4 py-3 text-red-600 transition-colors rounded-lg cursor-pointer hover:bg-red-50 focus:text-red-600 focus:bg-red-50">
-                            <Trash className="w-4 h-4" />
-                            <span className="font-medium">파트너사 삭제</span>
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+          <PartnerTable
+            partners={partners}
+            onEditPartner={openEditDialog}
+            onDeletePartner={partner => {
+              setSelectedPartner(partner)
+              setIsDeleteDialogOpen(true)
+            }}
+          />
         )}
 
-        {totalPages > 1 && partners.length > 0 && (
-          <div className="flex items-center justify-center gap-3 pt-8 mt-8 border-t-2 border-slate-100">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="h-10 px-4 font-medium transition-all duration-200 border-2 rounded-lg border-slate-200 hover:border-customG hover:bg-customG/5">
-              <ChevronLeft className="w-4 h-4 mr-1" />
-              이전
-            </Button>
-
-            <div className="flex items-center gap-1">
-              {Array.from({length: totalPages}, (_, i) => i + 1)
-                .filter(
-                  page =>
-                    page === 1 ||
-                    page === totalPages ||
-                    (page >= currentPage - 1 && page <= currentPage + 1)
-                )
-                .map((page, index, array) => (
-                  <React.Fragment key={`page-${page}`}>
-                    {index > 0 && array[index - 1] !== page - 1 && (
-                      <span className="px-2 text-slate-400">...</span>
-                    )}
-                    <Button
-                      variant={currentPage === page ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => handlePageChange(page)}
-                      className={`w-10 h-10 rounded-lg font-semibold transition-all duration-200 ${
-                        currentPage === page
-                          ? 'bg-customG text-white border-customG shadow-sm hover:bg-customGDark'
-                          : 'border-2 border-slate-200 hover:border-customG hover:bg-customG/5'
-                      }`}>
-                      {page}
-                    </Button>
-                  </React.Fragment>
-                ))}
-            </div>
-
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="h-10 px-4 font-medium transition-all duration-200 border-2 rounded-lg border-slate-200 hover:border-customG hover:bg-customG/5">
-              다음
-              <ChevronRight className="w-4 h-4 ml-1" />
-            </Button>
-          </div>
-        )}
+        <PartnerPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </div>
 
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center text-red-600">
-              <AlertCircle className="w-5 h-5 mr-2" />
-              파트너사 삭제 확인
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              정말로{' '}
-              <span className="font-semibold text-slate-800">
-                {selectedPartner?.corpName || selectedPartner?.companyName}
-              </span>{' '}
-              파트너사를 삭제하시겠습니까? 이 작업은 되돌릴 수 없으며, 모든 관련 데이터가
-              영구적으로 삭제됩니다.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel
-              onClick={() => setSelectedPartner(null)}
-              disabled={isSubmitting}>
-              취소
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDeletePartner}
-              className="bg-red-600 hover:bg-red-700"
-              disabled={isSubmitting}>
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-1 animate-spin" />
-                  삭제 중...
-                </>
-              ) : (
-                '삭제'
-              )}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <PartnerDeleteDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        selectedPartner={selectedPartner}
+        onConfirmDelete={handleDeletePartner}
+        isSubmitting={isSubmitting}
+        onClearSelection={() => setSelectedPartner(null)}
+      />
     </div>
   )
 }
