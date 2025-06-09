@@ -37,9 +37,6 @@ import {
   ArrowLeft
 } from 'lucide-react'
 
-// UI 컴포넌트들
-import {Button} from '@/components/ui/button'
-
 // 파트너사 관련 컴포넌트
 import {PartnerCompanyModal} from '@/components/partner/PartnerCompanyModal'
 import {EditPartnerModal} from '@/components/partner/EditPartnerModal'

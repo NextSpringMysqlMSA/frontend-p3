@@ -13,7 +13,8 @@ import {
   FileSearch,
   Check,
   ChevronsUpDown,
-  RefreshCcw
+  RefreshCcw,
+  ArrowLeft
 } from 'lucide-react'
 import {Button} from '@/components/ui/button'
 import {
@@ -42,6 +43,13 @@ import {
   fetchPartnerCompanies
 } from '@/services/partnerCompany'
 import {FinancialRiskAssessment} from '@/types/IFRS/partnerCompany'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator
+} from '@/components/ui/breadcrumb'
 
 // API 응답 타입 정의
 interface RiskItem {
@@ -119,7 +127,7 @@ function PartnerCombobox({options, value, onChange}: PartnerComboboxProps) {
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-full p-0 bg-white border-2 shadow-xl border-slate-200 rounded-xl"
+        className="w-full p-0 bg-white border-2 shadow-sm border-slate-200 rounded-xl"
         style={{minWidth: 'var(--radix-popover-trigger-width)'}}>
         <Command className="rounded-xl">
           <CommandInput
@@ -310,32 +318,36 @@ export default function FinancialRiskForm() {
   const statusInfo = getStatusLabel(atRiskCount)
 
   return (
-    <div className="flex flex-col w-full h-full min-h-screen p-4 md:p-8 bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50">
-      {/* Enhanced Breadcrumb */}
-      <div className="flex flex-row items-center p-4 px-6 mb-8 text-sm border shadow-lg text-slate-600 bg-white/80 backdrop-blur-sm rounded-2xl border-slate-200/50">
-        <div className="flex items-center justify-center w-8 h-8 mr-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl">
-          <Home className="w-4 h-4 text-white" />
-        </div>
-        <span className="font-semibold text-slate-700">협력사 관리</span>
-        <ChevronRight className="w-4 h-4 mx-3 text-slate-400" />
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-gradient-to-r from-emerald-400 to-teal-500"></div>
-          <span className="font-bold text-customG">재무제표 리스크 관리</span>
-        </div>
+    <div className="flex flex-col w-full h-full p-4 pt-24">
+      <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <Home className="w-4 h-4 mr-1" />
+              <BreadcrumbLink href="/home">대시보드</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/financialRisk">
+                파트너사 재무 위험 분석 관리
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
       </div>
 
       {/* Enhanced Page Header */}
       <div className="mb-8">
         <PageHeader
           icon={<Building2 className="w-8 h-8" />}
-          title="협력사 재무 위험 분석"
+          title="파트너사 재무 위험 분석"
           description="파트너사의 재무 건전성과 위험을 실시간으로 분석합니다."
           module="CSDD"
         />
       </div>
 
       {/* Enhanced Selection Panel */}
-      <div className="relative p-8 mt-2 overflow-hidden border shadow-xl bg-white/90 backdrop-blur-sm rounded-3xl border-slate-200/50">
+      <div className="relative p-8 mt-2 overflow-hidden border shadow-sm bg-white/90 backdrop-blur-sm rounded-3xl border-slate-200/50">
         {/* Decorative background elements */}
         <div className="absolute top-0 right-0 w-32 h-32 translate-x-16 -translate-y-16 rounded-full bg-gradient-to-br from-blue-100/50 to-indigo-100/50"></div>
         <div className="absolute bottom-0 left-0 w-24 h-24 -translate-x-12 translate-y-12 rounded-full bg-gradient-to-tr from-emerald-100/50 to-teal-100/50"></div>
@@ -369,7 +381,7 @@ export default function FinancialRiskForm() {
                 loadPartnerOptions().finally(() => setIsLoading(false))
               }}
               disabled={isLoading}
-              className="h-12 px-8 font-semibold transition-all duration-300 border-2 border-slate-200 hover:border-customG hover:bg-customG/5 hover:shadow-lg rounded-2xl bg-white/80 backdrop-blur-sm">
+              className="h-12 px-8 font-semibold transition-all duration-300 border-2 border-slate-200 hover:border-customG hover:bg-customG/5 hover:shadow-sm rounded-2xl bg-white/80 backdrop-blur-sm">
               <RefreshCcw className={`w-5 h-5 mr-3 ${isLoading ? 'animate-spin' : ''}`} />
               <span>데이터 새로고침</span>
             </Button>
@@ -383,7 +395,7 @@ export default function FinancialRiskForm() {
             {/* Enhanced Status Cards */}
             <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
               {/* Company Info Card */}
-              <Card className="relative overflow-hidden transition-all duration-300 border-2 shadow-xl bg-white/90 backdrop-blur-sm border-slate-200/50 rounded-3xl hover:shadow-2xl group">
+              <Card className="relative overflow-hidden transition-all duration-300 border-2 shadow-sm bg-white/90 backdrop-blur-sm border-slate-200/50 rounded-3xl hover:shadow-2xl group">
                 <div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-gradient-to-br from-blue-50/80 to-indigo-50/80 group-hover:opacity-100"></div>
                 <CardHeader className="relative z-10 pb-4 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-t-3xl">
                   <CardTitle className="flex items-center gap-3 text-sm font-bold text-slate-700">
@@ -407,7 +419,7 @@ export default function FinancialRiskForm() {
               </Card>
 
               {/* Assessment Info Card */}
-              <Card className="relative overflow-hidden transition-all duration-300 border-2 shadow-xl bg-white/90 backdrop-blur-sm border-slate-200/50 rounded-3xl hover:shadow-2xl group">
+              <Card className="relative overflow-hidden transition-all duration-300 border-2 shadow-sm bg-white/90 backdrop-blur-sm border-slate-200/50 rounded-3xl hover:shadow-2xl group">
                 <div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-gradient-to-br from-emerald-50/80 to-teal-50/80 group-hover:opacity-100"></div>
                 <CardHeader className="relative z-10 pb-4 bg-gradient-to-br from-emerald-50 to-teal-100 rounded-t-3xl">
                   <CardTitle className="flex items-center gap-3 text-sm font-bold text-slate-700">
@@ -432,7 +444,7 @@ export default function FinancialRiskForm() {
 
               {/* Risk Status Card */}
               <Card
-                className={`bg-white/90 backdrop-blur-sm border-2 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 group overflow-hidden relative ${
+                className={`bg-white/90 backdrop-blur-sm border-2 rounded-3xl shadow-sm hover:shadow-2xl transition-all duration-300 group overflow-hidden relative ${
                   atRiskCount === 0
                     ? 'border-emerald-200/50'
                     : atRiskCount <= 2
@@ -503,7 +515,7 @@ export default function FinancialRiskForm() {
             </div>
 
             {/* Enhanced Control Section */}
-            <div className="relative p-8 overflow-hidden border-2 shadow-xl bg-white/90 backdrop-blur-sm rounded-3xl border-slate-200/50">
+            <div className="relative p-8 overflow-hidden border-2 shadow-sm bg-white/90 backdrop-blur-sm rounded-3xl border-slate-200/50">
               {/* Decorative elements */}
               <div className="absolute top-0 right-0 w-20 h-20 translate-x-10 -translate-y-10 rounded-full bg-gradient-to-br from-amber-100/50 to-orange-100/50"></div>
 
@@ -530,7 +542,7 @@ export default function FinancialRiskForm() {
                     variant="outline"
                     size="sm"
                     onClick={() => toggleAllExpanded(true)}
-                    className="px-6 py-3 font-semibold transition-all duration-300 border-2 border-slate-200 hover:border-customG hover:bg-customG/10 hover:shadow-lg rounded-2xl">
+                    className="px-6 py-3 font-semibold transition-all duration-300 border-2 border-slate-200 hover:border-customG hover:bg-customG/10 hover:shadow-sm rounded-2xl">
                     <ChevronsDown className="w-4 h-4 mr-2" />
                     모두 펼치기
                   </Button>
@@ -538,7 +550,7 @@ export default function FinancialRiskForm() {
                     variant="outline"
                     size="sm"
                     onClick={() => toggleAllExpanded(false)}
-                    className="px-6 py-3 font-semibold transition-all duration-300 border-2 border-slate-200 hover:border-customG hover:bg-customG/10 hover:shadow-lg rounded-2xl">
+                    className="px-6 py-3 font-semibold transition-all duration-300 border-2 border-slate-200 hover:border-customG hover:bg-customG/10 hover:shadow-sm rounded-2xl">
                     <ChevronsUp className="w-4 h-4 mr-2" />
                     모두 접기
                   </Button>
@@ -553,8 +565,8 @@ export default function FinancialRiskForm() {
                   key={item.itemNumber}
                   className={`transition-all duration-300 rounded-3xl border-2 overflow-hidden group relative ${
                     item.atRisk
-                      ? 'border-red-200 bg-gradient-to-r from-red-50/80 to-pink-50/80 shadow-xl hover:shadow-2xl'
-                      : 'border-slate-200 bg-white/90 backdrop-blur-sm hover:shadow-xl'
+                      ? 'border-red-200 bg-gradient-to-r from-red-50/80 to-pink-50/80 shadow-sm hover:shadow-2xl'
+                      : 'border-slate-200 bg-white/90 backdrop-blur-sm hover:shadow-sm'
                   }`}>
                   {/* Decorative background for at-risk items */}
                   {item.atRisk && (
@@ -569,7 +581,7 @@ export default function FinancialRiskForm() {
                         <div
                           className={`inline-flex items-center justify-center w-12 h-12 text-lg font-bold rounded-2xl transition-all duration-300 ${
                             item.atRisk
-                              ? 'bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-lg'
+                              ? 'bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-sm'
                               : 'bg-gradient-to-r from-slate-100 to-slate-200 text-slate-700 border-2 border-slate-200 group-hover:from-blue-100 group-hover:to-indigo-100 group-hover:text-blue-700'
                           }`}>
                           {item.itemNumber}
