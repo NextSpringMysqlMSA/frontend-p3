@@ -1,7 +1,7 @@
 'use client'
 
 import {useState, useEffect} from 'react'
-import {Check, ChevronsUpDown, Search, Building2} from 'lucide-react'
+import {Check, ChevronsUpDown, Building2} from 'lucide-react'
 import {Button} from '@/components/ui/button'
 import {
   Command,
@@ -17,7 +17,7 @@ import {PartnerCompany} from '@/types/scope'
 import {fetchActivePartnerCompanies, searchPartnerCompanies} from '@/services/partner'
 
 interface PartnerSelectorProps {
-  selectedPartnerId?: number
+  selectedPartnerId?: number | null
   onSelect: (partner: PartnerCompany | null) => void
   placeholder?: string
   disabled?: boolean

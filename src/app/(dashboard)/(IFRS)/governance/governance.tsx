@@ -52,7 +52,12 @@ import {
   fetchKpiList,
   fetchEducationList
 } from '@/services/governance'
-import {Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbSeparator} from '@/components/ui/breadcrumb'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbSeparator
+} from '@/components/ui/breadcrumb'
 
 /**
  * Governance 컴포넌트
@@ -247,6 +252,7 @@ export default function Governance() {
             </CardContent>
           </Card>
         </motion.div>
+
         {/* 메인 콘텐츠 */}
         <motion.div
           initial={{opacity: 0, y: 20}}

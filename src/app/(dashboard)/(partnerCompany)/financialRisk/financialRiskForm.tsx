@@ -1,13 +1,3 @@
-/**
- * 재무 위험 분석 폼 컴포넌트
- * 파트너사의 재무 건전성과 위험을 실시간으로 분석하는 페이지
- *
- * 주요 기능:
- * - 파트너사 선택 및 재무 위험 데이터 조회
- * - 위험 항목별 상세 분석 정보 표시
- * - 확장/축소 가능한 위험 항목 목록
- * - 실시간 위험 상태 모니터링
- */
 'use client'
 
 import React, {useState, useEffect} from 'react'
@@ -23,8 +13,7 @@ import {
   FileSearch,
   Check,
   ChevronsUpDown,
-  RefreshCcw,
-  ArrowLeft
+  RefreshCcw
 } from 'lucide-react'
 import {Button} from '@/components/ui/button'
 import {
@@ -48,67 +37,34 @@ import {cn} from '@/lib/utils'
 import {useToast} from '@/hooks/use-toast'
 import {LoadingState} from '@/components/ui/loading-state'
 import {
+  fetchUniquePartnerCompanyNames,
   fetchFinancialRiskAssessment,
   fetchPartnerCompanies
 } from '@/services/partnerCompany'
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbSeparator
-} from '@/components/ui/breadcrumb'
-import Link from 'next/link'
 import {FinancialRiskAssessment} from '@/types/IFRS/partnerCompany'
-import router from 'next/router'
 
-/**
- * 개별 위험 항목 데이터 구조
- * @interface RiskItem
- */
+// API 응답 타입 정의
 interface RiskItem {
-  /** 위험 항목 설명 */
   description: string
-  /** 실제 측정값 */
   actualValue: string
-  /** 위험 기준값 */
   threshold: string
-  /** 추가 설명 또는 분석 정보 */
   notes: string | null
-  /** 항목 번호 (고유 식별자) */
   itemNumber: number
-  /** 위험 상태 여부 (true: 위험, false: 안전) */
   atRisk: boolean
 }
 
-/**
- * 재무 위험 분석 전체 데이터 구조
- * @interface FinancialRiskData
- */
 interface FinancialRiskData {
-  /** 파트너사 고유 ID */
   partnerCompanyId: string
-  /** 파트너사 회사명 */
   partnerCompanyName: string
-  /** 분석 기준 연도 */
   assessmentYear: string
-  /** DART 보고서 코드 */
   reportCode: string
-  /** 위험 항목 배열 */
   riskItems: RiskItem[]
 }
 
-/**
- * ===================================================================
- * 유틸리티 함수 (Utility Functions)
- * ===================================================================
- */
+// 협력사 데이터는 이제 API에서 동적으로 가져옵니다.
+// const partners = [...] 제거됨
 
-/**
- * 위험 항목 개수에 따른 전체 위험 상태를 결정하는 함수
- * @param atRiskCount - 위험 상태인 항목의 개수
- * @returns 상태 라벨, 색상, 아이콘 정보
- */
+// 상태 레이블 유틸리티 함수
 function getStatusLabel(atRiskCount: number) {
   if (atRiskCount === 0) {
     return {
@@ -131,41 +87,17 @@ function getStatusLabel(atRiskCount: number) {
   }
 }
 
-/**
- * ===================================================================
- * 하위 컴포넌트 (Sub Components)
- * ===================================================================
- */
-
-/**
- * 파트너사 선택을 위한 콤보박스 컴포넌트의 props 타입
- * @interface PartnerComboboxProps
- */
+// PartnerCombobox의 props 타입 수정
 interface PartnerComboboxProps {
-  /** 선택 가능한 파트너사 옵션 배열 */
   options: Array<{name: string; code: string}>
-  /** 현재 선택된 파트너사의 DART 코드 */
-  value: string | null
-  /** 파트너사 선택 시 실행되는 콜백 함수 */
+  value: string | null // 선택된 협력사의 DART 코드
   onChange: (code: string) => void
 }
 
-/**
- * 파트너사 선택 콤보박스 컴포넌트
- * 드롭다운 형태로 파트너사 목록을 표시하고 선택할 수 있게 해주는 컴포넌트
- *
- * @param options - 선택 가능한 파트너사 목록
- * @param value - 현재 선택된 파트너사 코드
- * @param onChange - 선택 변경 시 호출되는 함수
- */
 function PartnerCombobox({options, value, onChange}: PartnerComboboxProps) {
-  // 드롭다운 열림/닫힘 상태
   const [open, setOpen] = useState(false)
-
-  // 현재 선택된 옵션 찾기
   const selectedOption = options.find(option => option.code === value)
 
-  // 디버깅용 로그 출력
   console.log('PartnerCombobox 렌더링:', {
     optionsLength: options.length,
     options: options,
@@ -234,66 +166,21 @@ function PartnerCombobox({options, value, onChange}: PartnerComboboxProps) {
   )
 }
 
-/**
- * ===================================================================
- * 메인 컴포넌트 (Main Component)
- * ===================================================================
- */
-
-/**
- * 재무 위험 분석 폼 메인 컴포넌트
- *
- * 파트너사의 재무 위험도를 분석하고 시각화하는 컴포넌트입니다.
- * 주요 기능:
- * - 파트너사 선택 및 검색
- * - 재무 위험 데이터 조회 및 표시
- * - 위험 항목별 상세 정보 확인
- * - 전체/개별 항목 확장/축소 기능
- *
- * @returns JSX.Element
- */
 export default function FinancialRiskForm() {
   const {toast} = useToast()
 
-  /**
-   * ===================================================================
-   * 상태 관리 (State Management)
-   * ===================================================================
-   */
-
-  /** 로딩 상태 */
+  // 상태 관리
   const [isLoading, setIsLoading] = useState(false)
-
-  /** 에러 메시지 */
   const [error, setError] = useState<string | null>(null)
-
-  /** 파트너사 옵션 목록 */
   const [partnerOptions, setPartnerOptions] = useState<
     Array<{name: string; code: string}>
   >([])
-
-  /** 선택된 파트너사의 DART 코드 */
   const [selectedPartnerCode, setSelectedPartnerCode] = useState<string | null>(null)
-
-  /** 선택된 파트너사의 회사명 */
   const [selectedPartnerName, setSelectedPartnerName] = useState<string | null>(null)
-
-  /** 재무 위험 분석 데이터 */
   const [riskData, setRiskData] = useState<FinancialRiskAssessment | null>(null)
-
-  /** 확장된 위험 항목들의 번호 Set */
   const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set())
 
-  /**
-   * ===================================================================
-   * 이벤트 핸들러 함수들 (Event Handlers)
-   * ===================================================================
-   */
-
-  /**
-   * 개별 위험 항목의 확장/축소 상태를 토글하는 함수
-   * @param itemNumber - 토글할 항목의 번호
-   */
+  // 확장/축소 토글 함수
   const toggleExpand = (itemNumber: number) => {
     setExpandedItems(prev => {
       const newSet = new Set(prev)
@@ -306,10 +193,7 @@ export default function FinancialRiskForm() {
     })
   }
 
-  /**
-   * 모든 위험 항목을 일괄 확장/축소하는 함수
-   * @param expand - true: 모두 확장, false: 모두 축소
-   */
+  // 모든 항목 확장/축소 함수
   const toggleAllExpanded = (expand: boolean) => {
     if (riskData?.riskItems) {
       if (expand) {
@@ -321,16 +205,12 @@ export default function FinancialRiskForm() {
     }
   }
 
-  /**
-   * ===================================================================
-   * API 호출 함수들 (API Functions)
-   * ===================================================================
-   */
+  // 초기 데이터 로드
+  useEffect(() => {
+    loadPartnerOptions()
+  }, [])
 
-  /**
-   * 파트너사 목록을 서버에서 가져오는 함수
-   * 페이지네이션된 응답을 처리하고 콤보박스 옵션 형태로 변환
-   */
+  // 파트너사 옵션 로드
   const loadPartnerOptions = async () => {
     try {
       setIsLoading(true)
@@ -390,12 +270,7 @@ export default function FinancialRiskForm() {
     }
   }
 
-  /**
-   * 파트너사 선택 시 실행되는 핸들러 함수
-   * 선택된 파트너사의 재무 위험 분석 데이터를 가져옴
-   *
-   * @param code - 선택된 파트너사의 DART 코드
-   */
+  // 파트너사 선택 시 핸들러
   const handlePartnerSelect = async (code: string) => {
     setSelectedPartnerCode(code)
 
@@ -433,86 +308,43 @@ export default function FinancialRiskForm() {
     }
   }
 
-  /**
-   * ===================================================================
-   * 생명주기 및 부수 효과 (Lifecycle & Side Effects)
-   * ===================================================================
-   */
-
-  // 컴포넌트 마운트 시 파트너사 목록 로드
-  useEffect(() => {
-    loadPartnerOptions()
-  }, [])
-
-  /**
-   * ===================================================================
-   * 계산된 값들 (Computed Values)
-   * ===================================================================
-   */
-
   // 위험 항목 수 계산
   const atRiskCount = riskData?.riskItems?.filter(item => item.atRisk).length || 0
-
-  // 전체 위험 상태 정보
   const statusInfo = getStatusLabel(atRiskCount)
 
   return (
-    <div className="flex flex-col w-full h-full p-4 pt-24">
-      <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <Home className="w-4 h-4 mr-1" />
-              <BreadcrumbLink href="/home">대시보드</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/financialRisk">협력사 재무 위험 분석</BreadcrumbLink>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+    <div className="flex flex-col w-full h-full min-h-screen p-4 md:p-8 bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50">
+      {/* Enhanced Breadcrumb */}
+      <div className="flex flex-row items-center p-4 px-6 mb-8 text-sm border shadow-lg text-slate-600 bg-white/80 backdrop-blur-sm rounded-2xl border-slate-200/50">
+        <div className="flex items-center justify-center w-8 h-8 mr-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl">
+          <Home className="w-4 h-4 text-white" />
+        </div>
+        <span className="font-semibold text-slate-700">협력사 관리</span>
+        <ChevronRight className="w-4 h-4 mx-3 text-slate-400" />
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-gradient-to-r from-emerald-400 to-teal-500"></div>
+          <span className="font-bold text-customG">재무제표 리스크 관리</span>
+        </div>
       </div>
 
-      <div className="flex items-start gap-2 mb-2">
-        <ArrowLeft
-          onClick={() => router.push('/home')}
-          className="w-5 h-5 mt-3 mb-1 text-gray-400 cursor-pointer hover:text-blue-600"
-        />
+      {/* Enhanced Page Header */}
+      <div className="mb-8">
         <PageHeader
           icon={<Building2 className="w-8 h-8" />}
           title="협력사 재무 위험 분석"
-          description="사의 재무 건전성과 위험을 분석합니다."
+          description="파트너사의 재무 건전성과 위험을 실시간으로 분석합니다."
           module="CSDD"
         />
       </div>
 
-      <div className="flex flex-row w-full h-full mb-6">
-        <Link
-          href="/home"
-          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
-          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
-          <PageHeader
-            icon={<Building2 className="w-8 h-8" />}
-            title="협력사 재무 위험 분석"
-            description="사의 재무 건전성과 위험을 분석합니다."
-            module="CSDD"
-          />
-        </Link>
-      </div>
-
-      {/* 
-        ===============================================================
-        파트너사 선택 패널 (Partner Selection Panel)
-        =============================================================== 
-      */}
+      {/* Enhanced Selection Panel */}
       <div className="relative p-8 mt-2 overflow-hidden border shadow-xl bg-white/90 backdrop-blur-sm rounded-3xl border-slate-200/50">
-        {/* 장식용 배경 요소들 */}
+        {/* Decorative background elements */}
         <div className="absolute top-0 right-0 w-32 h-32 translate-x-16 -translate-y-16 rounded-full bg-gradient-to-br from-blue-100/50 to-indigo-100/50"></div>
         <div className="absolute bottom-0 left-0 w-24 h-24 -translate-x-12 translate-y-12 rounded-full bg-gradient-to-tr from-emerald-100/50 to-teal-100/50"></div>
 
         <div className="relative z-10">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-            {/* 파트너사 선택 영역 */}
             <div className="flex-1 max-w-lg">
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl">
@@ -533,8 +365,6 @@ export default function FinancialRiskForm() {
                 onChange={handlePartnerSelect}
               />
             </div>
-
-            {/* 데이터 새로고침 버튼 */}
             <Button
               variant="outline"
               onClick={() => {
@@ -550,21 +380,12 @@ export default function FinancialRiskForm() {
         </div>
       </div>
 
-      {/* 
-        ===============================================================
-        로딩 상태 및 메인 콘텐츠 (Loading State & Main Content)
-        =============================================================== 
-      */}
       <LoadingState isLoading={isLoading} error={error} isEmpty={!riskData}>
         {riskData && (
           <div className="mt-12 space-y-10">
-            {/* 
-              ==========================================================
-              상태 카드들 (Status Cards)
-              ========================================================== 
-            */}
+            {/* Enhanced Status Cards */}
             <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-              {/* 파트너사 정보 카드 */}
+              {/* Company Info Card */}
               <Card className="relative overflow-hidden transition-all duration-300 border-2 shadow-xl bg-white/90 backdrop-blur-sm border-slate-200/50 rounded-3xl hover:shadow-2xl group">
                 <div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-gradient-to-br from-blue-50/80 to-indigo-50/80 group-hover:opacity-100"></div>
                 <CardHeader className="relative z-10 pb-4 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-t-3xl">
@@ -588,7 +409,7 @@ export default function FinancialRiskForm() {
                 </CardContent>
               </Card>
 
-              {/* 분석 기준 정보 카드 */}
+              {/* Assessment Info Card */}
               <Card className="relative overflow-hidden transition-all duration-300 border-2 shadow-xl bg-white/90 backdrop-blur-sm border-slate-200/50 rounded-3xl hover:shadow-2xl group">
                 <div className="absolute inset-0 transition-opacity duration-300 opacity-0 bg-gradient-to-br from-emerald-50/80 to-teal-50/80 group-hover:opacity-100"></div>
                 <CardHeader className="relative z-10 pb-4 bg-gradient-to-br from-emerald-50 to-teal-100 rounded-t-3xl">
@@ -612,7 +433,7 @@ export default function FinancialRiskForm() {
                 </CardContent>
               </Card>
 
-              {/* 위험 상태 카드 */}
+              {/* Risk Status Card */}
               <Card
                 className={`bg-white/90 backdrop-blur-sm border-2 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 group overflow-hidden relative ${
                   atRiskCount === 0
@@ -684,13 +505,9 @@ export default function FinancialRiskForm() {
               </Card>
             </div>
 
-            {/* 
-              ==========================================================
-              제어 섹션 (Control Section)
-              ========================================================== 
-            */}
+            {/* Enhanced Control Section */}
             <div className="relative p-8 overflow-hidden border-2 shadow-xl bg-white/90 backdrop-blur-sm rounded-3xl border-slate-200/50">
-              {/* 장식용 요소 */}
+              {/* Decorative elements */}
               <div className="absolute top-0 right-0 w-20 h-20 translate-x-10 -translate-y-10 rounded-full bg-gradient-to-br from-amber-100/50 to-orange-100/50"></div>
 
               <div className="relative z-10 flex items-center justify-between">
@@ -711,8 +528,6 @@ export default function FinancialRiskForm() {
                     </p>
                   </div>
                 </div>
-
-                {/* 전체 확장/축소 버튼들 */}
                 <div className="flex gap-4">
                   <Button
                     variant="outline"
@@ -734,11 +549,7 @@ export default function FinancialRiskForm() {
               </div>
             </div>
 
-            {/* 
-              ==========================================================
-              위험 항목 목록 (Risk Items List)
-              ========================================================== 
-            */}
+            {/* Enhanced Risk Items */}
             <div className="space-y-6">
               {riskData.riskItems.map(item => (
                 <Card
@@ -748,18 +559,16 @@ export default function FinancialRiskForm() {
                       ? 'border-red-200 bg-gradient-to-r from-red-50/80 to-pink-50/80 shadow-xl hover:shadow-2xl'
                       : 'border-slate-200 bg-white/90 backdrop-blur-sm hover:shadow-xl'
                   }`}>
-                  {/* 위험 항목용 장식 배경 */}
+                  {/* Decorative background for at-risk items */}
                   {item.atRisk && (
                     <div className="absolute top-0 right-0 w-32 h-32 translate-x-16 -translate-y-16 rounded-full bg-gradient-to-br from-red-100/30 to-pink-100/30"></div>
                   )}
 
-                  {/* 위험 항목 헤더 - 클릭 시 확장/축소 */}
                   <CardHeader
                     className="relative z-10 pb-4 transition-all duration-300 cursor-pointer hover:bg-slate-50/50 rounded-t-3xl"
                     onClick={() => toggleExpand(item.itemNumber)}>
                     <div className="flex items-center justify-between">
                       <CardTitle className="flex items-center gap-4 text-lg font-bold">
-                        {/* 항목 번호 표시 */}
                         <div
                           className={`inline-flex items-center justify-center w-12 h-12 text-lg font-bold rounded-2xl transition-all duration-300 ${
                             item.atRisk
@@ -768,8 +577,6 @@ export default function FinancialRiskForm() {
                           }`}>
                           {item.itemNumber}
                         </div>
-
-                        {/* 항목 설명 및 상태 */}
                         <div className="flex-1">
                           <span className="block text-slate-800">{item.description}</span>
                           {item.atRisk && (
@@ -782,8 +589,6 @@ export default function FinancialRiskForm() {
                           )}
                         </div>
                       </CardTitle>
-
-                      {/* 확장/축소 아이콘 */}
                       <div className="flex items-center gap-3">
                         <div
                           className={`p-3 rounded-2xl transition-all duration-300 ${
@@ -799,11 +604,8 @@ export default function FinancialRiskForm() {
                         </div>
                       </div>
                     </div>
-
-                    {/* 실제값과 기준값 표시 */}
                     <CardDescription className="mt-4 ml-16">
                       <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
-                        {/* 실제값 */}
                         <div className="flex items-center gap-3">
                           <span className="font-semibold text-slate-600 whitespace-nowrap">
                             실제값:
@@ -817,8 +619,6 @@ export default function FinancialRiskForm() {
                             {item.actualValue}
                           </div>
                         </div>
-
-                        {/* 기준값 */}
                         <div className="flex items-center gap-3">
                           <span className="font-semibold text-slate-600 whitespace-nowrap">
                             기준값:
@@ -831,24 +631,16 @@ export default function FinancialRiskForm() {
                     </CardDescription>
                   </CardHeader>
 
-                  {/* 
-                    =======================================================
-                    확장된 상세 정보 섹션 (Expanded Detail Section)
-                    ======================================================= 
-                  */}
                   {expandedItems.has(item.itemNumber) && (
                     <CardContent className="relative z-10 pt-0 pb-8">
                       <div className="relative p-6 mx-4 overflow-hidden border rounded-2xl bg-gradient-to-r from-slate-50 to-slate-100 border-slate-200">
-                        {/* 장식용 요소 */}
+                        {/* Decorative element */}
                         <div className="absolute bottom-0 right-0 w-16 h-16 translate-x-8 translate-y-8 rounded-full bg-gradient-to-br from-blue-100/50 to-indigo-100/50"></div>
 
                         <div className="relative z-10 flex items-start gap-4">
-                          {/* 아이콘 */}
                           <div className="p-3 bg-white border shadow-sm rounded-2xl border-slate-200">
                             <FileSearch className="w-6 h-6 text-slate-500" />
                           </div>
-
-                          {/* 상세 정보 내용 */}
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-3">
                               <h4 className="text-lg font-bold text-slate-800">

@@ -10,7 +10,7 @@ import {
 import {cn} from '@/lib/utils'
 
 interface MonthSelectorProps {
-  selectedMonth?: number
+  selectedMonth?: number | null
   onSelect: (month: number) => void
   placeholder?: string
   disabled?: boolean
@@ -41,7 +41,7 @@ export function MonthSelector({
 }: MonthSelectorProps) {
   return (
     <Select
-      value={selectedMonth?.toString()}
+      value={selectedMonth ? selectedMonth.toString() : undefined}
       onValueChange={value => onSelect(parseInt(value))}
       disabled={disabled}>
       <SelectTrigger
