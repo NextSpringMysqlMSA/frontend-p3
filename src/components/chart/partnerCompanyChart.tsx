@@ -2,9 +2,14 @@
 
 import {useEffect, useState} from 'react'
 import {Skeleton} from '@/components/ui/skeleton'
+import {fetchPartnerCompanyProgress} from '@/services/dashboard'
+import {Building2, Calendar} from 'lucide-react'
+
+import {ScrollArea} from '@/components/ui/scroll-area'
+import {Badge} from '@/components/ui/badge'
 
 interface PartnerCompany {
-  id: number
+  id: string
   name: string
   registeredAt: string
 }
@@ -17,31 +22,17 @@ export default function PartnerCompanyChart({refreshTrigger}: {refreshTrigger: n
     const loadData = async () => {
       setLoading(true)
       try {
-        const dummyData: PartnerCompany[] = [
-          {id: 1, name: '에코그린 주식회사', registeredAt: '2024-05-01'},
-          {id: 2, name: '클린에너지솔루션', registeredAt: '2024-05-03'},
-          {id: 3, name: '지속가능텍 주식회사', registeredAt: '2024-04-22'},
-          {id: 4, name: '블루오션산업', registeredAt: '2024-05-06'},
-          {id: 5, name: '그린어스코리아', registeredAt: '2024-05-28'},
-          {id: 6, name: '에버에코 주식회사', registeredAt: '2024-03-19'},
-          {id: 7, name: '선샤인테크', registeredAt: '2024-04-18'},
-          {id: 8, name: '퓨처에너지', registeredAt: '2024-05-04'},
-          {id: 9, name: '넥스트그린', registeredAt: '2024-04-25'},
-          {id: 10, name: '에코리더스', registeredAt: '2024-05-10'},
-          {id: 11, name: '바이오플랜', registeredAt: '2024-05-11'},
-          {id: 12, name: '솔라플랜트', registeredAt: '2024-04-20'},
-          {id: 13, name: '코리아에코텍', registeredAt: '2024-05-13'},
-          {id: 14, name: '지구사랑기업', registeredAt: '2024-05-07'},
-          {id: 15, name: '엘지에너지파트너스', registeredAt: '2024-05-05'},
-          {id: 16, name: '에코어스테크', registeredAt: '2024-04-30'},
-          {id: 17, name: '클린에버', registeredAt: '2024-05-09'},
-          {id: 18, name: '청정하이텍', registeredAt: '2024-04-28'},
-          {id: 19, name: '바이오넥스트', registeredAt: '2024-05-14'},
-          {id: 20, name: '그린테크솔루션', registeredAt: '2024-05-02'}
-        ]
+        const responseData = await fetchPartnerCompanyProgress()
 
-        // 등록일 기준 정렬 (날짜 있는 항목 우선, 최신순)
-        const sorted = [...dummyData].sort((a, b) => {
+        // 응답 데이터 가공 (백엔드 응답: corp_name, contract_start_date)
+        const mapped: PartnerCompany[] = responseData.data.map((item: any) => ({
+          id: item.id,
+          name: item.corp_name,
+          registeredAt: item.contract_start_date
+        }))
+
+        // 등록일 기준 정렬 (최신순)
+        const sorted = mapped.sort((a, b) => {
           if (!a.registeredAt) return 1
           if (!b.registeredAt) return -1
           return b.registeredAt.localeCompare(a.registeredAt)
@@ -59,31 +50,67 @@ export default function PartnerCompanyChart({refreshTrigger}: {refreshTrigger: n
   }, [refreshTrigger])
 
   return loading ? (
-    <div className="p-4 space-y-2">
-      <Skeleton className="w-1/3 h-4" />
-      <Skeleton className="w-full h-4" />
-      <Skeleton className="w-full h-4" />
+    <div className="p-4 space-y-3">
+      {[...Array(5)].map((_, i) => (
+        <div key={i} className="flex items-center space-x-4">
+          <Skeleton className="w-12 h-12 rounded-full" />
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-[250px]" />
+            <Skeleton className="h-4 w-[200px]" />
+          </div>
+        </div>
+      ))}
     </div>
   ) : (
-    <div>
-      <table className="flex-1 min-w-full text-sm text-center">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="px-4 py-2 border border-gray-300">협력사명</th>
-            <th className="px-4 py-2 border border-gray-300">등록일</th>
-          </tr>
-        </thead>
-        <tbody>
+    <ScrollArea className="h-[300px] w-full rounded-md border border-gray-100">
+      <div className="p-4">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-medium text-gray-700">등록된 협력사 목록</h3>
+          <Badge variant="outline" className="text-xs">
+            총 {data.length}개사
+          </Badge>
+        </div>
+        <div className="space-y-4">
           {data.map(company => (
-            <tr key={company.id} className="hover:bg-gray-50">
-              <td className="px-4 py-2 border border-gray-300">{company.name}</td>
-              <td className="px-4 py-2 border border-gray-300">
-                {company.registeredAt || <span className="text-gray-400">-</span>}
-              </td>
-            </tr>
+            <div
+              key={company.id}
+              className="flex items-center justify-between p-4 transition-all bg-white border border-gray-100 rounded-lg shadow-sm hover:border-gray-200 hover:shadow-md">
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-50">
+                  <Building2 className="w-5 h-5 text-blue-500" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-900">{company.name}</h4>
+                  <div className="flex items-center mt-1 space-x-2">
+                    <Calendar className="h-3.5 w-3.5 text-gray-400" />
+                    <span className="text-xs text-gray-500">
+                      {company.registeredAt ? (
+                        new Date(company.registeredAt).toLocaleDateString('ko-KR', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })
+                      ) : (
+                        <span className="text-gray-400">미등록</span>
+                      )}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <Badge
+                variant={company.registeredAt ? 'default' : 'secondary'}
+                className="text-xs">
+                {company.registeredAt ? '등록 완료' : '진행중'}
+              </Badge>
+            </div>
           ))}
-        </tbody>
-      </table>
-    </div>
+        </div>
+        {data.length === 0 && (
+          <div className="flex h-[200px] items-center justify-center">
+            <p className="text-sm text-gray-500">등록된 협력사가 없습니다.</p>
+          </div>
+        )}
+      </div>
+    </ScrollArea>
   )
 }

@@ -32,7 +32,8 @@ import {
   Filter, // 필터 아이콘
   Activity, // 활동 아이콘
   ArrowLeft, // 왼쪽 화살표 (뒤로가기)
-  Home // 홈 아이콘
+  Home, // 홈 아이콘
+  Factory
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -79,6 +80,8 @@ import {
 } from '@/services/scope'
 import {fetchPartnerCompaniesForScope} from '@/services/partnerCompany'
 import {PartnerSelector} from '@/components/scope/PartnerSelector'
+import {DirectionButton} from '@/components/layout/direction'
+import {PageHeader} from '@/components/layout/PageHeader'
 
 /**
  * 목업 협력사 데이터
@@ -349,7 +352,7 @@ const Scope2Form: React.FC = () => {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/scope2">Scope 2</BreadcrumbLink>
+              <span className="font-bold text-customG">Scope2</span>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -362,19 +365,15 @@ const Scope2Form: React.FC = () => {
       <div className="flex flex-row w-full h-full mb-6">
         <Link
           href="/home"
-          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200 group">
-          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-customG-600" />
-          <div className="flex items-center space-x-6">
-            <div className="p-4 border shadow-sm rounded-2xl bg-gradient-to-br from-customG-100 via-customG-200 to-emerald-200 border-customG-300/20">
-              <Zap className="w-6 h-6 text-customG-700" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-customG-800">Scope 2 배출량 관리</h1>
-              <p className="text-base font-medium text-customG-600">
-                간접 배출량 (전력, 스팀) 데이터를 관리하고 추적합니다
-              </p>
-            </div>
-          </div>
+          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
+          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
+          <PageHeader
+            icon={<Factory className="w-6 h-6 text-blue-600" />}
+            title="Scope 2 배출량 관리"
+            description="간접 배출량 (전력, 스팀) 데이터를 관리하고 추적합니다"
+            module="Scope"
+            submodule="Scope2"
+          />
         </Link>
       </div>
 
@@ -911,6 +910,14 @@ const Scope2Form: React.FC = () => {
         defaultMonth={editingItem?.reportingMonth || new Date().getMonth() + 1}
         scope="SCOPE2"
         partnerCompanies={partners.map(convertToPartnerCompany)}
+      />
+      <DirectionButton
+        direction="left"
+        tooltip="scope1으로 이동"
+        href="/scope1"
+        fixed
+        position="middle-left"
+        size={48}
       />
     </div>
   )

@@ -435,8 +435,8 @@ export default function Home() {
                   (EU공급망 / 인권 / 환경) 실사 자가진단 현황
                 </CardDescription>
               </CardHeader>
-              <CardContent className="flex items-center justify-center flex-1 p-4">
-                <div className="flex items-center justify-center w-full px-4">
+              <CardContent className="flex flex-col flex-1 p-4">
+                <div className="flex-1 w-full overflow-y-auto max-h-[300px] pr-2 allow-scroll">
                   {mounted && <CsdddChart refreshTrigger={refreshTrigger} />}
                 </div>
               </CardContent>
@@ -459,8 +459,8 @@ export default function Home() {
                 </div>
                 <CardDescription>등록된 협력사 리스트와 상태 확인</CardDescription>
               </CardHeader>
-              <CardContent className="flex items-center justify-center flex-1 p-4">
-                <div className="w-full h-48 p-4 overflow-y-auto border-2 rounded-lg">
+              <CardContent className="flex flex-col flex-1 p-4">
+                <div className="flex-1 w-full overflow-y-auto max-h-[300px] pr-2 allow-scroll">
                   {mounted && <PartnerCompanyChart refreshTrigger={refreshTrigger} />}
                 </div>
               </CardContent>

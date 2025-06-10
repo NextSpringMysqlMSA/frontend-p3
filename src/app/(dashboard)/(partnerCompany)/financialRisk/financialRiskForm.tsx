@@ -12,7 +12,9 @@ import {
   FileSearch,
   Check,
   ChevronsUpDown,
-  RefreshCcw
+  RefreshCcw,
+  ArrowLeft,
+  Receipt
 } from 'lucide-react'
 import {Button} from '@/components/ui/button'
 import {
@@ -22,6 +24,7 @@ import {
   CardTitle,
   CardDescription
 } from '@/components/ui/card'
+import Link from 'next/link'
 import {PageHeader} from '@/components/layout/PageHeader'
 import {
   Command,
@@ -337,6 +340,20 @@ export default function FinancialRiskForm() {
           </BreadcrumbList>
         </Breadcrumb>
       </motion.div>
+      {/* PageHeader + ArrowLeft */}
+      <div className="flex flex-row w-full h-full mb-6">
+        <Link
+          href="/home"
+          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
+          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
+          <PageHeader
+            icon={<Receipt className="w-8 h-8 text-customG" />}
+            title="재무제표 리스크 관리"
+            description="재무제표 리스크 관리를 통해 파트너사의 재무 위험도를 분석하고 관리합니다."
+            module="Partner Company"
+          />
+        </Link>
+      </div>
 
       {/* Enhanced Selection Panel */}
       <div className="relative p-8 mt-2 overflow-hidden border shadow-sm bg-white/90 backdrop-blur-sm rounded-3xl border-slate-200/50">
