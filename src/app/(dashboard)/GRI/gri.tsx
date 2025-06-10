@@ -287,7 +287,7 @@ export default function GRI() {
   return (
     <div className="flex flex-col w-full h-full p-4 pt-24">
       {/* 상단 네비게이션 */}
-      <div className="flex flex-row items-center px-4 py-2 mb-4 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
+      <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -345,7 +345,7 @@ export default function GRI() {
           </div>
         </CardHeader>
 
-        <CardContent className="pt-6">
+        <CardContent className="p-4">
           <LoadingState isLoading={loading} error={error} isEmpty={false}>
             {!selectedTable ? (
               <GRITableCards
