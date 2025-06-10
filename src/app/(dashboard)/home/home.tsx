@@ -332,7 +332,7 @@ export default function Home() {
       </motion.div>
       {/* 상단 두 개 카드  ==============================================================================================================================*/}
       <motion.div
-        className="flex flex-row justify-between w-full h-full mb-6 space-x-6"
+        className="flex flex-row justify-between w-full h-full mb-4 space-x-4"
         variants={containerVariants}
         initial="hidden"
         animate="visible">
@@ -413,7 +413,7 @@ export default function Home() {
       </motion.div>
       {/* 하단 세 개 카드 ====================================================================================================================================*/}
       <motion.div
-        className="flex flex-row justify-between w-full h-full space-x-6"
+        className="flex flex-row justify-between w-full h-full space-x-4"
         variants={containerVariants}
         initial="hidden"
         animate="visible">
