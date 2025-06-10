@@ -678,7 +678,7 @@ export default function ManagePartnerPage() {
             icon={<Building2 className="w-8 h-8 text-customG" />}
             title="파트너사 관리"
             description="파트너사를 등록, 조회, 수정 및 삭제합니다."
-            module="CSDD"
+            module="Partner Company"
           />
         </Link>
       </div>
@@ -747,6 +747,14 @@ export default function ManagePartnerPage() {
         onConfirmDelete={handleDeletePartner}
         isSubmitting={isSubmitting}
         onClearSelection={() => setSelectedPartner(null)}
+      />
+      <DirectionButton
+        direction="right"
+        tooltip="재무 제표 리스크 관리로 이동"
+        href="/financialRisk"
+        fixed
+        position="middle-right"
+        size={48}
       />
     </div>
   )

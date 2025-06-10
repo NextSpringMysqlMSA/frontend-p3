@@ -1,6 +1,7 @@
 'use client'
 
 import api from '@/lib/axios'
+import {useAuthStore} from '@/stores/authStore'
 
 export const fetchTcfdProgress = async () => {
   const response = await api.get(`/api/v1/dashboard/tcfd/progress`)
@@ -23,7 +24,7 @@ export const fetchCsdddProgress = async () => {
 }
 
 export const fetchPartnerCompanyProgress = async () => {
-  const response = await api.get(`/api/v1/dashboard/partnercompany/progress`)
+  const response = await api.get(`/api/v1/partners/partner-companies`)
   return response.data
 }
 

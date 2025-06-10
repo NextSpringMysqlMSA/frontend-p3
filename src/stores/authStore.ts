@@ -9,6 +9,7 @@ interface AuthState {
   getAuthorizationHeader: () => string | null // 요청 헤더에 사용할 Authorization 문자열 반환
 }
 //------------------------------------------------------------------------------
+// 인증 관련 상태를 정의하는 인터페이스
 
 // Zustand 상태 저장소 생성 및 로컬 스토리지에 영속(persist)
 export const useAuthStore = create(

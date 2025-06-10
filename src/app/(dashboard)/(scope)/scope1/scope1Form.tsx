@@ -82,6 +82,8 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator
 } from '@/components/ui/breadcrumb'
+import {DirectionButton} from '@/components/layout/direction'
+import {PageHeader} from '@/components/layout/PageHeader'
 
 /**
  * 목업 협력사 데이터
@@ -303,7 +305,7 @@ export default function Scope1Form() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/scope1">Scope 1</BreadcrumbLink>
+              <span className="font-bold text-customG">Scope1</span>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -313,22 +315,19 @@ export default function Scope1Form() {
           헤더 섹션 (Header Section)
           - 뒤로가기 버튼과 페이지 제목/설명
           ======================================================================== */}
+
       <div className="flex flex-row w-full h-full mb-6">
         <Link
           href="/home"
-          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200 group">
-          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-customG-600" />
-          <div className="flex items-center space-x-6">
-            <div className="p-4 border shadow-sm rounded-2xl bg-gradient-to-br from-customG-100 via-customG-200 to-emerald-200 border-customG-300/20">
-              <Factory className="w-6 h-6 text-customG-700" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-customG-800">Scope 1 배출량 관리</h1>
-              <p className="text-base font-medium text-customG-600">
-                직접 배출량 (고정연소, 이동연소) 데이터를 관리하고 추적합니다
-              </p>
-            </div>
-          </div>
+          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
+          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
+          <PageHeader
+            icon={<Factory className="w-6 h-6 text-blue-600" />}
+            title="Scope 1 배출량 관리"
+            description="직접 배출량 (고정연소, 이동연소) 데이터를 관리하고 추적합니다"
+            module="Scope"
+            submodule="Scope1"
+          />
         </Link>
       </div>
 
@@ -925,6 +924,14 @@ export default function Scope1Form() {
         defaultYear={selectedYear}
         defaultMonth={selectedMonth || new Date().getMonth() + 1}
         scope="SCOPE1"
+      />
+      <DirectionButton
+        direction="right"
+        tooltip="scope2으로 이동"
+        href="/scope2"
+        fixed
+        position="middle-right"
+        size={48}
       />
     </div>
   )
