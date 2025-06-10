@@ -52,7 +52,14 @@ import {
   fetchKpiList,
   fetchEducationList
 } from '@/services/governance'
-import {Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbSeparator} from '@/components/ui/breadcrumb'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbSeparator
+} from '@/components/ui/breadcrumb'
+import {DirectionButton} from '@/components/layout/direction'
+
 
 /**
  * Governance 컴포넌트
@@ -147,7 +154,7 @@ export default function Governance() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/governance">거버넌스</BreadcrumbLink>
+              <span className="font-bold text-customG">거버넌스</span>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -247,6 +254,7 @@ export default function Governance() {
             </CardContent>
           </Card>
         </motion.div>
+
         {/* 메인 콘텐츠 */}
         <motion.div
           initial={{opacity: 0, y: 20}}
@@ -414,6 +422,14 @@ export default function Governance() {
           </Card>
         </motion.div>
       </LoadingState>
+      <DirectionButton
+        direction="right"
+        tooltip="전략으로 이동"
+        href="/strategy"
+        fixed
+        position="middle-right"
+        size={48}
+      />
     </div>
   )
 }

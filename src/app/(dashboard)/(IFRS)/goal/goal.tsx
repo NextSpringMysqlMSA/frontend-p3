@@ -60,8 +60,14 @@ import {PageHeader} from '@/components/layout/PageHeader'
 import {Skeleton} from '@/components/ui/skeleton'
 import {LoadingState} from '@/components/ui/loading-state'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
-import {Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbLink,  BreadcrumbSeparator} from '@/components/ui/breadcrumb'
-
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbLink,
+  BreadcrumbSeparator
+} from '@/components/ui/breadcrumb'
+import {DirectionButton} from '@/components/layout/direction'
 
 ChartJS.register(
   ArcElement,
@@ -352,7 +358,7 @@ export default function Goal() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/goal">목표 및 지표</BreadcrumbLink>
+              <span className="font-bold text-customG">목표 및 지표</span>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -802,6 +808,14 @@ export default function Goal() {
           </Card>
         </motion.div>
       </LoadingState>
+      <DirectionButton
+        direction="left"
+        tooltip="전략로 이동"
+        href="/strategy"
+        fixed
+        position="middle-left"
+        size={48}
+      />
     </div>
   )
 }
