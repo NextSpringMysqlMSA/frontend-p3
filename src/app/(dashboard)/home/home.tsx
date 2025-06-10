@@ -459,8 +459,8 @@ export default function Home() {
                 </div>
                 <CardDescription>등록된 협력사 리스트와 상태 확인</CardDescription>
               </CardHeader>
-              <CardContent className="flex flex-col flex-1 p-4">
-                <div className="flex-1 w-full overflow-y-auto max-h-[300px] pr-2 allow-scroll">
+              <CardContent className="flex items-center justify-center flex-1 p-4">
+                <div className="w-full h-48 p-4 overflow-hidden allow-scroll">
                   {mounted && <PartnerCompanyChart refreshTrigger={refreshTrigger} />}
                 </div>
               </CardContent>

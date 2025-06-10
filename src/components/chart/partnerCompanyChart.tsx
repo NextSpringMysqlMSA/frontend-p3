@@ -62,7 +62,7 @@ export default function PartnerCompanyChart({refreshTrigger}: {refreshTrigger: n
       ))}
     </div>
   ) : (
-    <ScrollArea className="h-[300px] w-full rounded-md border border-gray-100">
+    <ScrollArea className="w-full border border-gray-100 rounded-md h-44">
       <div className="p-4">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-medium text-gray-700">등록된 협력사 목록</h3>
