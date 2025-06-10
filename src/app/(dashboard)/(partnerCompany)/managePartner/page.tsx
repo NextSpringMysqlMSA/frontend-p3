@@ -34,6 +34,11 @@ import {PageHeader} from '@/components/layout/PageHeader'
 import {
   Building2, // 빌딩 아이콘 (파트너사 표시)
   Home, // 홈 아이콘 (브레드크럼)
+
+  ChevronRight, // 오른쪽 화살표 (브레드크럼)
+  ChevronLeft, // 왼쪽 화살표 (페이지네이션)
+  Users, // 사용자 그룹 아이콘
+
   ArrowLeft
 } from 'lucide-react'
 
@@ -48,6 +53,35 @@ import {
 } from '@/components/partner/PartnerEmptyStates'
 import {PartnerPagination} from '@/components/partner/PartnerPagination'
 import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
+import {Button} from '@/components/ui/button'
+import {Input} from '@/components/ui/input'
+import {Label} from '@/components/ui/label'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from '@/components/ui/alert-dialog'
+import {DirectionButton} from '@/components/layout/direction'
+// 커스텀 훅
+import {useToast} from '@/hooks/use-toast'
   PartnerLoadingState,
   PageLoadingState
 } from '@/components/partner/PartnerLoadingStates'
@@ -79,6 +113,7 @@ import {useDebounce} from '@/hooks/useDebounce'
 
 // 타입 정의
 import {DartCorpInfo, PartnerCompany} from '@/types/IFRS/partnerCompany'
+import {motion} from 'framer-motion'
 
 /**
  * ===================================================================
@@ -616,7 +651,11 @@ export default function ManagePartnerPage() {
 
   return (
     <div className="flex flex-col w-full h-full p-4 pt-24">
-      <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
+      <motion.div
+        initial={{opacity: 0, y: -10}}
+        animate={{opacity: 1, y: 0}}
+        transition={{duration: 0.3}}
+        className="flex flex-row items-center px-4 py-2 mb-4 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -625,13 +664,16 @@ export default function ManagePartnerPage() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/managePartner">파트너사 관리</BreadcrumbLink>
+              <span className="font-bold text-customG">파트너사 관리</span>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-      </div>
+
+      </motion.div>
       {/* PageHeader + ArrowLeft */}
-      <div className="flex flex-row w-full h-full">
+      <div className="flex flex-row w-full h-full mb-6">
+
+
         <Link
           href="/home"
           className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
@@ -702,6 +744,7 @@ export default function ManagePartnerPage() {
         />
       </div>
 
+
       <PartnerDeleteDialog
         isOpen={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
@@ -709,6 +752,7 @@ export default function ManagePartnerPage() {
         onConfirmDelete={handleDeletePartner}
         isSubmitting={isSubmitting}
         onClearSelection={() => setSelectedPartner(null)}
+
       />
     </div>
   )

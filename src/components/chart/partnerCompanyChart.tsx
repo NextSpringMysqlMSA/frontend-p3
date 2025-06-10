@@ -2,14 +2,6 @@
 
 import {useEffect, useState} from 'react'
 import {Skeleton} from '@/components/ui/skeleton'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table'
 
 interface PartnerCompany {
   id: number
@@ -73,23 +65,25 @@ export default function PartnerCompanyChart({refreshTrigger}: {refreshTrigger: n
       <Skeleton className="w-full h-4" />
     </div>
   ) : (
-    <Table className="text-sm">
-      <TableHeader>
-        <TableRow className="bg-gray-50">
-          <TableHead className="text-center text-gray-700">협력사명</TableHead>
-          <TableHead className="text-center text-gray-700">등록일</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {data.map(company => (
-          <TableRow key={company.id}>
-            <TableCell className="text-center text-gray-800">{company.name}</TableCell>
-            <TableCell className="text-center text-gray-600">
-              {company.registeredAt || <span className="text-gray-400">-</span>}
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <div>
+      <table className="flex-1 min-w-full text-sm text-center">
+        <thead className="bg-gray-100">
+          <tr>
+            <th className="px-4 py-2 border border-gray-300">협력사명</th>
+            <th className="px-4 py-2 border border-gray-300">등록일</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map(company => (
+            <tr key={company.id} className="hover:bg-gray-50">
+              <td className="px-4 py-2 border border-gray-300">{company.name}</td>
+              <td className="px-4 py-2 border border-gray-300">
+                {company.registeredAt || <span className="text-gray-400">-</span>}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   )
 }

@@ -49,6 +49,8 @@ import {
   BreadcrumbSeparator
 } from '@/components/ui/breadcrumb'
 
+import {DirectionButton} from '@/components/layout/direction'
+
 export default function Strategy() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -124,7 +126,7 @@ export default function Strategy() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/strategy">전략</BreadcrumbLink>
+              <span className="font-bold text-customG">전략</span>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -423,6 +425,26 @@ export default function Strategy() {
           </CardContent>
         </div>
       </LoadingState>
+
+      {/* 👈 왼쪽: 거버넌스로 이동 */}
+      <DirectionButton
+        direction="left"
+        tooltip="거버넌스로 이동"
+        href="/governance"
+        fixed
+        position="middle-left"
+        size={48}
+      />
+
+      {/* 👉 오른쪽: 골로 이동 */}
+      <DirectionButton
+        direction="right"
+        tooltip="목표 및 지표로 이동"
+        href="/goal"
+        fixed
+        position="middle-right"
+        size={48}
+      />
     </div>
   )
 }
