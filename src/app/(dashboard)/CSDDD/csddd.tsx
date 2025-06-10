@@ -99,7 +99,7 @@ export default function CSDDD() {
           <CardDescription>진행하실 실사 유형을 선택해주세요</CardDescription>
         </CardHeader>
 
-        <CardContent className="pt-6">
+        <CardContent className="p-4">
           <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {dueDiligenceOptions.map((option, index) => (
               <motion.div
@@ -129,7 +129,7 @@ export default function CSDDD() {
                     <CardTitle className="mt-2 text-lg">{option.label}</CardTitle>
                     <CardDescription>{option.description}</CardDescription>
                   </CardHeader>
-                  <CardContent className="pt-0 pb-2">
+                  <CardContent className="px-4 pb-2">
                     <div className="p-2 text-xs text-gray-500 rounded-md bg-white/60">
                       <strong className="text-customG">주요 항목:</strong>{' '}
                       {option.categories}
