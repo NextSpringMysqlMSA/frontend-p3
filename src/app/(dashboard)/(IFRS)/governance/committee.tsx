@@ -255,6 +255,7 @@ export default function Committee({onClose, rowId, mode}: CommitteeProps) {
                 삭제
               </Button>
             </AlertDialogTrigger>
+
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle className="flex items-center text-red-600">

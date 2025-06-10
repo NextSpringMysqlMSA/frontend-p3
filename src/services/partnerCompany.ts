@@ -316,17 +316,26 @@ export async function createPartnerCompany(partnerInput: {
   } catch (error: unknown) {
     console.error('파트너사 등록 오류:', error)
 
-    let errorMessage = '파트너사 등록에 실패했습니다.'
+    let errorMessage = '파트너사 등록 중 오류가 발생했습니다.'
 
     if (error && typeof error === 'object' && 'response' in error) {
       const axiosError = error as {
-        response?: {status?: number; data?: {message?: string}}
+        response?: {status?: number; data?: any}
       }
 
-      if (axiosError.response?.status === 500) {
+      if (axiosError.response?.status === 409) {
+        // 409 응답에서 복원된 파트너사인지 확인
+        const responseData = axiosError.response.data
+        if (responseData && responseData.is_restored === true) {
+          // 복원 성공 - 복원된 파트너사 데이터 반환
+          console.log('파트너사 복원 성공:', responseData)
+          return mapPartnerCompanies([responseData])[0]
+        } else {
+          // 실제 중복 에러
+          errorMessage = responseData?.message || '이미 등록된 파트너사입니다.'
+        }
+      } else if (axiosError.response?.status === 500) {
         errorMessage = '서버 내부 오류가 발생했습니다.'
-      } else if (axiosError.response?.status === 400) {
-        errorMessage = '잘못된 요청입니다. 입력 데이터를 확인해주세요.'
       } else if (axiosError.response?.status === 401) {
         errorMessage = '인증이 필요합니다.'
       } else if (axiosError.response?.data?.message) {
@@ -838,6 +847,225 @@ export async function fetchPartnerCompanyDetail(
         errorMessage = '파트너사를 찾을 수 없습니다.'
       } else if (axiosError.response?.status === 401) {
         errorMessage = '인증이 필요합니다.'
+      } else if (axiosError.response?.data?.message) {
+        errorMessage = axiosError.response.data.message
+      }
+    }
+
+    throw new Error(errorMessage)
+  }
+}
+
+// =============================================================================
+// Scope 전용 협력사 API
+// =============================================================================
+
+/**
+ * Scope 등록용 협력사 목록을 조회합니다.
+ * @param page 페이지 번호 (기본값: 1)
+ * @param pageSize 페이지당 항목 수 (기본값: 100)
+ * @param companyNameFilter 회사명 필터 (선택사항)
+ * @param includeInactive INACTIVE 협력사 포함 여부 (기본값: false)
+ * @returns Scope용 협력사 목록 응답
+ */
+export async function fetchPartnerCompaniesForScope(
+  page = 1,
+  pageSize = 100,
+  companyNameFilter?: string,
+  includeInactive = false
+): Promise<PartnerCompanyResponse> {
+  try {
+    console.log('🔍 Scope용 협력사 목록 조회:', {
+      page,
+      pageSize,
+      companyNameFilter,
+      includeInactive
+    })
+
+    // Spring Data 페이지 인덱스 계산 (0-based)
+    const springPageIndex = Math.max(0, page - 1)
+
+    const params: Record<string, string | number | boolean> = {
+      page: springPageIndex,
+      size: pageSize,
+      includeInactive
+    }
+
+    if (companyNameFilter && companyNameFilter.trim()) {
+      params.companyNameFilter = companyNameFilter.trim()
+    }
+
+    const response = await api.get<unknown>(
+      '/api/v1/partners/partner-companies/for-scope',
+      {
+        params
+      }
+    )
+
+    console.log('📡 Scope용 협력사 목록 응답:', response.data)
+
+    const data = response.data as unknown
+
+    // 응답 구조 처리 - PaginatedPartnerCompanyResponseDto 구조
+    let content: PartnerCompanyRaw[] = []
+    let totalElements = 0
+    let totalPages = 0
+    let size = pageSize
+    let number = 0
+    let numberOfElements = 0
+    let first = true
+    let last = true
+    let empty = true
+
+    // PaginatedPartnerCompanyResponseDto 구조 처리
+    if (
+      data &&
+      typeof data === 'object' &&
+      'data' in data &&
+      Array.isArray((data as {data?: unknown}).data)
+    ) {
+      const paginatedData = data as {
+        data: PartnerCompanyRaw[]
+        total: number
+        page: number
+        pageSize: number
+      }
+
+      content = paginatedData.data
+      totalElements = paginatedData.total || 0
+      totalPages = Math.ceil(totalElements / pageSize)
+      size = paginatedData.pageSize || pageSize
+      number = paginatedData.page || 0
+      numberOfElements = content.length
+      first = number === 0
+      last = number >= totalPages - 1
+      empty = content.length === 0
+
+      console.log('✅ 파싱된 데이터:', {
+        contentLength: content.length,
+        totalElements,
+        totalPages,
+        currentPage: number,
+        isEmpty: empty
+      })
+    } else {
+      console.warn('⚠️ 예상되지 않은 응답 구조:', data)
+    }
+
+    return {
+      content: mapPartnerCompanies(content),
+      totalElements,
+      totalPages,
+      size,
+      number,
+      numberOfElements,
+      first,
+      last,
+      empty
+    }
+  } catch (error: unknown) {
+    console.error('❌ Scope용 협력사 목록 조회 중 오류:', error)
+
+    let errorMessage = 'Scope용 협력사 목록을 가져오는 중 오류가 발생했습니다.'
+
+    if (error && typeof error === 'object' && 'response' in error) {
+      const axiosError = error as {
+        response?: {status?: number; data?: {message?: string}}
+      }
+
+      if (axiosError.response?.status === 500) {
+        errorMessage = '서버 내부 오류가 발생했습니다.'
+      } else if (axiosError.response?.data?.message) {
+        errorMessage = axiosError.response.data.message
+      }
+    }
+
+    throw new Error(errorMessage)
+  }
+}
+
+/**
+ * Scope용 특정 협력사 정보를 조회합니다. (INACTIVE 상태도 포함)
+ * @param partnerId 협력사 ID
+ * @returns 협력사 상세 정보
+ */
+export async function fetchPartnerCompanyForScope(
+  partnerId: string
+): Promise<PartnerCompany> {
+  try {
+    console.log('Scope용 협력사 상세 정보 요청 ID:', partnerId)
+
+    const response = await api.get(
+      `/api/v1/partners/partner-companies/${partnerId}/for-scope`
+    )
+
+    console.log('Scope용 협력사 상세 정보 응답:', response.data)
+
+    return mapPartnerCompanies([response.data])[0]
+  } catch (error: unknown) {
+    console.error('Scope용 협력사 상세 정보 조회 중 오류:', error)
+
+    let errorMessage = 'Scope용 협력사 정보를 가져오는 중 오류가 발생했습니다.'
+
+    if (error && typeof error === 'object' && 'response' in error) {
+      const axiosError = error as {
+        response?: {status?: number; data?: {message?: string}}
+      }
+
+      if (axiosError.response?.status === 500) {
+        errorMessage = '서버 내부 오류가 발생했습니다.'
+      } else if (axiosError.response?.status === 404) {
+        errorMessage = '협력사를 찾을 수 없습니다.'
+      } else if (axiosError.response?.data?.message) {
+        errorMessage = axiosError.response.data.message
+      }
+    }
+
+    throw new Error(errorMessage)
+  }
+}
+
+/**
+ * 협력사 회사명 중복 검사를 수행합니다.
+ * @param companyName 검사할 회사명
+ * @param excludeId 제외할 협력사 ID (수정 시 자기 자신 제외용)
+ * @returns 중복 검사 결과
+ */
+export async function checkCompanyNameDuplicate(
+  companyName: string,
+  excludeId?: string
+): Promise<{
+  isDuplicate: boolean
+  message: string
+  companyName: string
+}> {
+  try {
+    console.log('🔍 협력사 회사명 중복 검사:', {companyName, excludeId})
+
+    const params = new URLSearchParams()
+    params.append('companyName', companyName)
+    if (excludeId) {
+      params.append('excludeId', excludeId)
+    }
+
+    const response = await api.get(
+      `/api/v1/partners/partner-companies/check-duplicate?${params.toString()}`
+    )
+
+    console.log('✅ 중복 검사 응답:', response.data)
+    return response.data
+  } catch (error) {
+    console.error('❌ 협력사 회사명 중복 검사 오류:', error)
+
+    let errorMessage = '중복 검사 중 오류가 발생했습니다.'
+
+    if (error && typeof error === 'object' && 'response' in error) {
+      const axiosError = error as {
+        response?: {status?: number; data?: {message?: string}}
+      }
+
+      if (axiosError.response?.status === 400) {
+        errorMessage = '잘못된 요청입니다.'
       } else if (axiosError.response?.data?.message) {
         errorMessage = axiosError.response.data.message
       }

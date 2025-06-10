@@ -133,7 +133,6 @@ export default function Strategy() {
       </div>
 
       {/* 헤더 섹션 - PageHeader 컴포넌트 사용 */}
-      {/* 헤더 섹션 - PageHeader 컴포넌트 사용 */}
       <div className="flex items-start gap-2 mb-2">
         <Link
           href="/home"
