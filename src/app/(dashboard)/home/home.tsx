@@ -457,15 +457,15 @@ export default function Home() {
                 </Badge>
               </div>
             </CardHeader>
-            <CardContent className="flex flex-col flex-1 p-4">
-              <div className="flex-1 w-full overflow-y-auto max-h-[300px] pr-2 allow-scroll">
+            <CardContent className="flex items-end flex-1">
+              <div className="w-full p-4 pb-0 overflow-hidden h-44 allow-scroll">
                 {mounted && <PartnerCompanyChart refreshTrigger={refreshTrigger} />}
               </div>
             </CardContent>
             <CardFooter className="p-4 pt-0">
               <Link
                 href="/managePartner"
-                className="group flex items-center justify-between w-full px-6 py-4 bg-gradient-to-r from-gray-50 to-white border border-gray-100 rounded-lg transition-all duration-200 hover:from-gray-100 hover:to-gray-50">
+                className="flex items-center justify-between w-full px-6 py-2 transition-all duration-200 border border-gray-100 rounded-b-lg group bg-gradient-to-r from-gray-50 to-white hover:from-gray-100 hover:to-gray-50">
                 <div className="flex flex-col">
                   <span className="text-sm font-medium text-gray-800 group-hover:text-gray-900">
                     전체 협력사 관리
@@ -474,13 +474,8 @@ export default function Home() {
                     협력사 등록 및 상세 정보를 관리할 수 있습니다
                   </span>
                 </div>
-                <div className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 group-hover:bg-gray-200 transition-colors">
+                <div className="flex items-center justify-center w-6 h-6 transition-colors bg-gray-100 rounded-full group-hover:bg-gray-200">
                   <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-gray-700" />
-                <CardDescription>등록된 협력사 리스트와 상태 확인</CardDescription>
-              </CardHeader>
-              <CardContent className="flex items-center justify-center flex-1 p-4">
-                <div className="w-full h-48 p-4 overflow-hidden allow-scroll">
-                  {mounted && <PartnerCompanyChart refreshTrigger={refreshTrigger} />}
                 </div>
               </Link>
             </CardFooter>

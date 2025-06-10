@@ -38,7 +38,7 @@ export default function PartnerCompanyChart({refreshTrigger}: {refreshTrigger: n
           registeredAt: item.contract_start_date,
           corpCode: item.corp_code,
           stockCode: item.stock_code,
-          status: item.status || 'ACTIVE',
+          status: item.status || 'ACTIVE'
         }))
 
         // 등록일 기준 정렬 (최신순)
@@ -63,9 +63,17 @@ export default function PartnerCompanyChart({refreshTrigger}: {refreshTrigger: n
     company.name.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const handleCompanyClick = (e: React.MouseEvent, companyId: string, companyName: string) => {
+  const handleCompanyClick = (
+    e: React.MouseEvent,
+    companyId: string,
+    companyName: string
+  ) => {
     e.preventDefault()
-    router.push(`/financialRisk?companyId=${companyId}&companyName=${encodeURIComponent(companyName)}`)
+    router.push(
+      `/financialRisk?companyId=${companyId}&companyName=${encodeURIComponent(
+        companyName
+      )}`
+    )
   }
 
   // 상장 여부 확인 함수 추가
@@ -82,13 +90,15 @@ export default function PartnerCompanyChart({refreshTrigger}: {refreshTrigger: n
         </div>
         <div className="relative w-64">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
-          <Skeleton className="h-9 w-full" />
+          <Skeleton className="w-full h-9" />
         </div>
       </div>
       <ScrollArea className="flex-1 border border-gray-100 rounded-md">
         <div className="p-4 space-y-3 min-h-[400px]">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="flex items-center justify-between p-4 border border-gray-100 rounded-lg">
+            <div
+              key={i}
+              className="flex items-center justify-between p-4 border border-gray-100 rounded-lg">
               <div className="flex items-center space-x-4">
                 <Skeleton className="w-10 h-10 rounded-full" />
                 <div className="space-y-2">
@@ -97,7 +107,7 @@ export default function PartnerCompanyChart({refreshTrigger}: {refreshTrigger: n
                   <Skeleton className="h-3 w-[150px]" />
                 </div>
               </div>
-              <Skeleton className="h-6 w-20" />
+              <Skeleton className="w-20 h-6" />
             </div>
           ))}
         </div>
@@ -123,7 +133,9 @@ export default function PartnerCompanyChart({refreshTrigger}: {refreshTrigger: n
             }}
             onClick={e => e.stopPropagation()}
           />
-    <ScrollArea className="w-full border border-gray-100 rounded-md h-44">
+        </div>
+      </div>
+      {/* <ScrollArea className="w-full border border-gray-100 rounded-md h-44">
       <div className="p-4">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-medium text-gray-700">등록된 협력사 목록</h3>
@@ -131,14 +143,14 @@ export default function PartnerCompanyChart({refreshTrigger}: {refreshTrigger: n
             총 {data.length}개사
           </Badge>
         </div>
-      </div>
+      </div> */}
 
-      <ScrollArea className="flex-1 border border-gray-100 rounded-md">
+      <ScrollArea className="flex-1 border border-gray-100 rounded-t-lg">
         <div className="p-4 space-y-3 min-h-[400px]">
           {filteredData.map(company => (
             <div
               key={company.id}
-              className="flex items-center justify-between p-4 transition-all duration-200 bg-white border border-gray-100 rounded-lg group hover:bg-gray-50 hover:border-gray-200 cursor-pointer"
+              className="flex items-center justify-between p-4 py-2 transition-all duration-200 bg-white border border-gray-100 rounded-lg cursor-pointer group hover:bg-gray-50 hover:border-gray-200"
               onClick={e => handleCompanyClick(e, company.id, company.name)}>
               <div className="flex items-center space-x-4">
                 <div className="flex items-center justify-center w-10 h-10 transition-colors rounded-full bg-green-50 group-hover:bg-green-100">
@@ -153,13 +165,15 @@ export default function PartnerCompanyChart({refreshTrigger}: {refreshTrigger: n
                     {/* DART 코드 */}
                     <div className="flex items-center space-x-1">
                       <span className="text-xs font-medium text-gray-500">DART:</span>
-                      <span className="text-xs font-mono text-customG">{company.corpCode}</span>
+                      <span className="font-mono text-xs text-customG">
+                        {company.corpCode}
+                      </span>
                     </div>
                     <span className="text-gray-300">|</span>
                     {/* 종목코드 - 없을 경우 '-' 표시 */}
                     <div className="flex items-center space-x-1">
                       <span className="text-xs font-medium text-gray-500">종목코드:</span>
-                      <span className="text-xs font-mono text-customG">
+                      <span className="font-mono text-xs text-customG">
                         {company.stockCode ? company.stockCode : '-'}
                       </span>
                     </div>
@@ -180,10 +194,10 @@ export default function PartnerCompanyChart({refreshTrigger}: {refreshTrigger: n
               <Badge
                 variant="outline"
                 className={cn(
-                  "text-xs px-2 py-0.5",
+                  'text-xs px-2 py-0.5',
                   isListed(company.stockCode)
-                    ? "bg-green-50 text-customG border-green-200"
-                    : "bg-gray-50 text-gray-600 border-gray-200"
+                    ? 'bg-green-50 text-customG border-green-200'
+                    : 'bg-gray-50 text-gray-600 border-gray-200'
                 )}>
                 {isListed(company.stockCode) ? '상장기업' : '비상장기업'}
               </Badge>
