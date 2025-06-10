@@ -188,6 +188,42 @@ export default function FinancialRiskForm() {
   const [riskData, setRiskData] = useState<FinancialRiskAssessment | null>(null)
   const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set())
 
+  // URL 쿼리 파라미터에서 companyId와 companyName 가져오기
+  const searchParams = new URLSearchParams(window.location.search)
+  const companyId = searchParams.get('companyId')
+  const companyName = searchParams.get('companyName')
+
+  // 회사 자동 선택 및 데이터 로드
+  useEffect(() => {
+    if (companyId && companyName) {
+      // 자동으로 해당 회사 선택
+      setSelectedPartnerCode(companyId)
+      setSelectedPartnerName(decodeURIComponent(companyName))
+
+      // 재무 위험 데이터 로드
+      const loadFinancialRisk = async () => {
+        try {
+          setIsLoading(true)
+          setError(null)
+          const data = await fetchFinancialRiskAssessment(companyId, companyName)
+          setRiskData(data)
+        } catch (err) {
+          console.error('Failed to load financial risk data:', err)
+          setError('재무 위험 데이터를 불러오는데 실패했습니다.')
+          toast({
+            variant: 'destructive',
+            title: '오류',
+            description: '재무 위험 데이터를 불러오는데 실패했습니다.'
+          })
+        } finally {
+          setIsLoading(false)
+        }
+      }
+
+      loadFinancialRisk()
+    }
+  }, [companyId, companyName])
+
   // 확장/축소 토글 함수
   const toggleExpand = (itemNumber: number) => {
     setExpandedItems(prev => {

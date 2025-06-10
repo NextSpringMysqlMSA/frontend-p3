@@ -2,6 +2,7 @@
 
 import React from 'react'
 import {Building2, Search, Loader2, AlertTriangle, Plus, Check} from 'lucide-react'
+import cn from 'classnames'
 
 import {
   Dialog,
@@ -37,7 +38,14 @@ interface AddPartnerModalProps {
   onSelectDartCompany: (company: DartCorpInfo) => void
 
   /** 에러 메시지 */
+
   dialogError: string | null
+
+  /** 회사명 중복 검사 결과 */
+  duplicateCheckResult: {
+    isDuplicate: boolean
+    message: string
+  } | null
 }
 
 export function PartnerCompanyModal({
@@ -51,15 +59,16 @@ export function PartnerCompanyModal({
   dartSearchResults,
   selectedDartCompany,
   onSelectDartCompany,
-  dialogError
+  dialogError,
+  duplicateCheckResult
 }: AddPartnerModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={open => !open && onClose()}>
-      <DialogContent className="bg-white border-0 shadow-2xl sm:max-w-2xl rounded-2xl">
-        <DialogHeader className="pb-6 border-b border-slate-100">
-          <DialogTitle className="flex items-center gap-3 text-2xl font-bold text-slate-800">
-            <div className="p-2 rounded-lg bg-gradient-to-br from-customG to-emerald-600">
-              <Building2 className="w-6 h-6 text-white" />
+      <DialogContent className="bg-white border border-gray-100 rounded-lg shadow-lg sm:max-w-2xl">
+        <DialogHeader className="pb-4 border-b border-gray-100">
+          <DialogTitle className="flex items-center gap-2 text-xl font-semibold text-gray-900">
+            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-50">
+              <Building2 className="w-5 h-5 text-customG" />
             </div>
             새 파트너사 등록
           </DialogTitle>
@@ -69,65 +78,76 @@ export function PartnerCompanyModal({
           <div className="space-y-3">
             <Label
               htmlFor="companySearch"
-              className="flex items-center gap-2 text-base font-semibold text-slate-700">
+              className="flex items-center gap-2 text-sm font-medium text-gray-700">
               <Search className="w-4 h-4" />
               회사 검색 (DART 데이터베이스)
             </Label>
             <div className="relative">
-              <Search className="absolute w-5 h-5 transform -translate-y-1/2 left-4 top-1/2 text-slate-400" />
+              <Search className="absolute w-4 h-4 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
               <Input
                 id="companySearch"
                 placeholder="검색할 회사명을 입력하세요"
                 value={companySearchQuery || ''}
                 onChange={e => onCompanySearchQueryChange(e.target.value)}
-                className="h-12 pl-12 text-base transition-all duration-200 border-2 bg-slate-50 border-slate-200 rounded-xl focus:border-customG focus:ring-customG/20"
+                className="text-sm bg-white border border-gray-100 rounded-md h-9 pl-9 focus:border-gray-200 focus:ring-gray-100"
                 disabled={isSubmitting}
               />
               {isLoading && companySearchQuery && (
-                <div className="absolute transform -translate-y-1/2 right-4 top-1/2">
-                  <Loader2 className="w-5 h-5 animate-spin text-customG" />
+                <div className="absolute transform -translate-y-1/2 right-3 top-1/2">
+                  <Loader2 className="w-4 h-4 animate-spin text-customG" />
                 </div>
               )}
             </div>
 
             {dartSearchResults.length > 0 && (
-              <div className="mt-4 overflow-hidden bg-white border-2 shadow-sm border-slate-200 rounded-xl">
+              <div className="mt-4 overflow-hidden border border-gray-100 rounded-md">
                 <div className="overflow-y-auto max-h-64">
                   {dartSearchResults.map((company, index) => (
                     <button
                       key={`dart-${company.corpCode || company.corp_code}-${index}`}
                       type="button"
-                      className={`w-full p-4 hover:bg-slate-50 cursor-pointer flex justify-between items-center text-left transition-all duration-200 border-b border-slate-100 last:border-b-0 ${
+                      className={cn(
+                        'w-full p-4 hover:bg-gray-50 cursor-pointer flex justify-between items-center text-left transition-all duration-200 border-b border-gray-100 last:border-b-0',
                         (selectedDartCompany?.corpCode ||
                           selectedDartCompany?.corp_code) ===
-                        (company.corpCode || company.corp_code)
-                          ? 'bg-customG/5 border-l-4 border-l-customG'
+                          (company.corpCode || company.corp_code)
+                          ? 'bg-green-50'
                           : ''
-                      }`}
+                      )}
                       onClick={() => onSelectDartCompany(company)}
                       disabled={isSubmitting}>
                       <div className="flex-1">
-                        <p className="mb-1 text-base font-semibold text-slate-800">
+                        <p className="text-sm font-medium text-gray-900">
                           {company.corpName || company.corp_name}
                         </p>
-                        <p className="flex items-center gap-4 text-sm text-slate-500">
-                          <span className="px-2 py-1 font-mono rounded-md bg-slate-100">
-                            DART: {company.corpCode || company.corp_code}
-                          </span>
-                          {(company.stockCode || company.stock_code) &&
-                            String(company.stockCode || company.stock_code).trim() && (
-                              <span className="px-2 py-1 font-mono rounded-md bg-emerald-100 text-emerald-700">
-                                주식: {company.stockCode || company.stock_code}
-                              </span>
-                            )}
-                        </p>
+                        <div className="flex items-center mt-1 space-x-3">
+                          <div className="flex items-center space-x-1">
+                            <span className="text-xs font-medium text-gray-500">
+                              DART:
+                            </span>
+                            <span className="font-mono text-xs text-customG">
+                              {company.corpCode || company.corp_code}
+                            </span>
+                          </div>
+                          {(company.stockCode || company.stock_code) && (
+                            <>
+                              <span className="text-gray-300">|</span>
+                              <div className="flex items-center space-x-1">
+                                <span className="text-xs font-medium text-gray-500">
+                                  종목코드:
+                                </span>
+                                <span className="font-mono text-xs text-customG">
+                                  {company.stockCode || company.stock_code}
+                                </span>
+                              </div>
+                            </>
+                          )}
+                        </div>
                       </div>
                       {(selectedDartCompany?.corpCode ||
                         selectedDartCompany?.corp_code) ===
                         (company.corpCode || company.corp_code) && (
-                        <div className="p-2 ml-4 rounded-full bg-customG">
-                          <Check className="w-4 h-4 text-white" />
-                        </div>
+                        <Check className="w-4 h-4 text-customG" />
                       )}
                     </button>
                   ))}
@@ -181,31 +201,38 @@ export function PartnerCompanyModal({
           )}
         </div>
 
-        <DialogFooter className="gap-3 pt-6 border-t border-slate-100">
+        <DialogFooter className="gap-2 pt-4 border-t border-gray-100">
           <DialogClose asChild>
             <Button
               type="button"
               variant="outline"
               onClick={onClose}
               disabled={isSubmitting}
-              className="px-6 transition-all duration-200 border-2 rounded-lg h-11 border-slate-200 hover:border-slate-300">
+              className="px-4 text-sm border border-gray-100 h-9 hover:bg-gray-50 hover:border-gray-200">
               취소
             </Button>
           </DialogClose>
           <Button
             type="button"
             onClick={onSubmit}
-            disabled={isSubmitting || !selectedDartCompany}
-            className="px-8 font-semibold text-white transition-all duration-200 transform rounded-lg shadow-lg h-11 bg-gradient-to-r from-customG to-emerald-600 hover:from-customGDark hover:to-emerald-700 hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:transform-none">
+            disabled={
+              isSubmitting || !selectedDartCompany || duplicateCheckResult?.isDuplicate
+            }
+            className={cn(
+              'px-4 h-9 text-sm font-medium text-white',
+              'bg-customG hover:bg-customG/90 transition-colors',
+              'disabled:opacity-50'
+            )}>
             {isSubmitting ? (
-              <>
-                <Loader2 className="w-5 h-5 mr-2 animate-spin" /> 처리 중...
-              </>
+              <div className="flex items-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>처리 중...</span>
+              </div>
             ) : (
-              <>
-                <Plus className="w-4 h-4 mr-2" />
-                파트너사 등록
-              </>
+              <div className="flex items-center gap-2">
+                <Plus className="w-4 h-4" />
+                <span>파트너사 등록</span>
+              </div>
             )}
           </Button>
         </DialogFooter>
