@@ -476,6 +476,11 @@ export default function Home() {
                 </div>
                 <div className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 group-hover:bg-gray-200 transition-colors">
                   <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-gray-700" />
+                <CardDescription>등록된 협력사 리스트와 상태 확인</CardDescription>
+              </CardHeader>
+              <CardContent className="flex items-center justify-center flex-1 p-4">
+                <div className="w-full h-48 p-4 overflow-hidden allow-scroll">
+                  {mounted && <PartnerCompanyChart refreshTrigger={refreshTrigger} />}
                 </div>
               </Link>
             </CardFooter>

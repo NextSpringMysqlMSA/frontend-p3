@@ -123,6 +123,13 @@ export default function PartnerCompanyChart({refreshTrigger}: {refreshTrigger: n
             }}
             onClick={e => e.stopPropagation()}
           />
+    <ScrollArea className="w-full border border-gray-100 rounded-md h-44">
+      <div className="p-4">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-medium text-gray-700">등록된 협력사 목록</h3>
+          <Badge variant="outline" className="text-xs">
+            총 {data.length}개사
+          </Badge>
         </div>
       </div>
 
