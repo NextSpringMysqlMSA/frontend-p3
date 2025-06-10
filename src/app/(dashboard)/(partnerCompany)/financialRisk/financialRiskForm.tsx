@@ -2,7 +2,6 @@
 
 import React, {useState, useEffect} from 'react'
 import {
-  ChevronRight,
   Home,
   Building2,
   AlertTriangle,
@@ -13,8 +12,7 @@ import {
   FileSearch,
   Check,
   ChevronsUpDown,
-  RefreshCcw,
-  ArrowLeft
+  RefreshCcw
 } from 'lucide-react'
 import {Button} from '@/components/ui/button'
 import {
@@ -42,7 +40,6 @@ import {
   fetchFinancialRiskAssessment,
   fetchPartnerCompanies
 } from '@/services/partnerCompany'
-import {FinancialRiskAssessment} from '@/types/IFRS/partnerCompany'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -50,12 +47,9 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator
 } from '@/components/ui/breadcrumb'
-import Link from 'next/link'
-import {FinancialRiskAssessment} from '@/types/IFRS/partnerCompany'
 import {DirectionButton} from '@/components/layout/direction'
-import router from 'next/router'
 import {motion} from 'framer-motion'
-
+import {FinancialRiskAssessment} from '@/types/IFRS/partnerCompany'
 
 // API 응답 타입 정의
 interface RiskItem {
@@ -338,13 +332,11 @@ export default function FinancialRiskForm() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-
               <span className="font-bold text-customG">협력사 재무 위험 분석</span>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </motion.div>
-
 
       {/* Enhanced Selection Panel */}
       <div className="relative p-8 mt-2 overflow-hidden border shadow-sm bg-white/90 backdrop-blur-sm rounded-3xl border-slate-200/50">
