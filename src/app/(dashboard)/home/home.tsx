@@ -1,6 +1,6 @@
 'use client'
 import {useState, useEffect, useCallback} from 'react'
-import {Building, Pencil} from 'lucide-react'
+import {Building, Pencil, Building2, ChevronRight} from 'lucide-react'
 import {
   Chart as ChartJS,
   ArcElement,
@@ -445,27 +445,41 @@ export default function Home() {
         </motion.div>
         {/* 협력사 등록 현황 섹션 ================================================================= */}
         <motion.div variants={itemVariants} className="flex-1">
-          <Link href="/managePartner">
-            <Card className="flex flex-col w-full h-full overflow-hidden transition-shadow hover:shadow-lg">
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    <Building className="w-5 h-5 text-[#ff1493]" /> {/* DeepPink */}
-                    <span className="text-xl text-[#e60073]">협력사 등록 현황</span>
-                  </CardTitle>
-                  <Badge variant="outline" className="text-[#d10068] bg-[#ffe0ef]">
-                    실시간 데이터
-                  </Badge>
+          <Card className="flex flex-col w-full h-full overflow-hidden transition-shadow hover:shadow-lg">
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <Building2 className="w-5 h-5 text-[#e60073]" />
+                  <span className="text-xl text-[#e60073]">협력사 등록 현황</span>
+                </CardTitle>
+                <Badge variant="outline" className="text-[#d10068] bg-[#ffe0ef]">
+                  실시간 데이터
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="flex flex-col flex-1 p-4">
+              <div className="flex-1 w-full overflow-y-auto max-h-[300px] pr-2 allow-scroll">
+                {mounted && <PartnerCompanyChart refreshTrigger={refreshTrigger} />}
+              </div>
+            </CardContent>
+            <CardFooter className="p-4 pt-0">
+              <Link
+                href="/managePartner"
+                className="group flex items-center justify-between w-full px-6 py-4 bg-gradient-to-r from-gray-50 to-white border border-gray-100 rounded-lg transition-all duration-200 hover:from-gray-100 hover:to-gray-50">
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium text-gray-800 group-hover:text-gray-900">
+                    전체 협력사 관리
+                  </span>
+                  <span className="text-xs text-gray-500 mt-0.5">
+                    협력사 등록 및 상세 정보를 관리할 수 있습니다
+                  </span>
                 </div>
-                <CardDescription>등록된 협력사 리스트와 상태 확인</CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-col flex-1 p-4">
-                <div className="flex-1 w-full overflow-y-auto max-h-[300px] pr-2 allow-scroll">
-                  {mounted && <PartnerCompanyChart refreshTrigger={refreshTrigger} />}
+                <div className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 group-hover:bg-gray-200 transition-colors">
+                  <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-gray-700" />
                 </div>
-              </CardContent>
-            </Card>
-          </Link>
+              </Link>
+            </CardFooter>
+          </Card>
         </motion.div>
       </motion.div>
     </div>

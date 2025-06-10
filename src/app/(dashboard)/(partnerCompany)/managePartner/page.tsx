@@ -704,6 +704,7 @@ export default function ManagePartnerPage() {
           selectedDartCompany={selectedDartCompany}
           onSelectDartCompany={handleSelectDartCompany}
           dialogError={dialogError}
+          duplicateCheckResult={duplicateCheckResult}
         />
 
         {/* 파트너사 수정 모달 */}
