@@ -188,18 +188,6 @@ export default function ScopeModal({
     type => type.scope === scope
   )
 
-  console.log('🔍 ScopeModal 디버깅:', {
-    defaultPartnerId,
-    partnerCompaniesCount: partnerCompanies.length,
-    selectedPartner,
-    isOpen,
-    partnerCompaniesIds: partnerCompanies.map(p => ({
-      id: p.id,
-      name: p.name || p.companyName || p.corpName
-    })),
-    partnerCompaniesFirstItem: partnerCompanies[0]
-  })
-
   const [formData, setFormData] = useState<ScopeFormData>({
     partnerCompanyId: defaultPartnerId || '',
     reportingYear: defaultYear,
@@ -1341,13 +1329,6 @@ export default function ScopeModal({
 
   // 폼 초기화 - 개선된 로직
   useEffect(() => {
-    console.log('🔄 useEffect 실행:', {
-      isOpen,
-      defaultPartnerId,
-      selectedPartner: selectedPartner?.name,
-      partnerCompaniesCount: partnerCompanies.length
-    })
-
     if (isOpen) {
       // 협력사가 선택된 경우에만 폼 데이터 초기화
       if (defaultPartnerId && selectedPartner) {

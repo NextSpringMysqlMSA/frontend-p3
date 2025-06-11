@@ -123,10 +123,8 @@ export default function Scope1Form() {
    */
   const loadPartnerCompanies = async () => {
     try {
-      console.log('🔄 실제 협력사 API 호출 시작')
       const response = await fetchPartnerCompaniesForScope(1, 100, '', false)
       const partners = response.data || response.content || []
-      console.log('✅ 실제 협력사 데이터 로드:', partners.length, '개')
       setRealPartnerCompanies(partners)
     } catch (error) {
       console.error('❌ 협력사 데이터 로딩 실패:', error)

@@ -870,7 +870,6 @@ export async function fetchPartnerCompanyDetail(
  * @param pageSize 페이지당 항목 수 (기본값: 100)
  * @param companyNameFilter 회사명 필터 (선택사항)
  * @param includeInactive INACTIVE 협력사 포함 여부 (기본값: false)
- * @returns Scope용 협력사 목록 응답
  */
 export async function fetchPartnerCompaniesForScope(
   page = 1,
@@ -944,14 +943,6 @@ export async function fetchPartnerCompaniesForScope(
       first = number === 0
       last = number >= totalPages - 1
       empty = content.length === 0
-
-      console.log('✅ 파싱된 데이터:', {
-        contentLength: content.length,
-        totalElements,
-        totalPages,
-        currentPage: number,
-        isEmpty: empty
-      })
     } else {
       console.warn('⚠️ 예상되지 않은 응답 구조:', data)
     }

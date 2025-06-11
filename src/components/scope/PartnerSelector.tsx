@@ -43,10 +43,7 @@ export function PartnerSelector({
   // 파트너 회사 데이터를 PartnerCompanyForScope 형식으로 변환하는 함수
   const convertToPartnerCompanyForScope = useCallback(
     (partners: any[]): PartnerCompanyForScope[] => {
-      console.log('🔄 변환 전 파트너 데이터:', partners)
       const converted = partners.map(partner => {
-        console.log('🔍 개별 파트너 데이터:', partner)
-        // PartnerCompany 타입의 필드명들을 우선적으로 사용
         const name =
           partner.companyName || partner.corpName || partner.corp_name || '이름 없음'
         return {
@@ -55,7 +52,6 @@ export function PartnerSelector({
           status: partner.status || 'ACTIVE'
         }
       })
-      console.log('✅ 변환 후 파트너 데이터:', converted)
       return converted
     },
     []
@@ -74,7 +70,6 @@ export function PartnerSelector({
         )
         const convertedPartners = convertToPartnerCompanyForScope(response.content)
         setPartners(convertedPartners)
-        console.log('✅ 파트너사 목록 로드 완료:', convertedPartners.length, '개')
       } catch (error) {
         console.error('파트너사 목록 로드 실패:', error)
       } finally {

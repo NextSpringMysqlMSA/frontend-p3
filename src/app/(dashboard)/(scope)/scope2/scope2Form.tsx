@@ -118,9 +118,7 @@ export default function Scope2Form() {
    */
   const loadPartnerCompanies = async () => {
     try {
-      console.log('🔄 협력사 목록 로딩 시작...')
       const response = await fetchPartnerCompaniesForScope()
-      console.log('✅ 협력사 목록 로딩 성공:', response)
 
       setRealPartnerCompanies(response.content || [])
     } catch (error) {
