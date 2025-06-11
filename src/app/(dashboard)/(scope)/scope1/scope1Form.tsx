@@ -73,6 +73,7 @@ import {
   deleteStationaryCombustion, // 고정연소 데이터 삭제
   deleteMobileCombustion // 이동연소 데이터 삭제
 } from '@/services/scope'
+import {fetchPartnerCompaniesForScope} from '@/services/partnerCompany' // 실제 협력사 API 추가
 
 // 브레드크럼 네비게이션 컴포넌트 임포트
 import {
@@ -84,39 +85,6 @@ import {
 } from '@/components/ui/breadcrumb'
 import {DirectionButton} from '@/components/layout/direction'
 import {PageHeader} from '@/components/layout/PageHeader'
-
-/**
- * 목업 협력사 데이터
- * 실제 운영 환경에서는 API를 통해 동적으로 로드됩니다.
- */
-const MOCK_PARTNERS: PartnerCompanyForScope[] = [
-  {
-    id: '550e8400-e29b-41d4-a716-446655440001',
-    name: '삼성전자',
-    status: 'ACTIVE'
-  },
-  {
-    id: '550e8400-e29b-41d4-a716-446655440002',
-    name: 'LG전자',
-    status: 'ACTIVE'
-  },
-  {
-    id: '550e8400-e29b-41d4-a716-446655440003',
-    name: '현대자동차',
-    status: 'ACTIVE'
-  }
-]
-
-// PartnerCompanyForScope를 PartnerCompany로 변환하는 함수 (ScopeModal용)
-const convertToPartnerCompany = (partner: PartnerCompanyForScope) => {
-  return {
-    id: partner.id, // UUID 그대로 사용
-    name: partner.name,
-    businessNumber: '',
-    status: partner.status,
-    companyType: '일반기업'
-  }
-}
 
 /**
  * Scope 1 배출량 관리 메인 컴포넌트
@@ -140,10 +108,36 @@ export default function Scope1Form() {
   // 데이터 관련 상태
   const [stationaryData, setStationaryData] = useState<StationaryCombustion[]>([]) // 고정연소 배출량 데이터
   const [mobileData, setMobileData] = useState<MobileCombustion[]>([]) // 이동연소 배출량 데이터
+  const [realPartnerCompanies, setRealPartnerCompanies] = useState<any[]>([]) // 실제 협력사 데이터
 
   // UI 관련 상태
   const [isModalOpen, setIsModalOpen] = useState(false) // 데이터 입력 모달 표시 여부
   const [searchTerm, setSearchTerm] = useState('') // 검색어 (현재 미사용)
+
+  // ============================================================================
+  // 실제 협력사 데이터 로딩 (Real Partner Data Loading)
+  // ============================================================================
+
+  /**
+   * 실제 API에서 협력사 목록을 가져옵니다
+   */
+  const loadPartnerCompanies = async () => {
+    try {
+      console.log('🔄 실제 협력사 API 호출 시작')
+      const response = await fetchPartnerCompaniesForScope(1, 100, '', false)
+      const partners = response.data || response.content || []
+      console.log('✅ 실제 협력사 데이터 로드:', partners.length, '개')
+      setRealPartnerCompanies(partners)
+    } catch (error) {
+      console.error('❌ 협력사 데이터 로딩 실패:', error)
+      setRealPartnerCompanies([])
+    }
+  }
+
+  // 컴포넌트 마운트 시 협력사 데이터 로드
+  useEffect(() => {
+    loadPartnerCompanies()
+  }, [])
 
   // ============================================================================
   // 데이터 로딩 함수 (Data Loading Functions)
@@ -919,12 +913,18 @@ export default function Scope1Form() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleFormSubmit}
-        partnerCompanies={MOCK_PARTNERS.map(convertToPartnerCompany)}
+        partnerCompanies={realPartnerCompanies}
         defaultPartnerId={selectedPartnerId || undefined}
         defaultYear={selectedYear}
         defaultMonth={selectedMonth || new Date().getMonth() + 1}
         scope="SCOPE1"
       />
+      {/* 디버깅: 실제 협력사 데이터 확인 */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="fixed z-50 p-2 text-xs text-white bg-black rounded top-2 right-2">
+          협력사 수: {realPartnerCompanies.length}
+        </div>
+      )}
       <DirectionButton
         direction="right"
         tooltip="scope2으로 이동"

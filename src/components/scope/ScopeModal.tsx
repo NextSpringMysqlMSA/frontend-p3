@@ -180,10 +180,25 @@ export default function ScopeModal({
 }: ScopeModalProps) {
   const toast = useToast()
 
-  // scope에 따라 활동 유형 필터링
+  // 선택된 협력사 정보 찾기
+  const selectedPartner = partnerCompanies.find(p => p.id === defaultPartnerId)
+
+  // Scope에 따른 활동 타입 필터링
   const filteredActivityTypes = EMISSION_ACTIVITY_TYPES.filter(
     type => type.scope === scope
   )
+
+  console.log('🔍 ScopeModal 디버깅:', {
+    defaultPartnerId,
+    partnerCompaniesCount: partnerCompanies.length,
+    selectedPartner,
+    isOpen,
+    partnerCompaniesIds: partnerCompanies.map(p => ({
+      id: p.id,
+      name: p.name || p.companyName || p.corpName
+    })),
+    partnerCompaniesFirstItem: partnerCompanies[0]
+  })
 
   const [formData, setFormData] = useState<ScopeFormData>({
     partnerCompanyId: defaultPartnerId || '',
@@ -287,6 +302,13 @@ export default function ScopeModal({
 
   // 폼 제출
   const handleSubmit = async () => {
+    // 협력사 선택 확인
+    if (!defaultPartnerId || !selectedPartner) {
+      setErrors(['협력사를 먼저 선택해주세요.'])
+      toast.error('협력사를 먼저 선택해주세요.')
+      return
+    }
+
     const validationErrors = validateScopeFormData(formData)
     if (validationErrors.length > 0) {
       setErrors(validationErrors)
@@ -296,15 +318,37 @@ export default function ScopeModal({
 
     setIsLoading(true)
     try {
-      await submitScopeData(formData)
-      onSubmit(formData)
+      // DB 저장을 위한 데이터 구조 생성 - corpCode 안전 처리
+      const submitData = {
+        ...formData,
+        partnerCompanyId: defaultPartnerId,
+        partnerCompanyName:
+          selectedPartner.companyName ||
+          selectedPartner.corpName ||
+          selectedPartner.name ||
+          'N/A',
+        partnerCompanyCorpCode:
+          selectedPartner.corpCode || selectedPartner.corp_code || undefined,
+        scope: scope,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }
+
+      console.log('💾 DB 저장 데이터:', submitData)
+
+      await submitScopeData(submitData)
+      onSubmit(submitData)
       onClose()
-      // 성공 토스트는 submitScopeData 내부에서 이미 처리됨
+      toast.success(
+        `${
+          selectedPartner.companyName || selectedPartner.corpName || selectedPartner.name
+        }의 ${scope} 배출량 데이터가 성공적으로 저장되었습니다.`
+      )
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : '저장 중 오류가 발생했습니다.'
       setErrors([errorMessage])
-      // 에러 토스트는 submitScopeData 내부에서 이미 처리됨
+      toast.error(`저장 실패: ${errorMessage}`)
     } finally {
       setIsLoading(false)
     }
@@ -334,38 +378,75 @@ export default function ScopeModal({
           <div>
             <h3 className="text-lg font-semibold">기본 정보</h3>
             <p className="text-sm font-normal text-gray-600">
-              보고 기간 및 협력사 정보를 입력하세요
+              선택된 협력사의 배출량 데이터를 입력하세요
             </p>
           </div>
         </CardTitle>
       </CardHeader>
       <CardContent className="pt-6 space-y-6">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <div className="space-y-2">
-            <Label
-              htmlFor="partner"
-              className="flex items-center gap-1 text-sm font-medium text-gray-700">
-              협력사
-              <span className="text-red-500">*</span>
-            </Label>
-            <Select
-              value={formData.partnerCompanyId}
-              onValueChange={value =>
-                setFormData({...formData, partnerCompanyId: value})
-              }>
-              <SelectTrigger className="border-gray-300 h-11 focus:border-blue-500 focus:ring-blue-500/20">
-                <SelectValue placeholder="협력사를 선택해주세요" />
-              </SelectTrigger>
-              <SelectContent>
-                {partnerCompanies.map(company => (
-                  <SelectItem key={company.id} value={company.id}>
-                    {company.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+        {/* 선택된 협력사 정보 표시 - corpCode 안전 처리 */}
+        {selectedPartner ? (
+          <div className="p-6 border border-blue-200 shadow-lg bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-blue-100 rounded-xl">
+                <Building2 className="w-6 h-6 text-blue-600" />
+              </div>
+              <div className="flex-1">
+                <div className="mb-1 text-sm font-medium text-blue-600">
+                  선택된 협력사
+                </div>
+                <div className="space-y-2">
+                  {/* 회사 이름을 가장 먼저 표시 */}
+                  <div className="text-xl font-bold text-blue-900">
+                    {selectedPartner.name ||
+                      selectedPartner.companyName ||
+                      selectedPartner.corpName ||
+                      '비상장'}
+                  </div>
 
+                  {/* DART 코드와 주식 코드를 작은 글씨로 표시 */}
+                  <div className="space-y-1">
+                    <div className="text-sm font-medium text-blue-700">
+                      DART 코드:{' '}
+                      {selectedPartner.corpCode || selectedPartner.corp_code || 'N/A'}
+                    </div>
+                    <div className="text-sm font-medium text-blue-700">
+                      주식 코드:{' '}
+                      {(selectedPartner.stockCode && selectedPartner.stockCode.trim()) ||
+                        ' 비상장'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="p-2 bg-green-100 rounded-lg">
+                <CheckCircle2 className="w-5 h-5 text-green-600" />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="p-6 border border-red-200 shadow-sm bg-red-50 rounded-xl">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-red-100 rounded-xl">
+                <AlertCircle className="w-6 h-6 text-red-600" />
+              </div>
+              <div>
+                <div className="mb-1 text-sm font-medium text-red-600">
+                  협력사 선택 필요
+                </div>
+                <div className="text-lg font-bold text-red-800">
+                  협력사를 먼저 선택해주세요
+                </div>
+                <div className="mt-1 text-sm text-red-600">
+                  배출량 데이터를 입력하려면 협력사 선택이 필요합니다.
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 나머지 기본 정보 폼... */}
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          {/* 보고연도 */}
           <div className="space-y-2">
             <Label
               htmlFor="year"
@@ -385,9 +466,8 @@ export default function ScopeModal({
               className="border-gray-300 h-11 focus:border-blue-500 focus:ring-blue-500/20"
             />
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          {/* 보고월 */}
           <div className="space-y-2">
             <Label
               htmlFor="month"
@@ -412,9 +492,12 @@ export default function ScopeModal({
               </SelectContent>
             </Select>
           </div>
+
+          {/* Scope 표시 */}
           <div className="flex items-end">
-            <div className="px-3 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg bg-gray-50">
-              <span className="font-medium">{scope}</span> 배출량 데이터 입력
+            <div className="w-full px-4 py-3 text-center border border-gray-200 rounded-lg bg-gray-50">
+              <div className="text-sm font-medium text-gray-600">배출량 범위</div>
+              <div className="text-lg font-bold text-gray-800">{scope}</div>
             </div>
           </div>
         </div>
@@ -1318,92 +1401,41 @@ export default function ScopeModal({
     )
   }
 
-  // 폼 초기화
+  // 폼 초기화 - 개선된 로직
   useEffect(() => {
+    console.log('🔄 useEffect 실행:', {
+      isOpen,
+      defaultPartnerId,
+      selectedPartner: selectedPartner?.name,
+      partnerCompaniesCount: partnerCompanies.length
+    })
+
     if (isOpen) {
-      setFormData({
-        partnerCompanyId: defaultPartnerId || '',
-        reportingYear: defaultYear,
-        reportingMonth: defaultMonth,
-        emissionActivityType: 'STATIONARY_COMBUSTION'
-      })
+      // 협력사가 선택된 경우에만 폼 데이터 초기화
+      if (defaultPartnerId && selectedPartner) {
+        setFormData({
+          partnerCompanyId: defaultPartnerId,
+          reportingYear: defaultYear,
+          reportingMonth: defaultMonth,
+          emissionActivityType:
+            scope === 'SCOPE1' ? 'STATIONARY_COMBUSTION' : 'ELECTRICITY'
+        })
+      } else {
+        // 협력사가 선택되지 않은 경우 기본 값만 설정
+        setFormData({
+          partnerCompanyId: '',
+          reportingYear: defaultYear,
+          reportingMonth: defaultMonth,
+          emissionActivityType:
+            scope === 'SCOPE1' ? 'STATIONARY_COMBUSTION' : 'ELECTRICITY'
+        })
+      }
+
+      // 계산 결과 및 오류 초기화
       setCalculationResult(null)
       setErrors([])
     }
-  }, [isOpen, defaultPartnerId, defaultYear, defaultMonth])
-
-  // 배출활동별 기본 데이터 설정
-  useEffect(() => {
-    if (!formData.emissionActivityType) return
-
-    const commonData = {
-      partnerCompanyId: formData.partnerCompanyId,
-      reportingYear: formData.reportingYear,
-      reportingMonth: formData.reportingMonth,
-      createdBy: 'system'
-    }
-
-    switch (formData.emissionActivityType) {
-      case 'STATIONARY_COMBUSTION':
-        if (!formData.stationaryCombustion) {
-          setFormData({
-            ...formData,
-            stationaryCombustion: {
-              ...commonData,
-              facilityName: '',
-              combustionType: 'LIQUID',
-              fuelId: '',
-              fuelUsage: '',
-              unit: ''
-            }
-          })
-        }
-        break
-      case 'MOBILE_COMBUSTION':
-        if (!formData.mobileCombustion) {
-          setFormData({
-            ...formData,
-            mobileCombustion: {
-              ...commonData,
-              vehicleType: '',
-              transportType: 'ROAD',
-              fuelId: '',
-              fuelUsage: '',
-              unit: ''
-            }
-          })
-        }
-        break
-      case 'ELECTRICITY':
-        if (!formData.electricity) {
-          setFormData({
-            ...formData,
-            electricity: {
-              ...commonData,
-              facilityName: '',
-              electricityUsage: '',
-              unit: 'kWh',
-              isRenewable: false
-            }
-          })
-        }
-        break
-      case 'STEAM':
-        if (!formData.steam) {
-          setFormData({
-            ...formData,
-            steam: {
-              ...commonData,
-              facilityName: '',
-              steamType: 'TYPE_A',
-              steamUsage: '',
-              unit: 'GJ'
-            }
-          })
-        }
-        break
-    }
-  }, [formData.emissionActivityType])
+  }, [isOpen, defaultPartnerId, selectedPartner, defaultYear, defaultMonth, scope])
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -1416,7 +1448,19 @@ export default function ScopeModal({
             <div>
               <h1>{scope} 배출량 데이터 입력</h1>
               <p className="mt-1 text-sm font-normal text-gray-600">
-                온실가스 배출량 데이터를 정확히 입력해주세요
+                {selectedPartner ? (
+                  <>
+                    <span className="font-semibold text-blue-600">
+                      {selectedPartner.companyName ||
+                        selectedPartner.corpName ||
+                        selectedPartner.name ||
+                        'N/A'}
+                    </span>
+                    의 온실가스 배출량 데이터를 입력해주세요
+                  </>
+                ) : (
+                  '협력사를 선택한 후 배출량 데이터를 입력할 수 있습니다'
+                )}
               </p>
             </div>
           </DialogTitle>
@@ -1441,19 +1485,21 @@ export default function ScopeModal({
           {/* 기본 정보 */}
           {renderBasicInfo()}
 
-          {/* 배출활동 타입 선택 */}
-          {renderActivityTypeSelector()}
+          {/* 협력사가 선택된 경우에만 나머지 폼 표시 */}
+          {selectedPartner && (
+            <>
+              {renderActivityTypeSelector()}
 
-          {/* 배출활동별 상세 폼 */}
-          {formData.emissionActivityType === 'STATIONARY_COMBUSTION' &&
-            renderStationaryCombustionForm()}
-          {formData.emissionActivityType === 'MOBILE_COMBUSTION' &&
-            renderMobileCombustionForm()}
-          {formData.emissionActivityType === 'ELECTRICITY' && renderElectricityForm()}
-          {formData.emissionActivityType === 'STEAM' && renderSteamForm()}
+              {formData.emissionActivityType === 'STATIONARY_COMBUSTION' &&
+                renderStationaryCombustionForm()}
+              {formData.emissionActivityType === 'MOBILE_COMBUSTION' &&
+                renderMobileCombustionForm()}
+              {formData.emissionActivityType === 'ELECTRICITY' && renderElectricityForm()}
+              {formData.emissionActivityType === 'STEAM' && renderSteamForm()}
 
-          {/* 계산 결과 */}
-          {renderCalculationResult()}
+              {renderCalculationResult()}
+            </>
+          )}
         </div>
 
         <DialogFooter className="flex flex-col gap-3 pt-6 border-t border-gray-100 sm:flex-row">
@@ -1462,8 +1508,8 @@ export default function ScopeModal({
               type="button"
               variant="outline"
               onClick={handleCalculateEmissions}
-              disabled={isCalculating}
-              className="flex items-center gap-2 text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400">
+              disabled={isCalculating || !selectedPartner}
+              className="flex items-center gap-2 text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400 disabled:opacity-50">
               <Calculator className="w-4 h-4" />
               {isCalculating ? (
                 <>
@@ -1486,8 +1532,8 @@ export default function ScopeModal({
             <Button
               type="button"
               onClick={handleSubmit}
-              disabled={isLoading}
-              className="text-white bg-blue-600 shadow-sm hover:bg-blue-700">
+              disabled={isLoading || !selectedPartner}
+              className="text-white bg-blue-600 shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed">
               {isLoading ? (
                 <>
                   <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
