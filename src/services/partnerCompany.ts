@@ -57,8 +57,8 @@ export async function fetchPartnerCompanies(
     })
 
     const params: Record<string, string | number> = {
-      page: springPageIndex,
-      size: safePageSize
+      page: safePage,
+      pageSize: safePageSize
     }
 
     if (
@@ -71,8 +71,12 @@ export async function fetchPartnerCompanies(
 
     console.log('📡 API 요청 시작:', {url: '/api/v1/partners/partner-companies', params})
 
-    const response = await api.get<unknown>('/api/v1/partners/partner-companies', {
-      params
+    const response = await api.get('/api/v1/partners/partner-companies', {
+      params: {
+        page: safePage,
+        pageSize: safePageSize,
+        companyName: companyNameFilter?.trim()
+      }
     })
 
     console.log('📡 API 응답 받음:', {

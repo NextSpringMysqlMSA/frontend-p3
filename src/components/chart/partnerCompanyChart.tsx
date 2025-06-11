@@ -2,7 +2,7 @@
 
 import {useEffect, useState} from 'react'
 import {Skeleton} from '@/components/ui/skeleton'
-import {fetchPartnerCompanyProgress} from '@/services/dashboard'
+import {fetchPartnerCompaniesForScope} from '@/services/partnerCompany'
 import {Building2, Calendar, ArrowUpRight, Search} from 'lucide-react'
 import {ScrollArea} from '@/components/ui/scroll-area'
 import {Badge} from '@/components/ui/badge'
@@ -29,17 +29,22 @@ export default function PartnerCompanyChart({refreshTrigger}: {refreshTrigger: n
     const loadData = async () => {
       setLoading(true)
       try {
-        const responseData = await fetchPartnerCompanyProgress()
+        // fetchPartnerCompanyProgress 대신 fetchPartnerCompaniesForScope 사용
+        const response = await fetchPartnerCompaniesForScope(1, 100, '', false)
 
-        // 응답 데이터 가공 (page.tsx 형식과 일치)
-        const mapped: PartnerCompany[] = responseData.data.map((item: any) => ({
-          id: item.id,
-          name: item.corp_name,
-          registeredAt: item.contract_start_date,
-          corpCode: item.corp_code,
-          stockCode: item.stock_code,
-          status: item.status || 'ACTIVE'
-        }))
+        // 응답 데이터 매핑
+        const mapped: PartnerCompany[] = (response.data || response.content || []).map(
+          item => ({
+            id: item.id ?? '',
+            name: item.corpName || item.corp_name || '',
+            registeredAt: String(
+              item.contractStartDate || item.contract_start_date || ''
+            ),
+            corpCode: item.corpCode || item.corp_code || '',
+            stockCode: item.stockCode || item.stock_code || '',
+            status: item.status || 'ACTIVE'
+          })
+        )
 
         // 등록일 기준 정렬 (최신순)
         const sorted = mapped.sort((a, b) => {
