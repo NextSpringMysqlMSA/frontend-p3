@@ -232,6 +232,35 @@ export const dismissLoading = (
   }
 }
 
+// 파트너사 복원 토스트
+export const showPartnerRestore = (companyName: string) => {
+  toast.custom(
+    t => (
+      <div className="relative">
+        <div
+          className={`flex items-center space-x-3 py-3 px-4 bg-green-50 text-green-800 rounded-lg border border-green-200 shadow-md ${
+            t.visible ? 'animate-enter' : 'animate-leave'
+          }`}>
+          <CheckCircle className="flex-shrink-0 w-5 h-5 text-green-500" />
+          <div className="font-medium">기존 파트너사 '{companyName}'를 복원했습니다</div>
+        </div>
+        {/* 프로그레스 바 추가 */}
+        <div
+          className="absolute bottom-0 left-0 h-1 bg-green-500"
+          style={{
+            width: t.visible ? '100%' : '0%',
+            transition: 'width 4s linear'
+          }}
+        />
+      </div>
+    ),
+    {
+      ...defaultStyle,
+      duration: 4000 // 복원 메시지는 조금 더 오래 표시
+    }
+  )
+}
+
 // 간단한 hook으로도 제공
 export const useToast = () => {
   return {

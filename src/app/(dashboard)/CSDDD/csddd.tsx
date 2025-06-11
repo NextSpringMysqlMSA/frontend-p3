@@ -22,6 +22,7 @@ import {
   BreadcrumbSeparator
 } from '@/components/ui/breadcrumb'
 
+import Link from 'next/link'
 const dueDiligenceOptions = [
   {
     key: 'eudd',
@@ -70,24 +71,25 @@ export default function CSDDD() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/CSDD">공급망 실사사</BreadcrumbLink>
+              <span className="font-bold text-customG">공급망 실사</span>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </div>
 
-      <div className="flex items-start gap-2 mb-2">
-        <ArrowLeft
-          onClick={() => router.push('/home')}
-          className="w-5 h-5 mt-3 mb-1 text-gray-400 cursor-pointer hover:text-blue-600"
-        />
-        <PageHeader
-          icon={<BookOpen className="w-6 h-6 text-customG" />}
-          title="공급망 실사"
-          description="공급망 실사 지침에 따른 인권 및 환경 실사 자가진단"
-          module="CSDDD"
-          submodule="eudd"
-        />
+      <div className="flex flex-row w-full h-full mb-6">
+        <Link
+          href="/home"
+          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
+          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
+          <PageHeader
+            icon={<BookOpen className="w-6 h-6 text-customG" />}
+            title="공급망 실사"
+            description="공급망 실사 지침에 따른 인권 및 환경 실사 자가진단"
+            module="CSDDD"
+            submodule="eudd"
+          />
+        </Link>
       </div>
 
       {/* 메인 컨텐츠 카드 */}
@@ -97,7 +99,7 @@ export default function CSDDD() {
           <CardDescription>진행하실 실사 유형을 선택해주세요</CardDescription>
         </CardHeader>
 
-        <CardContent className="pt-6">
+        <CardContent className="p-4">
           <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {dueDiligenceOptions.map((option, index) => (
               <motion.div
@@ -127,7 +129,7 @@ export default function CSDDD() {
                     <CardTitle className="mt-2 text-lg">{option.label}</CardTitle>
                     <CardDescription>{option.description}</CardDescription>
                   </CardHeader>
-                  <CardContent className="pt-0 pb-2">
+                  <CardContent className="px-4 pb-2">
                     <div className="p-2 text-xs text-gray-500 rounded-md bg-white/60">
                       <strong className="text-customG">주요 항목:</strong>{' '}
                       {option.categories}

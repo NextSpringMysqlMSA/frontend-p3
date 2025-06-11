@@ -1,8 +1,7 @@
 'use client'
-import {useRouter} from 'next/navigation'
-import {useState, useEffect} from 'react'
+
+import React, {useState, useEffect} from 'react'
 import {
-  ChevronRight,
   Home,
   Building2,
   AlertTriangle,
@@ -16,6 +15,14 @@ import {
   RefreshCcw,
   ArrowLeft
 } from 'lucide-react'
+
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger
+} from '@/components/ui/accordion'
+
 import {Button} from '@/components/ui/button'
 import {
   Card,
@@ -24,6 +31,7 @@ import {
   CardTitle,
   CardDescription
 } from '@/components/ui/card'
+import Link from 'next/link'
 import {PageHeader} from '@/components/layout/PageHeader'
 import {
   Command,
@@ -40,15 +48,18 @@ import {LoadingState} from '@/components/ui/loading-state'
 import {
   fetchUniquePartnerCompanyNames,
   fetchFinancialRiskAssessment,
-  type FinancialRiskAssessment
+  fetchPartnerCompanies
 } from '@/services/partnerCompany'
 import {
   Breadcrumb,
-  BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbLink,
+  BreadcrumbList,
   BreadcrumbSeparator
 } from '@/components/ui/breadcrumb'
+import {DirectionButton} from '@/components/layout/direction'
+import {motion} from 'framer-motion'
+import {FinancialRiskAssessment} from '@/types/IFRS/partnerCompany'
 
 // API 응답 타입 정의
 interface RiskItem {
@@ -67,16 +78,6 @@ interface FinancialRiskData {
   reportCode: string
   riskItems: RiskItem[]
 }
-
-// 협력사 데이터 구조 변경 (이름과 DART 코드 포함)
-// 실제 운영 환경에서는 이 목록을 API로부터 받아오거나, 다른 방식으로 관리해야 합니다.
-const partners = [
-  {name: '협력사 A', code: '00126380'},
-  {name: '협력사 B', code: '00123456'},
-  {name: '협력사 C', code: '00789012'},
-  {name: '협력사 D', code: '00345678'},
-  {name: '협력사 E', code: '00901234'}
-]
 
 // 상태 레이블 유틸리티 함수
 function getStatusLabel(atRiskCount: number) {
@@ -119,35 +120,83 @@ function PartnerCombobox({options, value, onChange}: PartnerComboboxProps) {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="justify-between w-full" // 너비를 full로 변경하거나 적절한 값으로 조절
-        >
-          {selectedOption ? selectedOption.name : '협력사 선택...'}
-          <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
+          className="justify-between w-full font-medium transition-all duration-200 border-2 h-11 bg-slate-50 border-slate-200 hover:border-customG hover:bg-white rounded-xl">
+          <div className="flex items-center gap-2">
+            <Building2 className="w-4 h-4 text-slate-400" />
+            {selectedOption ? (
+              <span className="text-slate-800">{selectedOption.name}</span>
+            ) : (
+              <span className="text-slate-400">협력사를 선택해주세요...</span>
+            )}
+          </div>
+          <ChevronsUpDown className="w-4 h-4 ml-2 text-slate-400 shrink-0" />
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-full p-0"
+        className="w-full p-0 bg-white border-2 shadow-sm border-slate-200 rounded-xl"
         style={{minWidth: 'var(--radix-popover-trigger-width)'}}>
-        <Command>
-          <CommandInput placeholder="협력사 검색..." />
-          <CommandList>
-            <CommandEmpty>해당하는 협력사가 없습니다.</CommandEmpty>
+        <Command className="rounded-xl">
+          <CommandInput
+            placeholder="협력사 검색..."
+            className="h-12 border-0 border-b border-slate-100 rounded-t-xl"
+          />
+          <CommandList className="max-h-64">
+            <CommandEmpty className="py-8 text-center text-slate-500">
+              <Building2 className="w-8 h-8 mx-auto mb-2 text-slate-300" />
+              해당하는 협력사가 없습니다.
+            </CommandEmpty>
             <CommandGroup>
               {options.map(option => (
                 <CommandItem
                   key={option.code}
-                  value={option.code}
-                  onSelect={currentValue => {
-                    onChange(currentValue === value ? '' : currentValue)
+                  value={option.name}
+                  onSelect={() => {
+                    onChange(option.code)
                     setOpen(false)
-                  }}>
-                  <Check
-                    className={cn(
-                      'mr-2 h-4 w-4',
-                      value === option.code ? 'opacity-100' : 'opacity-0'
-                    )}
-                  />
-                  {option.name}
+                  }}
+                  className={cn(
+                    'flex items-center justify-between px-4 py-3 mx-2 my-1 transition-all duration-300 rounded-lg cursor-pointer',
+                    value === option.code
+                      ? 'bg-customG/5 border border-customG/20 shadow-sm'
+                      : 'hover:bg-customG/5'
+                  )}>
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={cn(
+                        'flex items-center justify-center w-8 h-8 transition-all duration-300 rounded-full',
+                        value === option.code
+                          ? 'bg-customG/10 ring-1 ring-customG/30'
+                          : 'bg-slate-50 ring-1 ring-slate-200/80'
+                      )}>
+                      <Building2
+                        className={cn(
+                          'w-4 h-4 shrink-0',
+                          value === option.code ? 'text-customG' : 'text-slate-400'
+                        )}
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <span
+                        className={cn(
+                          'font-medium',
+                          value === option.code
+                            ? 'text-customG text-[15px]'
+                            : 'text-slate-800'
+                        )}>
+                        {option.name}
+                      </span>
+                      <span
+                        className={cn(
+                          'font-mono text-xs',
+                          value === option.code ? 'text-customG/70' : 'text-slate-500'
+                        )}>
+                        코드: {option.code}
+                      </span>
+                    </div>
+                  </div>
+                  {value === option.code && (
+                    <Check className="w-4 h-4 text-customG shrink-0" />
+                  )}
                 </CommandItem>
               ))}
             </CommandGroup>
@@ -171,6 +220,41 @@ export default function FinancialRiskForm() {
   const [selectedPartnerName, setSelectedPartnerName] = useState<string | null>(null)
   const [riskData, setRiskData] = useState<FinancialRiskAssessment | null>(null)
   const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set())
+  const [accordionValue, setAccordionValue] = useState<string[]>([])
+
+  // URL 쿼리 파라미터에서 companyId와 companyName 가져오기
+  const searchParams = new URLSearchParams(window.location.search)
+  const companyId = searchParams.get('companyId')
+  const companyName = searchParams.get('companyName')
+
+  // 회사 자동 선택 및 데이터 로드
+  useEffect(() => {
+    if (companyId && companyName) {
+      setSelectedPartnerCode(companyId)
+      setSelectedPartnerName(decodeURIComponent(companyName))
+
+      const loadFinancialRisk = async () => {
+        try {
+          setIsLoading(true)
+          setError(null)
+          const data = await fetchFinancialRiskAssessment(companyId, companyName)
+          setRiskData(data)
+        } catch (err) {
+          console.error('Failed to load financial risk data:', err)
+          setError('재무 위험 데이터를 불러오는데 실패했습니다.')
+          toast({
+            variant: 'destructive',
+            title: '오류',
+            description: '재무 위험 데이터를 불러오는데 실패했습니다.'
+          })
+        } finally {
+          setIsLoading(false)
+        }
+      }
+
+      loadFinancialRisk()
+    }
+  }, [companyId, companyName])
 
   // 확장/축소 토글 함수
   const toggleExpand = (itemNumber: number) => {
@@ -189,9 +273,11 @@ export default function FinancialRiskForm() {
   const toggleAllExpanded = (expand: boolean) => {
     if (riskData?.riskItems) {
       if (expand) {
-        const allNumbers = new Set(riskData.riskItems.map(item => item.itemNumber))
-        setExpandedItems(allNumbers)
+        const allItemValues = riskData.riskItems.map(item => `item-${item.itemNumber}`)
+        setAccordionValue(allItemValues)
+        setExpandedItems(new Set(riskData.riskItems.map(item => item.itemNumber)))
       } else {
+        setAccordionValue([])
         setExpandedItems(new Set())
       }
     }
@@ -206,19 +292,28 @@ export default function FinancialRiskForm() {
   const loadPartnerOptions = async () => {
     try {
       setIsLoading(true)
-
-      // 먼저 고유 파트너사명 목록을 가져옵니다.
-      const partnerNames = await fetchUniquePartnerCompanyNames()
-      console.log('Loaded partner names:', partnerNames)
-
-      // 목록은 문자열 배열이므로 옵션 형식으로 변환합니다.
-      // API가 아직 코드를 제공하지 않는 경우 임시 처리
-      const options = partnerNames.map(name => ({
-        name,
-        code: name // 임시로 이름을 코드로 사용
-      }))
-
-      setPartnerOptions(options)
+      const response = await fetchPartnerCompanies(1, 100)
+      let partnerData: any[] = []
+      if (response && response.data && Array.isArray(response.data)) {
+        partnerData = response.data
+      } else if (
+        response &&
+        (response as any).content &&
+        Array.isArray((response as any).content)
+      ) {
+        partnerData = (response as any).content
+      } else if (Array.isArray(response)) {
+        partnerData = response
+      }
+      if (partnerData.length > 0) {
+        const options = partnerData.map((partner: any) => ({
+          name: partner.corpName || partner.companyName,
+          code: partner.corpCode || partner.corp_code
+        }))
+        setPartnerOptions(options)
+      } else {
+        setPartnerOptions([])
+      }
     } catch (err) {
       console.error('Failed to load partner options:', err)
       setError('파트너사 목록을 불러오는데 실패했습니다.')
@@ -235,8 +330,6 @@ export default function FinancialRiskForm() {
   // 파트너사 선택 시 핸들러
   const handlePartnerSelect = async (code: string) => {
     setSelectedPartnerCode(code)
-
-    // 선택된 파트너사의 이름 찾기
     const selectedOption = partnerOptions.find(opt => opt.code === code)
     if (selectedOption) {
       setSelectedPartnerName(selectedOption.name)
@@ -246,12 +339,8 @@ export default function FinancialRiskForm() {
       setIsLoading(true)
       setError(null)
       setRiskData(null)
-
-      // 재무 위험 분석 데이터 가져오기
       const data = await fetchFinancialRiskAssessment(code, selectedOption?.name)
       setRiskData(data)
-
-      // 항목 확장 상태 초기화
       setExpandedItems(new Set())
     } catch (err) {
       console.error('Failed to load financial risk data:', err)
@@ -266,13 +355,13 @@ export default function FinancialRiskForm() {
     }
   }
 
-  // 위험 항목 수 계산
   const atRiskCount = riskData?.riskItems?.filter(item => item.atRisk).length || 0
   const statusInfo = getStatusLabel(atRiskCount)
-  const router = useRouter()
+
   return (
     <div className="flex flex-col w-full h-full p-4 pt-24">
-            <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
+      {/* Breadcrumb */}
+      <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -281,166 +370,290 @@ export default function FinancialRiskForm() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/financialRisk">협력사 재무 위험 분석</BreadcrumbLink>
+              <span className="font-bold text-customG">재무 리스크</span>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </div>
 
-      <div className="flex items-start gap-2 mb-2">
-        <ArrowLeft
-          onClick={() => router.push('/home')}
-          className="w-5 h-5 mt-3 mb-1 text-gray-400 cursor-pointer hover:text-blue-600"
-        />
-        <PageHeader
-          icon={<Building2 className="w-8 h-8" />}
-          title="협력사 재무 위험 분석"
-          description="사의 재무 건전성과 위험을 분석합니다."
-          module="CSDD"
-        />
+      {/* PageHeader + ArrowLeft */}
+      <div className="flex flex-row w-full h-full mb-6">
+        <Link
+          href="/home"
+          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
+          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
+          <PageHeader
+            icon={<FileSearch className="w-6 h-6 text-customG" />}
+            title="재무 리스크"
+            description="협력사의 재무 리스크를 분석하고 관리합니다"
+            module="파트너사"
+          />
+        </Link>
       </div>
 
-      <div className="grid grid-cols-4 gap-4">
-        <div className="col-span-3">
-          <PartnerCombobox
-            options={partnerOptions}
-            value={selectedPartnerCode}
-            onChange={handlePartnerSelect}
-          />
-        </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            setIsLoading(true)
-            loadPartnerOptions().finally(() => setIsLoading(false))
-          }}
-          disabled={isLoading}
-          className="flex items-center gap-1 mt-2 text-gray-500 hover:text-gray-700 md:mt-0">
-          <RefreshCcw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
-          데이터 새로고침
-        </Button>
-      </div>
+      {/* 분석할 파트너사 선택 카드 */}
+      <Card className="overflow-hidden transition-all duration-300 bg-white border-2 shadow-sm border-slate-200 rounded-xl">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center justify-center w-12 h-12 transition-all duration-300 bg-white border shadow-sm rounded-xl border-slate-200">
+                <FileSearch className="w-6 h-6 text-customG" />
+              </div>
+              <div className="flex flex-col">
+                <h3 className="text-lg font-bold text-slate-800">분석할 파트너사 선택</h3>
+                <p className="text-sm text-slate-500">
+                  재무 위험도를 분석할 협력사를 선택해주세요
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsLoading(true)
+                loadPartnerOptions().finally(() => setIsLoading(false))
+              }}
+              disabled={isLoading}
+              className="px-6 font-medium transition-all duration-200 bg-white border-2 h-11 border-slate-200 hover:border-customG hover:bg-customG/5 rounded-xl">
+              <RefreshCcw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+              데이터 새로고침
+            </Button>
+          </div>
+          <div className="mt-6">
+            <PartnerCombobox
+              options={partnerOptions}
+              value={selectedPartnerCode}
+              onChange={handlePartnerSelect}
+            />
+          </div>
+        </CardContent>
+      </Card>
 
       <LoadingState isLoading={isLoading} error={error} isEmpty={!riskData}>
         {riskData && (
-          <div className="mt-6 space-y-6">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium">파트너사</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{riskData.partnerCompanyName}</div>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    사업자번호: {riskData.partnerCompanyId}
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium">기준 정보</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{riskData.assessmentYear}년</div>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    보고서 코드: {riskData.reportCode}
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium">재무 위험 상태</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center gap-2">
-                    <div className="text-2xl font-bold">{statusInfo.label}</div>
-                    {statusInfo.icon}
+          <div className="mt-4 space-y-4">
+            {/* 상단 3개 요약 카드 */}
+            <div className="flex flex-row gap-4 mb-2">
+              {/* Partner Company Info Card */}
+              <Card className="flex-1 border-2 border-blue-100 shadow-sm bg-gradient-to-br from-blue-50 to-white rounded-xl">
+                <CardContent className="flex items-center p-4">
+                  <div className="p-2 mr-3 bg-blue-100 rounded-full">
+                    <Building2 className="w-5 h-5 text-blue-600" />
                   </div>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    위험 항목: {atRiskCount} / {riskData.riskItems.length} 항목
-                  </p>
+                  <div>
+                    <p className="mb-1 text-sm font-medium text-gray-500">파트너사</p>
+                    <div className="flex items-center gap-3">
+                      <h3 className="text-2xl font-bold text-slate-800">
+                        {riskData.partnerCompanyName}
+                      </h3>
+                      <p className="px-3 py-1 font-mono text-xs font-medium text-slate-600 bg-white/80 rounded-xl">
+                        ID: {riskData.partnerCompanyId}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Assessment Info Card */}
+              <Card className="flex-1 border-2 shadow-sm border-emerald-100 bg-gradient-to-br from-emerald-50 to-white rounded-xl">
+                <CardContent className="flex items-center p-4">
+                  <div className="p-2 mr-3 rounded-full bg-emerald-100">
+                    <FileSearch className="w-5 h-5 text-emerald-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">분석 기준</p>
+                    <div className="flex items-center gap-3">
+                      <h3 className="text-2xl font-bold text-slate-800">
+                        {riskData.assessmentYear}년도
+                      </h3>
+                      <p className="px-3 py-1 mt-1 font-mono text-xs font-medium text-slate-600 bg-white/80 rounded-xl">
+                        보고서: {riskData.reportCode}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Risk Status Card */}
+              <Card
+                className={cn(
+                  'flex-1 border-2 bg-gradient-to-br shadow-sm rounded-xl',
+                  atRiskCount === 0
+                    ? 'border-emerald-100 from-emerald-50 to-white'
+                    : atRiskCount <= 2
+                    ? 'border-amber-100 from-amber-50 to-white'
+                    : 'border-red-100 from-red-50 to-white'
+                )}>
+                <CardContent className="flex items-center p-4">
+                  <div
+                    className={cn(
+                      'p-2 mr-3 rounded-full',
+                      atRiskCount === 0
+                        ? 'bg-emerald-100'
+                        : atRiskCount <= 2
+                        ? 'bg-amber-100'
+                        : 'bg-red-100'
+                    )}>
+                    {React.cloneElement(statusInfo.icon, {
+                      className: cn(
+                        'w-5 h-5',
+                        atRiskCount === 0
+                          ? 'text-emerald-600'
+                          : atRiskCount <= 2
+                          ? 'text-amber-600'
+                          : 'text-red-600'
+                      )
+                    })}
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">위험 상태</p>
+                    <div className="flex items-center gap-3">
+                      <h3 className={`text-2xl font-bold ${statusInfo.color}`}>
+                        {statusInfo.label}
+                      </h3>
+                      <p className="px-3 py-1 mt-1 text-xs font-medium text-slate-600 bg-white/80 rounded-xl">
+                        위험 항목: {atRiskCount} / {riskData.riskItems.length}
+                      </p>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </div>
 
-            <div className="flex justify-end gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => toggleAllExpanded(true)}
-                className="text-xs">
-                <ChevronsDown className="w-4 h-4 mr-1" />
-                모두 펼치기
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => toggleAllExpanded(false)}
-                className="text-xs">
-                <ChevronsUp className="w-4 h-4 mr-1" />
-                모두 접기
-              </Button>
-            </div>
-
-            <div className="space-y-4">
-              {riskData.riskItems.map(item => (
-                <Card
-                  key={item.itemNumber}
-                  className={item.atRisk ? 'border-red-200' : ''}>
-                  <CardHeader
-                    className="pb-2 cursor-pointer"
-                    onClick={() => toggleExpand(item.itemNumber)}>
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="flex items-center gap-2 text-base font-medium">
-                        <span className="inline-flex items-center justify-center w-6 h-6 text-sm rounded-full bg-slate-100">
-                          {item.itemNumber}
-                        </span>
-                        {item.description}
-                        {item.atRisk && (
-                          <span className="text-xs px-2 py-0.5 rounded-full bg-red-50 text-red-600 border border-red-100">
-                            위험
-                          </span>
-                        )}
-                      </CardTitle>
-                      {expandedItems.has(item.itemNumber) ? (
-                        <ChevronsUp className="w-5 h-5 text-muted-foreground" />
-                      ) : (
-                        <ChevronsDown className="w-5 h-5 text-muted-foreground" />
-                      )}
+            {/* 세부 위험 분석 카드 */}
+            <Card className="overflow-hidden shadow-sm">
+              <CardHeader className="p-4 bg-white border-b">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center justify-center w-12 h-12 transition-all duration-300 bg-white border shadow-sm rounded-xl border-slate-200">
+                      <AlertTriangle className="w-6 h-6 text-amber-500" />
                     </div>
-                    <CardDescription>
-                      실제값:{' '}
-                      <span className={item.atRisk ? 'text-red-600 font-medium' : ''}>
-                        {item.actualValue}
-                      </span>{' '}
-                      / 기준값: {item.threshold}
-                    </CardDescription>
-                  </CardHeader>
+                    <div className="flex flex-col">
+                      <h3 className="text-lg font-bold text-slate-800">세부 위험 분석</h3>
+                      <p className="text-sm text-slate-500">
+                        총{' '}
+                        <span className="font-semibold text-slate-700">
+                          {riskData?.riskItems?.length || 0}개
+                        </span>{' '}
+                        항목을 분석했습니다
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => toggleAllExpanded(true)}
+                      className="px-4 text-sm font-medium transition-all duration-200 bg-white border-2 h-9 border-slate-200 hover:border-customG hover:bg-customG/5 rounded-xl">
+                      <ChevronsDown className="w-3.5 h-3.5 mr-1.5" />
+                      모두 펼치기
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => toggleAllExpanded(false)}
+                      className="px-4 text-sm font-medium transition-all duration-200 bg-white border-2 h-9 border-slate-200 hover:border-customG hover:bg-customG/5 rounded-xl">
+                      <ChevronsUp className="w-3.5 h-3.5 mr-1.5" />
+                      모두 접기
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
 
-                  {expandedItems.has(item.itemNumber) && (
-                    <CardContent>
-                      <div className="p-3 text-sm rounded-md bg-slate-50">
-                        <div className="flex items-start gap-2">
-                          <FileSearch className="h-5 w-5 text-slate-400 mt-0.5" />
-                          <div>
-                            <p className="font-medium text-slate-700">상세 정보</p>
-                            <p className="mt-1 text-slate-600">
-                              {item.notes || '추가 정보가 없습니다.'}
-                            </p>
+              <CardContent className="p-0">
+                <div className="bg-white rounded-b-lg">
+                  <Accordion 
+  type="multiple" 
+  value={accordionValue}
+  onValueChange={setAccordionValue}
+  className="p-4">
+                    {riskData.riskItems.map(item => (
+                      <AccordionItem
+                        key={item.itemNumber}
+                        value={`item-${item.itemNumber}`}
+                        className="mb-3 overflow-hidden border rounded-md shadow-sm">
+                        <AccordionTrigger
+                          className={cn(
+                            'px-4 py-3 hover:no-underline',
+                            item.atRisk ? 'bg-red-50/50' : 'bg-slate-50/50'
+                          )}>
+                          <div className="flex items-center w-full gap-4">
+                            <div
+                              className={cn(
+                                'inline-flex items-center justify-center w-8 h-8 text-base font-bold rounded-xl',
+                                item.atRisk
+                                  ? 'bg-red-100 text-red-700'
+                                  : 'bg-slate-100 text-slate-700'
+                              )}>
+                              {item.itemNumber}
+                            </div>
+                            <div className="flex items-center flex-1 gap-2">
+                            
+                              <span className="font-medium text-left text-slate-700">
+                                {item.description}
+                              </span>
+                              {item.atRisk && (
+                                <span className="px-3 py-1 text-xs font-semibold text-red-600 border border-red-100 bg-red-50 rounded-xl">
+                                  위험
+                                </span>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  )}
-                </Card>
-              ))}
-            </div>
+                        </AccordionTrigger>
+
+                        <AccordionContent className="p-4 bg-white border-t">
+                          <div className="grid grid-cols-1 gap-4 mb-4 md:grid-cols-2">
+                            <div className="flex items-center gap-3 p-3 bg-white border rounded-lg border-slate-200">
+                              <span className="font-semibold text-slate-600">
+                                실제값:
+                              </span>
+                              <div
+                                className={cn(
+                                  'px-4 py-2 font-mono text-sm rounded-lg border',
+                                  item.atRisk
+                                    ? 'border-red-200 bg-red-50 text-red-700'
+                                    : 'border-slate-200 bg-slate-50 text-slate-800'
+                                )}>
+                                {item.actualValue}
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-3 p-3 bg-white border rounded-lg border-slate-200">
+                              <span className="font-semibold text-slate-600">
+                                기준값:
+                              </span>
+                              <div className="px-4 py-2 font-mono text-sm border rounded-lg bg-slate-50 border-slate-200 text-slate-800">
+                                {item.threshold}
+                              </div>
+                            </div>
+                          </div>
+                          {item.notes && (
+                            <div className="p-4 border rounded-lg bg-slate-50 border-slate-200">
+                              <div className="flex items-center gap-3 mb-3">
+                                <FileSearch className="w-5 h-5 text-slate-400" />
+                                <span className="font-medium text-slate-700">
+                                  추가 설명
+                                </span>
+                              </div>
+                              <p className="text-sm leading-relaxed text-slate-600">
+                                {item.notes}
+                              </p>
+                            </div>
+                          )}
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         )}
       </LoadingState>
+      <DirectionButton
+        direction="left"
+        tooltip="파트너사 관리로 이동"
+        href="/managePartner"
+        fixed
+        position="middle-left"
+        size={48}
+      />
     </div>
   )
 }

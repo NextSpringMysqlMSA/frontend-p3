@@ -130,11 +130,11 @@ export default function CsdddChart({refreshTrigger = 0}: {refreshTrigger?: numbe
   }, [refreshTrigger])
 
   return (
-    <div className="flex flex-col items-center w-full space-y-3">
+    <div className="flex flex-col items-center justify-center w-full h-full space-y-3">
       {data.map(({name, isCompleted}) => (
         <div
           key={name}
-          className="flex items-center justify-between px-4 py-3 border rounded w-80 border-amber-100 bg-amber-50">
+          className="flex items-center justify-between w-full px-6 py-3 border rounded border-amber-100 bg-amber-50">
           <span className="text-base font-semibold text-amber-900">{name}</span>
           <div className="flex items-center gap-2 text-base font-medium">
             {isCompleted ? (

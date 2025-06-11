@@ -1,6 +1,5 @@
 'use client'
 
-import {useRouter} from 'next/navigation'
 import {useEffect, useState} from 'react'
 import {format} from 'date-fns'
 import {motion} from 'framer-motion'
@@ -14,7 +13,7 @@ import {
   Home,
   ArrowLeft
 } from 'lucide-react'
-
+import Link from 'next/link'
 // 컴포넌트 가져오기
 import Committee from './committee'
 import KPI from './kpi'
@@ -53,7 +52,14 @@ import {
   fetchKpiList,
   fetchEducationList
 } from '@/services/governance'
-import {Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbSeparator} from '@/components/ui/breadcrumb'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbSeparator
+} from '@/components/ui/breadcrumb'
+import {DirectionButton} from '@/components/layout/direction'
+
 
 /**
  * Governance 컴포넌트
@@ -135,7 +141,7 @@ export default function Governance() {
   const meetingHeader = ['회의 날짜', '회의 제목', '주요 안건 및 의결 내용']
   const KPIHeader = ['경영진 이름', 'KPI명', '목표율/목표값', '달성률/달성값']
   const educationHeader = ['교육 일자', '참석자 수', '교육 제목', '교육 주요 내용']
-  const router = useRouter()
+
   return (
     <div className="flex flex-col w-full h-full p-4 pt-24">
       {/* 상단 네비게이션 */}
@@ -148,25 +154,26 @@ export default function Governance() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/governance">거버넌스</BreadcrumbLink>
+              <span className="font-bold text-customG">거버넌스</span>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </div>
 
       {/* 헤더 섹션 */}
-      <div className="flex items-start gap-2 mb-2">
-        <ArrowLeft
-          onClick={() => router.push('/home')}
-          className="w-5 h-5 mt-3 mr-2 text-gray-400 cursor-pointer hover:text-blue-600"
-        />
-        <PageHeader
-          icon={<Landmark className="w-6 h-6 text-blue-600" />}
-          title="거버넌스"
-          description="IFRS S2/TCFD 기반 기후 거버넌스 체계 관리"
-          module="IFRS"
-          submodule="governance"
-        />
+      <div className="flex flex-row w-full h-full mb-6">
+        <Link
+          href="/home"
+          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
+          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
+          <PageHeader
+            icon={<Landmark className="w-6 h-6 text-blue-600" />}
+            title="거버넌스"
+            description="IFRS S2/TCFD 기반 기후 거버넌스 체계 관리"
+            module="IFRS"
+            submodule="governance"
+          />
+        </Link>
       </div>
       {/* LoadingState 컴포넌트 활용 - 빈 상태일 때도 폼을 표시하도록 수정 */}
       <LoadingState
@@ -247,6 +254,7 @@ export default function Governance() {
             </CardContent>
           </Card>
         </motion.div>
+
         {/* 메인 콘텐츠 */}
         <motion.div
           initial={{opacity: 0, y: 20}}
@@ -414,6 +422,14 @@ export default function Governance() {
           </Card>
         </motion.div>
       </LoadingState>
+      <DirectionButton
+        direction="right"
+        tooltip="전략으로 이동"
+        href="/strategy"
+        fixed
+        position="middle-right"
+        size={48}
+      />
     </div>
   )
 }

@@ -13,12 +13,14 @@ import {
   BreadcrumbSeparator
 } from '@/components/ui/breadcrumb'
 import {showError, showSuccess} from '@/util/toast'
-import {BadgeCheck, ChevronRight, FileQuestion, Home} from 'lucide-react'
+import {BadgeCheck, ChevronRight, FileQuestion, Home, ArrowLeft} from 'lucide-react'
 import {fetchHrddResult, updateHrddAnswers} from '@/services/csddd'
 import {useRouter} from 'next/navigation'
 import type {HrddViolationDto} from '@/types/IFRS/csddd'
 import type {AxiosError} from 'axios'
 import {AnimatePresence, motion} from 'framer-motion'
+import {PageHeader} from '@/components/layout/PageHeader'
+import Link from 'next/link'
 
 // HRDD-specific questions
 const questions: Record<
@@ -579,35 +581,43 @@ export default function HrdddForm() {
         initial={{opacity: 0, y: -10}}
         animate={{opacity: 1, y: 0}}
         transition={{duration: 0.3}}
-        className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
-        <Home className="w-4 h-4 mr-1" />
-        <span>공급망 실사</span>
-        <ChevronRight className="w-4 h-4 mx-2" />
-        <span className="font-medium text-customG">인권 실사 진단</span>
+        className="flex flex-row items-center px-4 py-2 mb-4 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <Home className="w-4 h-4 mr-1" />
+              <BreadcrumbLink href="/home">대시보드</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/CSDDD">공급망 실사</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <span className="font-bold text-customG">인권 실사 자가진단</span>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
       </motion.div>
 
-      <div className="w-full mx-auto max-w-7xl">
-        {/* 헤더 섹션 - 컴팩트 버전으로 개선 */}
-        <motion.div
-          initial={{opacity: 0, scale: 0.98}}
-          animate={{opacity: 1, scale: 1}}
-          transition={{duration: 0.4}}
-          className="p-5 mb-6 bg-white border border-gray-100 shadow-sm rounded-xl">
-          <div className="flex items-center">
-            <div className="p-2 mr-4 rounded-full bg-customG/10">
-              <BadgeCheck className="w-6 h-6 text-customG" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-customG">
-                인권 실사 지침 요구사항 이행 자가진단
-              </h1>
-              <p className="text-sm text-gray-600">
-                기업의 인권 실사 준비 수준을 확인하고 개선할 수 있도록 도움을 제공합니다.
-              </p>
-            </div>
-          </div>
-        </motion.div>
+      {/* 페이지 헤더 및 뒤로가기 */}
+      <div className="flex flex-row w-full h-full mb-6">
+        <Link
+          href="/CSDDD"
+          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
+          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
+          <PageHeader
+            icon={<BadgeCheck className="w-6 h-6 text-customG" />}
+            title="인권 실사 지침 이행 자가진단"
+            description="기업의 인권 실사 준비 수준을 확인하고 개선할 수 있도록 도움을 제공합니다"
+            module="CSDDD"
+            submodule="hrdd"
+          />
+        </Link>
+      </div>
 
+      {/* 기존 컨텐츠 */}
+      <div className="w-full mx-auto max-w-7xl">
         {/* 단계 인디케이터 */}
         <motion.div
           initial={{opacity: 0}}

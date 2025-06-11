@@ -2,7 +2,13 @@
 
 import {useEffect, useState, useCallback} from 'react'
 import type {EuddViolationDto} from '@/types/IFRS/csddd'
-import {BreadcrumbLink} from '@/components/ui/breadcrumb'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator
+} from '@/components/ui/breadcrumb'
 import {showError} from '@/util/toast'
 import {
   FileCheck,
@@ -11,7 +17,8 @@ import {
   Home,
   AlertCircle,
   Info,
-  CheckCircle2
+  CheckCircle2,
+  ArrowLeft
 } from 'lucide-react'
 import {motion} from 'framer-motion'
 import Link from 'next/link'
@@ -27,6 +34,7 @@ import {StatCard} from '@/components/ui/stat-card'
 import {LoadingState} from '@/components/ui/loading-state'
 import {PageHeader} from '@/components/layout/PageHeader'
 import {fetchEuddResult} from '@/services/csddd'
+import {DirectionButton} from '@/components/layout/direction'
 
 /**
  * EU 공급망 실사 지침 자가진단 결과 페이지
@@ -124,24 +132,43 @@ export default function EuddResult() {
     <div className="flex flex-col w-full h-full p-4 pt-24">
       {/* ======== 상단 네비게이션 ======== */}
       <motion.div
-        initial={{opacity: 0, y: -10}} // 초기 상태 (투명하고 약간 위로 이동)
-        animate={{opacity: 1, y: 0}} // 애니메이션 최종 상태
-        transition={{duration: 0.3}} // 애니메이션 시간
-        className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
-        <Home className="w-4 h-4 mr-1" />
-        <span>공급망 실사</span>
-        <ChevronRight className="w-4 h-4 mx-2" />
-        <span className="font-medium text-customG">EU 공급망 실사 결과</span>
+        initial={{opacity: 0, y: -10}}
+        animate={{opacity: 1, y: 0}}
+        transition={{duration: 0.3}}
+        className="flex flex-row items-center px-4 py-2 mb-4 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <Home className="w-4 h-4 mr-1" />
+              <BreadcrumbLink href="/home">대시보드</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/CSDDD">공급망 실사</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <span className="font-bold text-customG">EU 공급망 실사 자가진단 결과</span>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
       </motion.div>
 
       {/* ======== 헤더 섹션 ======== */}
-      <PageHeader
-        icon={<FileCheck className="w-6 h-6" />}
-        title="EU 공급망 실사 자가진단 결과"
-        description="EU 공급망 실사 지침 요구사항 이행 자가진단 결과 확인"
-        gradient="from-green-100 to-green-50" // 그라데이션 배경
-        iconColor="text-customG" // 아이콘 색상
-      ></PageHeader>
+      <div className="flex flex-row w-full h-full mb-6">
+        <Link
+          href="/CSDDD"
+          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
+          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
+          <PageHeader
+            icon={<FileCheck className="w-6 h-6" />}
+            title="EU 공급망 실사 자가진단 결과"
+            description="EU 공급망 실사 지침 요구사항 이행 자가진단 결과 확인"
+            gradient="from-green-100 to-green-50" // 그라데이션 배경
+            iconColor="text-customG" // 아이콘 색상
+          />
+        </Link>
+      </div>
 
       {/* ======== 로딩 상태, 오류, 데이터 없음 처리 ======== */}
       <LoadingState
@@ -430,6 +457,14 @@ export default function EuddResult() {
         </>
         {/* LoadingState 닫는 태그 */}
       </LoadingState>
+      <DirectionButton
+        direction="right"
+        tooltip="인권 실사 결과로 이동"
+        href="/CSDDD/hrdd/result"
+        fixed
+        position="middle-right"
+        size={48}
+      />
     </div>
   )
 }

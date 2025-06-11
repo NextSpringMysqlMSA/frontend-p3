@@ -1,6 +1,5 @@
 'use client'
 
-import {useRouter} from 'next/navigation'
 import {useEffect, useState} from 'react'
 import {
   Zap,
@@ -12,6 +11,7 @@ import {
   Home,
   ArrowLeft
 } from 'lucide-react'
+import Link from 'next/link'
 import Scenario from './scenario'
 import Risk from './risk'
 
@@ -41,7 +41,15 @@ import {LoadingState} from '@/components/ui/loading-state'
 import {StatusBadge} from '@/components/ui/status-badge'
 import {Button} from '@/components/ui/button'
 import {useUIStore} from '@/stores/IFRS/strategy/UIState'
-import {Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbLink, BreadcrumbSeparator} from '@/components/ui/breadcrumb'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbLink,
+  BreadcrumbSeparator
+} from '@/components/ui/breadcrumb'
+
+import {DirectionButton} from '@/components/layout/direction'
 
 export default function Strategy() {
   const [loading, setLoading] = useState(true)
@@ -105,11 +113,11 @@ export default function Strategy() {
     '전환 리스크': RiskData?.filter(item => item.riskType === '전환 리스크').length || 0,
     '기회 요인': RiskData?.filter(item => item.riskType === '기회 요인').length || 0
   }
-  const router = useRouter()
+
   return (
-    <div className="flex flex-col w-full h-full p-4 pt-24 space-y-6">
+    <div className="flex flex-col w-full h-full p-4 pt-24">
       {/* 상단 네비게이션 */}
-      <div className="flex flex-row items-center p-2 px-2 mb-2 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
+      <div className="flex flex-row items-center p-2 px-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -118,26 +126,26 @@ export default function Strategy() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/strategy">전략</BreadcrumbLink>
+              <span className="font-bold text-customG">전략</span>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </div>
 
       {/* 헤더 섹션 - PageHeader 컴포넌트 사용 */}
-      {/* 헤더 섹션 - PageHeader 컴포넌트 사용 */}
-      <div className="flex items-start gap-2 mb-2">
-        <ArrowLeft
-          onClick={() => router.push('/home')}
-          className="w-5 h-5 mt-3 mr-2 text-gray-400 cursor-pointer hover:text-blue-600"
-        />
-        <PageHeader
-          icon={<LineChart className="w-6 h-6 text-blue-600" />}
-          title="기후변화 전략 관리"
-          description="기후변화 관련 위험과 기회, 시나리오 분석을 통한 전략적 접근"
-          module="IFRS"
-          submodule="strategy"
-        />
+      <div className="flex items-start gap-2 mb-6">
+        <Link
+          href="/home"
+          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
+          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
+          <PageHeader
+            icon={<LineChart className="w-6 h-6 text-blue-600" />}
+            title="기후변화 전략 관리"
+            description="기후변화 관련 위험과 기회, 시나리오 분석을 통한 전략적 접근"
+            module="IFRS"
+            submodule="strategy"
+          />
+        </Link>
       </div>
 
       <LoadingState
@@ -227,8 +235,6 @@ export default function Strategy() {
           </Card>
         </motion.div>
 
-        <Separator />
-
         {/* 정보 카드 섹션 헤더 및 토글 버튼 */}
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-sm font-medium text-gray-500">기후변화 전략 정보</h3>
@@ -243,13 +249,13 @@ export default function Strategy() {
 
         {/* 조건부 렌더링으로 정보 카드 표시/숨김 */}
         {showInfoCards && (
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 mb-4 md:grid-cols-2">
             <motion.div
               initial={{opacity: 0, y: 20}}
               animate={{opacity: 1, y: 0}}
               transition={{duration: 0.5, delay: 0.1}}>
-              <Card className="h-full overflow-hidden border-l-4 border-l-blue-500">
-                <CardHeader className="pb-2">
+              <Card className="h-full border-l-4 border-l-blue-500">
+                <CardHeader className="">
                   <CardTitle className="flex items-center gap-2 text-lg">
                     <Cloud className="w-5 h-5 text-blue-500" />
                     시나리오 분석의 중요성
@@ -258,11 +264,12 @@ export default function Strategy() {
                     SSP 기후 시나리오에 기반한 재무적 영향 분석
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="flex flex-col justify-between h-[calc(100%-80px)]">
+                <CardContent className="flex flex-col h-full p-6 pt-0 ">
                   <p className="text-sm text-gray-600">
                     물리적 기후변화 영향을 SSP 시나리오에 기반하여 분석합니다. 기업의
-                    자산, 운영, 공급망에 대한 잠재적 위험과 기회를 식별하고, 장기적 전략에
-                    반영할 수 있습니다.
+                    자산, 운영, 공급망에 대한
+                    <br /> 잠재적 위험과 기회를 식별하고, 장기적 전략에 반영할 수
+                    있습니다.
                   </p>
                   <div className="flex flex-wrap gap-2 mt-3">
                     <StatusBadge text="SSP1-1.9" severity="success" />
@@ -279,18 +286,19 @@ export default function Strategy() {
               animate={{opacity: 1, y: 0}}
               transition={{duration: 0.5, delay: 0.2}}>
               <Card className="h-full overflow-hidden border-l-4 border-l-rose-500">
-                <CardHeader className="pb-2">
+                <CardHeader className="">
                   <CardTitle className="flex items-center gap-2 text-lg">
                     <Zap className="w-5 h-5 text-rose-500" />
                     리스크 및 기회 식별
                   </CardTitle>
                   <CardDescription>기후변화 관련 위험과 기회 관리 체계</CardDescription>
                 </CardHeader>
-                <CardContent className="flex flex-col justify-between h-[calc(100%-80px)]">
+                <CardContent className="flex flex-col h-full p-6 pt-0">
                   <p className="text-sm text-gray-600">
                     기업 특성에 맞춘 물리적/전환 리스크를 식별하고 이를 관리하기 위한
-                    체계적인 대응 전략을 수립합니다. 또한 기후변화에서 발생하는 새로운
-                    사업 기회를 발굴하여 경쟁력을 강화합니다.
+                    체계적인 대응 전략을
+                    <br /> 수립합니다. 또한 기후변화에서 발생하는 새로운 사업 기회를
+                    발굴하여 경쟁력을 강화합니다.
                   </p>
                   <div className="flex flex-wrap gap-2 mt-3">
                     <StatusBadge text="물리적 리스크" severity="warning" />
@@ -417,6 +425,26 @@ export default function Strategy() {
           </CardContent>
         </div>
       </LoadingState>
+
+      {/* 👈 왼쪽: 거버넌스로 이동 */}
+      <DirectionButton
+        direction="left"
+        tooltip="거버넌스로 이동"
+        href="/governance"
+        fixed
+        position="middle-left"
+        size={48}
+      />
+
+      {/* 👉 오른쪽: 골로 이동 */}
+      <DirectionButton
+        direction="right"
+        tooltip="목표 및 지표로 이동"
+        href="/goal"
+        fixed
+        position="middle-right"
+        size={48}
+      />
     </div>
   )
 }

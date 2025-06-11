@@ -2,54 +2,47 @@
 
 import {useEffect, useState} from 'react'
 import {Skeleton} from '@/components/ui/skeleton'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table'
+import {fetchPartnerCompanyProgress} from '@/services/dashboard'
+import {Building2, Calendar, ArrowUpRight, Search} from 'lucide-react'
+import {ScrollArea} from '@/components/ui/scroll-area'
+import {Badge} from '@/components/ui/badge'
+import {Input} from '@/components/ui/input'
+import {cn} from '@/lib/utils'
+import {useRouter} from 'next/navigation'
 
 interface PartnerCompany {
-  id: number
+  id: string
   name: string
   registeredAt: string
+  corpCode: string
+  stockCode: string
+  status: string
 }
 
 export default function PartnerCompanyChart({refreshTrigger}: {refreshTrigger: number}) {
+  const router = useRouter()
   const [data, setData] = useState<PartnerCompany[]>([])
   const [loading, setLoading] = useState(true)
+  const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
     const loadData = async () => {
       setLoading(true)
       try {
-        const dummyData: PartnerCompany[] = [
-          {id: 1, name: '에코그린 주식회사', registeredAt: '2024-05-01'},
-          {id: 2, name: '클린에너지솔루션', registeredAt: '2024-05-03'},
-          {id: 3, name: '지속가능텍 주식회사', registeredAt: '2024-04-22'},
-          {id: 4, name: '블루오션산업', registeredAt: '2024-05-06'},
-          {id: 5, name: '그린어스코리아', registeredAt: '2024-05-28'},
-          {id: 6, name: '에버에코 주식회사', registeredAt: '2024-03-19'},
-          {id: 7, name: '선샤인테크', registeredAt: '2024-04-18'},
-          {id: 8, name: '퓨처에너지', registeredAt: '2024-05-04'},
-          {id: 9, name: '넥스트그린', registeredAt: '2024-04-25'},
-          {id: 10, name: '에코리더스', registeredAt: '2024-05-10'},
-          {id: 11, name: '바이오플랜', registeredAt: '2024-05-11'},
-          {id: 12, name: '솔라플랜트', registeredAt: '2024-04-20'},
-          {id: 13, name: '코리아에코텍', registeredAt: '2024-05-13'},
-          {id: 14, name: '지구사랑기업', registeredAt: '2024-05-07'},
-          {id: 15, name: '엘지에너지파트너스', registeredAt: '2024-05-05'},
-          {id: 16, name: '에코어스테크', registeredAt: '2024-04-30'},
-          {id: 17, name: '클린에버', registeredAt: '2024-05-09'},
-          {id: 18, name: '청정하이텍', registeredAt: '2024-04-28'},
-          {id: 19, name: '바이오넥스트', registeredAt: '2024-05-14'},
-          {id: 20, name: '그린테크솔루션', registeredAt: '2024-05-02'}
-        ]
+        const responseData = await fetchPartnerCompanyProgress()
 
-        // 등록일 기준 정렬 (날짜 있는 항목 우선, 최신순)
-        const sorted = [...dummyData].sort((a, b) => {
+        // 응답 데이터 가공 (page.tsx 형식과 일치)
+        const mapped: PartnerCompany[] = responseData.data.map((item: any) => ({
+          id: item.id,
+          name: item.corp_name,
+          registeredAt: item.contract_start_date,
+          corpCode: item.corp_code,
+          stockCode: item.stock_code,
+          status: item.status || 'ACTIVE'
+        }))
+
+        // 등록일 기준 정렬 (최신순)
+        const sorted = mapped.sort((a, b) => {
           if (!a.registeredAt) return 1
           if (!b.registeredAt) return -1
           return b.registeredAt.localeCompare(a.registeredAt)
@@ -66,30 +59,164 @@ export default function PartnerCompanyChart({refreshTrigger}: {refreshTrigger: n
     loadData()
   }, [refreshTrigger])
 
+  const filteredData = data.filter(company =>
+    company.name.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+
+  const handleCompanyClick = (
+    e: React.MouseEvent,
+    companyId: string,
+    companyName: string
+  ) => {
+    e.preventDefault()
+    router.push(
+      `/financialRisk?companyId=${companyId}&companyName=${encodeURIComponent(
+        companyName
+      )}`
+    )
+  }
+
+  // 상장 여부 확인 함수 추가
+  const isListed = (stockCode: string | null | undefined) => {
+    return stockCode && stockCode.trim() !== ''
+  }
+
   return loading ? (
-    <div className="p-4 space-y-2">
-      <Skeleton className="w-1/3 h-4" />
-      <Skeleton className="w-full h-4" />
-      <Skeleton className="w-full h-4" />
+    <div className="flex flex-col h-full">
+      <div className="flex items-center justify-between px-4 mb-4">
+        <div>
+          <h3 className="text-base font-semibold text-gray-900">등록된 협력사 목록</h3>
+          <p className="mt-1 text-sm text-gray-500">전체 {data.length}개 협력사</p>
+        </div>
+        <div className="relative w-64">
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
+          <Skeleton className="w-full h-9" />
+        </div>
+      </div>
+      <ScrollArea className="flex-1 border border-gray-100 rounded-md">
+        <div className="p-4 space-y-3 min-h-[400px]">
+          {[...Array(5)].map((_, i) => (
+            <div
+              key={i}
+              className="flex items-center justify-between p-4 border border-gray-100 rounded-lg">
+              <div className="flex items-center space-x-4">
+                <Skeleton className="w-10 h-10 rounded-full" />
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-[200px]" />
+                  <Skeleton className="h-3 w-[250px]" />
+                  <Skeleton className="h-3 w-[150px]" />
+                </div>
+              </div>
+              <Skeleton className="w-20 h-6" />
+            </div>
+          ))}
+        </div>
+      </ScrollArea>
     </div>
   ) : (
-    <Table className="text-sm">
-      <TableHeader>
-        <TableRow className="bg-gray-50">
-          <TableHead className="text-center text-gray-700">협력사명</TableHead>
-          <TableHead className="text-center text-gray-700">등록일</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {data.map(company => (
-          <TableRow key={company.id}>
-            <TableCell className="text-center text-gray-800">{company.name}</TableCell>
-            <TableCell className="text-center text-gray-600">
-              {company.registeredAt || <span className="text-gray-400">-</span>}
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <div className="flex flex-col h-full">
+      <div className="flex items-center justify-between px-4 mb-4">
+        <div>
+          <h3 className="text-base font-semibold text-gray-900">등록된 협력사 목록</h3>
+          <p className="mt-1 text-sm text-gray-500">전체 {data.length}개 협력사</p>
+        </div>
+        <div className="relative w-52" onClick={e => e.preventDefault()}>
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
+          <Input
+            type="text"
+            placeholder="협력사 검색..."
+            className="pl-8 h-9"
+            value={searchTerm}
+            onChange={e => {
+              e.preventDefault()
+              setSearchTerm(e.target.value)
+            }}
+            onClick={e => e.stopPropagation()}
+          />
+        </div>
+      </div>
+      {/* <ScrollArea className="w-full border border-gray-100 rounded-md h-44">
+      <div className="p-4">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-medium text-gray-700">등록된 협력사 목록</h3>
+          <Badge variant="outline" className="text-xs">
+            총 {data.length}개사
+          </Badge>
+        </div>
+      </div> */}
+
+      <ScrollArea className="flex-1 border border-gray-200 rounded-t-lg">
+        <div className="h-full p-4 space-y-3">
+          {filteredData.map(company => (
+            <div
+              key={company.id}
+              className="flex items-center justify-between p-4 py-4 transition-all duration-200 bg-white border border-gray-100 rounded-lg cursor-pointer group hover:bg-gray-50 hover:border-gray-200"
+              onClick={e => handleCompanyClick(e, company.id, company.name)}>
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center justify-center w-10 h-10 transition-colors rounded-full bg-green-50 group-hover:bg-green-100">
+                  <Building2 className="w-5 h-5 text-customG" />
+                </div>
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <h4 className="text-sm font-medium text-gray-900">{company.name}</h4>
+                    <ArrowUpRight className="w-3.5 h-3.5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                  <div className="flex items-center mt-1 space-x-3">
+                    {/* DART 코드 */}
+                    <div className="flex items-center space-x-1">
+                      <span className="text-xs font-medium text-gray-500">DART:</span>
+                      <span className="font-mono text-xs text-customG">
+                        {company.corpCode}
+                      </span>
+                    </div>
+                    <span className="text-gray-300">|</span>
+                    {/* 종목코드 - 없을 경우 '-' 표시 */}
+                    <div className="flex items-center space-x-1">
+                      <span className="text-xs font-medium text-gray-500">종목코드:</span>
+                      <span className="font-mono text-xs text-customG">
+                        {company.stockCode ? company.stockCode : '-'}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center mt-1 space-x-2">
+                    <div className="flex items-center space-x-1">
+                      <Calendar className="h-3.5 w-3.5 text-gray-400" />
+                      <span className="text-xs text-gray-500">계약일:</span>
+                      <span className="text-xs text-gray-900">
+                        {company.registeredAt
+                          ? new Date(company.registeredAt).toLocaleDateString('ko-KR')
+                          : '미등록'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <Badge
+                variant="outline"
+                className={cn(
+                  'text-xs px-2 py-0.5',
+                  isListed(company.stockCode)
+                    ? 'bg-green-50 text-customG border-green-200'
+                    : 'bg-gray-50 text-gray-600 border-gray-200'
+                )}>
+                {isListed(company.stockCode) ? '상장기업' : '비상장기업'}
+              </Badge>
+            </div>
+          ))}
+
+          {filteredData.length === 0 && (
+            <div className="flex flex-col items-center justify-center h-[400px] text-center">
+              <Search className="w-12 h-12 mb-3 text-gray-300" />
+              <p className="text-sm text-gray-500">
+                {searchTerm ? '검색 결과가 없습니다' : '등록된 협력사가 없습니다'}
+              </p>
+              <p className="mt-1 text-xs text-gray-400">
+                {searchTerm && '다른 검색어를 시도해보세요'}
+              </p>
+            </div>
+          )}
+        </div>
+      </ScrollArea>
+    </div>
   )
 }
