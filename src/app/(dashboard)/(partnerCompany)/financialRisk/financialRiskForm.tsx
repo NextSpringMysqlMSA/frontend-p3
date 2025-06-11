@@ -559,11 +559,11 @@ export default function FinancialRiskForm() {
 
               <CardContent className="p-0">
                 <div className="bg-white rounded-b-lg">
-                  <Accordion 
-  type="multiple" 
-  value={accordionValue}
-  onValueChange={setAccordionValue}
-  className="p-4">
+                  <Accordion
+                    type="multiple"
+                    value={accordionValue}
+                    onValueChange={setAccordionValue}
+                    className="p-4">
                     {riskData.riskItems.map(item => (
                       <AccordionItem
                         key={item.itemNumber}
@@ -585,7 +585,6 @@ export default function FinancialRiskForm() {
                               {item.itemNumber}
                             </div>
                             <div className="flex items-center flex-1 gap-2">
-                            
                               <span className="font-medium text-left text-slate-700">
                                 {item.description}
                               </span>
