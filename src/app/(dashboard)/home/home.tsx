@@ -1,6 +1,6 @@
 'use client'
 import {useState, useEffect, useCallback} from 'react'
-import {Building, Pencil, Building2, ChevronRight} from 'lucide-react'
+import {Pencil, Building2, ChevronRight} from 'lucide-react'
 import {
   Chart as ChartJS,
   ArcElement,
@@ -14,26 +14,22 @@ import {
   BarElement,
   RadialLinearScale
 } from 'chart.js'
-import {Pie, Bar, PolarArea} from 'react-chartjs-2'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
-  CardFooter
+  CardTitle
 } from '@/components/ui/card'
 import {Badge} from '@/components/ui/badge'
-import {Separator} from '@/components/ui/separator'
 import {RefreshCcw, FileText, CloudSun, TrendingUp} from 'lucide-react'
 import {motion} from 'framer-motion'
 import GriChart from '@/components/chart/griChart'
 import IfrsChart from '@/components/chart/IfrsChart'
 import ScopeChart from '@/components/chart/scopeChart'
-import CsdddChart from '@/components/chart/csdddChart'
+import CsdddChart from '@/components/chart/csdddResultChart'
 import PartnerCompanyChart from '@/components/chart/partnerCompanyChart'
-import NetZeroChart from '@/components/chart/netZeroChart'
 import {Button} from '@/components/ui/button'
 import Link from 'next/link'
 
@@ -442,11 +438,11 @@ export default function Home() {
                       </Badge>
                     </div>
                     <CardDescription>
-                      (EU공급망 / 인권 / 환경) 실사 자가진단 현황
+                      (EU공급망 / 인권 / 환경) 실사 위반 현황
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="flex-1 p-4">
-                    <div className="flex-1 w-full h-full">
+                    <div className="flex-1 w-full h-full px-4">
                       {mounted && <CsdddChart refreshTrigger={refreshTrigger} />}
                     </div>
                   </CardContent>
@@ -459,40 +455,19 @@ export default function Home() {
         <motion.div variants={itemVariants}>
           <Card className="flex flex-col w-full h-full overflow-hidden transition-shadow hover:shadow-lg">
             <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-row items-center justify-between w-[340px]">
                 <CardTitle className="flex items-center gap-2">
                   <Building2 className="w-5 h-5 text-[#e60073]" />
-                  <span className="text-xl text-[#e60073]">협력사 등록 현황</span>
+                  <span className="text-xl text-[#e60073]">협력사 부정 뉴스 알림</span>
                 </CardTitle>
                 <Badge variant="outline" className="text-[#d10068] bg-[#ffe0ef]">
                   실시간 데이터
                 </Badge>
               </div>
             </CardHeader>
-            <div className="flex justify-center w-full h-full">
-              <CardContent className="flex flex-col justify-center flex-1 h-full">
-                <div className="h-[500px] w-full p-4 pb-0 overflow-hidden allow-scroll">
-                  {mounted && <PartnerCompanyChart refreshTrigger={refreshTrigger} />}
-                </div>
-                <div className="p-4 pt-0">
-                  <Link
-                    href="/managePartner"
-                    className="flex items-center justify-between w-full px-6 py-2 transition-all duration-200 border-b border-gray-200 rounded-b-lg border-x hover:bg-gray-100">
-                    <div className="flex flex-col">
-                      <span className="text-sm font-medium text-gray-800 group-hover:text-gray-900">
-                        전체 협력사 관리
-                      </span>
-                      <span className="text-xs text-gray-500 mt-0.5">
-                        협력사 등록 및 상세 정보를 관리할 수 있습니다
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-center w-6 h-6 transition-colors bg-gray-200 rounded-full">
-                      <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-gray-700" />
-                    </div>
-                  </Link>
-                </div>
-              </CardContent>
-            </div>
+            <CardContent className="flex justify-center flex-1 h-full p-4">
+              <div className="flex flex-col w-full h-full border rounded-lg"></div>
+            </CardContent>
           </Card>
         </motion.div>
       </motion.div>

@@ -132,10 +132,8 @@ export default function ScopeResultChart({
   }
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full p-4 bg-white border shadow-sm rounded-xl">
-      <div className="h-44">
-        <Bar data={chartData} options={chartOptions} />
-      </div>
+    <div className="relative w-full h-56">
+      <Bar data={chartData} options={chartOptions} />
     </div>
   )
 }

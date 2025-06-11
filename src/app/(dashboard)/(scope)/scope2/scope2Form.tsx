@@ -49,13 +49,7 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
+
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs'
 import {Badge} from '@/components/ui/badge'
 
@@ -72,49 +66,16 @@ import {
 import ScopeModal from '@/components/scope/ScopeModal'
 
 // 타입 정의 및 API 서비스 임포트
-import {ElectricityUsage, SteamUsage, PartnerCompanyForScope} from '@/types/scope'
+import {ElectricityUsage, SteamUsage} from '@/types/scope'
 import {
   submitScopeData,
   fetchElectricityUsageByPartnerAndYear,
   fetchSteamUsageByPartnerAndYear
 } from '@/services/scope'
-import {fetchPartnerCompaniesForScope} from '@/services/partnerCompany'
+import {fetchPartnerCompaniesForScope} from '@/services/partnerCompany' // 실제 협력사 API 추가
 import {PartnerSelector} from '@/components/scope/PartnerSelector'
 import {DirectionButton} from '@/components/layout/direction'
 import {PageHeader} from '@/components/layout/PageHeader'
-
-/**
- * 목업 협력사 데이터
- * 실제 운영 환경에서는 API를 통해 동적으로 로드됩니다.
- */
-const MOCK_PARTNERS: PartnerCompanyForScope[] = [
-  {
-    id: '550e8400-e29b-41d4-a716-446655440001',
-    name: '삼성전자',
-    status: 'ACTIVE'
-  },
-  {
-    id: '550e8400-e29b-41d4-a716-446655440002',
-    name: 'LG전자',
-    status: 'ACTIVE'
-  },
-  {
-    id: '550e8400-e29b-41d4-a716-446655440003',
-    name: '현대자동차',
-    status: 'ACTIVE'
-  }
-]
-
-// PartnerCompanyForScope를 PartnerCompany로 변환하는 함수 (ScopeModal용)
-const convertToPartnerCompany = (partner: PartnerCompanyForScope) => {
-  return {
-    id: partner.id, // UUID 그대로 사용
-    name: partner.name,
-    businessNumber: '',
-    status: partner.status,
-    companyType: '일반기업'
-  }
-}
 
 /**
  * Scope2Form 컴포넌트
@@ -122,93 +83,125 @@ const convertToPartnerCompany = (partner: PartnerCompanyForScope) => {
  * - 탭을 통한 전력/스팀 데이터 분리 표시
  * - scope1Form.tsx와 동일한 디자인 패턴 적용
  */
-const Scope2Form: React.FC = () => {
-  // ========================================================================
-  // State 관리
-  // ========================================================================
+export default function Scope2Form() {
+  // ============================================================================
+  // 상태 관리 (State Management)
+  // ============================================================================
 
-  // 데이터 상태
-  const [electricityData, setElectricityData] = useState<ElectricityUsage[]>([])
-  const [steamData, setSteamData] = useState<SteamUsage[]>([])
-  const [partners, setPartners] = useState<PartnerCompanyForScope[]>([])
-  const [loading, setLoading] = useState(false)
+  // 필터 관련 상태
+  const [selectedPartnerId, setSelectedPartnerId] = useState<string | null>(null) // 선택된 협력사 ID (UUID)
+  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear()) // 선택된 연도
+  const [selectedMonth, setSelectedMonth] = useState<number | null>(null) // 선택된 월 (null이면 전체)
 
-  // 필터 상태
-  const [selectedPartnerId, setSelectedPartnerId] = useState<string | null>(null)
-  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear())
-  const [selectedMonth, setSelectedMonth] = useState<number>(0) // 0은 전체
-  const [searchTerm, setSearchTerm] = useState('')
+  // 데이터 관련 상태
+  const [electricityData, setElectricityData] = useState<ElectricityUsage[]>([]) // 전력 사용량 데이터
+  const [steamData, setSteamData] = useState<SteamUsage[]>([]) // 스팀 사용량 데이터
+  const [realPartnerCompanies, setRealPartnerCompanies] = useState<any[]>([]) // 실제 협력사 데이터
 
-  // 모달 상태
-  const [modalOpen, setModalOpen] = useState(false)
+  // UI 관련 상태
+  const [isModalOpen, setIsModalOpen] = useState(false) // 데이터 입력 모달 표시 여부
+  const [searchTerm, setSearchTerm] = useState('') // 검색어 (현재 미사용)
+  const [loading, setLoading] = useState(false) // 로딩 상태
+
+  // 편집 관련 상태
   const [editingItem, setEditingItem] = useState<ElectricityUsage | SteamUsage | null>(
     null
   )
   const [editingType, setEditingType] = useState<'ELECTRICITY' | 'STEAM'>('ELECTRICITY')
 
-  // ========================================================================
-  // 데이터 로딩 및 처리
-  // ========================================================================
+  // ============================================================================
+  // 실제 협력사 데이터 로딩 (Real Partner Data Loading)
+  // ============================================================================
 
-  // 데이터 로딩
+  /**
+   * 실제 API에서 협력사 목록을 가져옵니다
+   */
+  const loadPartnerCompanies = async () => {
+    try {
+      console.log('🔄 협력사 목록 로딩 시작...')
+      const response = await fetchPartnerCompaniesForScope()
+      console.log('✅ 협력사 목록 로딩 성공:', response)
+
+      setRealPartnerCompanies(response.content || [])
+    } catch (error) {
+      console.error('❌ 협력사 목록 로딩 실패:', error)
+      setRealPartnerCompanies([])
+    }
+  }
+
+  // ============================================================================
+  // 데이터 로딩 및 처리 (Data Loading & Processing)
+  // ============================================================================
+
+  /**
+   * 선택된 협력사와 연도에 따른 배출량 데이터를 로딩합니다
+   */
   const loadData = async () => {
     if (!selectedPartnerId) return
 
     setLoading(true)
     try {
+      console.log('🔄 배출량 데이터 로딩 시작:', {selectedPartnerId, selectedYear})
+
       const [electricity, steam] = await Promise.all([
         fetchElectricityUsageByPartnerAndYear(selectedPartnerId, selectedYear),
         fetchSteamUsageByPartnerAndYear(selectedPartnerId, selectedYear)
       ])
+
+      console.log('✅ 배출량 데이터 로딩 성공:', {electricity, steam})
+
       setElectricityData(electricity)
       setSteamData(steam)
     } catch (error) {
-      console.error('데이터 로딩 실패:', error)
+      console.error('❌ 배출량 데이터 로딩 실패:', error)
+      setElectricityData([])
+      setSteamData([])
     } finally {
       setLoading(false)
     }
   }
 
-  // 협력사 목록 로딩
-  const loadPartners = async () => {
+  // ============================================================================
+  // 폼 제출 핸들러 (Form Submit Handler)
+  // ============================================================================
+
+  /**
+   * ScopeModal에서 제출된 데이터를 처리합니다
+   */
+  const handleFormSubmit = async (data: any) => {
     try {
-      const response = await fetchPartnerCompaniesForScope()
-      // PartnerCompanyResponse에서 content 추출하여 PartnerCompanyForScope로 변환
-      const partnersData = response.content.map(p => ({
-        id: p.id || '',
-        name: p.companyName || p.corpName || '',
-        status:
-          p.status === 'ACTIVE'
-            ? ('ACTIVE' as const)
-            : p.status === 'INACTIVE'
-            ? ('INACTIVE' as const)
-            : ('SUSPENDED' as const)
-      }))
-      setPartners(partnersData)
+      console.log('💾 폼 데이터 제출:', data)
+
+      // 데이터 저장 후 목록 새로고침
+      await loadData()
     } catch (error) {
-      console.error('협력사 목록 로딩 실패:', error)
-      // 에러 시 목업 데이터 사용
-      setPartners(MOCK_PARTNERS)
+      console.error('❌ 폼 제출 실패:', error)
     }
   }
 
+  // ============================================================================
+  // useEffect 훅들 (useEffect Hooks)
+  // ============================================================================
+
   // 컴포넌트 마운트 시 협력사 목록 로딩
   useEffect(() => {
-    loadPartners()
+    loadPartnerCompanies()
   }, [])
 
-  // 협력사 변경 시 데이터 로딩
+  // 협력사 또는 연도 변경 시 데이터 로딩
   useEffect(() => {
-    loadData()
+    if (selectedPartnerId) {
+      loadData()
+    }
   }, [selectedPartnerId, selectedYear])
 
-  // ========================================================================
-  // 데이터 필터링
-  // ========================================================================
+  // ============================================================================
+  // 데이터 필터링 (Data Filtering)
+  // ============================================================================
 
   // 전력 데이터 필터링
   const filteredElectricityData = electricityData.filter(item => {
-    const matchesMonth = selectedMonth === 0 || item.reportingMonth === selectedMonth
+    const matchesMonth = selectedMonth === null || item.reportingMonth === selectedMonth
     const matchesSearch =
       !searchTerm || item.facilityName?.toLowerCase().includes(searchTerm.toLowerCase())
     return matchesMonth && matchesSearch
@@ -216,15 +209,15 @@ const Scope2Form: React.FC = () => {
 
   // 스팀 데이터 필터링
   const filteredSteamData = steamData.filter(item => {
-    const matchesMonth = selectedMonth === 0 || item.reportingMonth === selectedMonth
+    const matchesMonth = selectedMonth === null || item.reportingMonth === selectedMonth
     const matchesSearch =
       !searchTerm || item.facilityName?.toLowerCase().includes(searchTerm.toLowerCase())
     return matchesMonth && matchesSearch
   })
 
-  // ========================================================================
-  // 통계 계산
-  // ========================================================================
+  // ============================================================================
+  // 통계 계산 (Statistics Calculation)
+  // ============================================================================
 
   // 전력 통계
   const electricityStats = {
@@ -254,21 +247,21 @@ const Scope2Form: React.FC = () => {
   const totalEmissions = electricityStats.totalEmissions + steamStats.totalEmissions
   const totalDataCount = electricityStats.totalCount + steamStats.totalCount
 
-  // ========================================================================
-  // 이벤트 핸들러
-  // ========================================================================
+  // ============================================================================
+  // 이벤트 핸들러 (Event Handlers)
+  // ============================================================================
 
   // 데이터 편집
   const handleEditElectricity = (item: ElectricityUsage) => {
     setEditingItem(item)
     setEditingType('ELECTRICITY')
-    setModalOpen(true)
+    setIsModalOpen(true)
   }
 
   const handleEditSteam = (item: SteamUsage) => {
     setEditingItem(item)
     setEditingType('STEAM')
-    setModalOpen(true)
+    setIsModalOpen(true)
   }
 
   // 전력 데이터 삭제
@@ -295,47 +288,9 @@ const Scope2Form: React.FC = () => {
     }
   }
 
-  // 모달 제출
-  const handleModalSubmit = async (data: any) => {
-    try {
-      if (editingItem) {
-        // 수정 로직 - TODO: 실제 업데이트 API 구현 필요
-        if (editingType === 'ELECTRICITY') {
-          setElectricityData(prev =>
-            prev.map(item => (item.id === editingItem.id ? {...item, ...data} : item))
-          )
-        } else {
-          setSteamData(prev =>
-            prev.map(item => (item.id === editingItem.id ? {...item, ...data} : item))
-          )
-        }
-      } else {
-        // 생성 로직 - TODO: 실제 생성 API 구현 필요
-        if (!selectedPartnerId) {
-          console.error('협력사가 선택되지 않았습니다.')
-          return
-        }
-        const newData = {
-          ...data,
-          id: Date.now(), // 임시 ID
-          partnerCompanyId: selectedPartnerId
-        }
-        if (editingType === 'ELECTRICITY') {
-          setElectricityData(prev => [...prev, newData])
-        } else {
-          setSteamData(prev => [...prev, newData])
-        }
-      }
-      setModalOpen(false)
-      setEditingItem(null)
-    } catch (error) {
-      console.error('데이터 저장 실패:', error)
-    }
-  }
-
-  // ========================================================================
-  // 렌더링
-  // ========================================================================
+  // ============================================================================
+  // 렌더링 (Rendering)
+  // ============================================================================
 
   return (
     <div className="flex flex-col w-full h-full p-4 pt-24">
@@ -421,6 +376,7 @@ const Scope2Form: React.FC = () => {
                   />
                 </div>
               </motion.div>
+
               {/* 연도 선택 */}
               <motion.div
                 className="space-y-3"
@@ -611,7 +567,7 @@ const Scope2Form: React.FC = () => {
                         onClick={() => {
                           setEditingItem(null)
                           setEditingType('ELECTRICITY')
-                          setModalOpen(true)
+                          setIsModalOpen(true)
                         }}
                         className="px-4 py-2 text-sm font-medium text-white transition-colors duration-200 bg-black rounded-lg hover:bg-gray-800">
                         <Plus className="w-4 h-4 mr-2" />
@@ -620,7 +576,6 @@ const Scope2Form: React.FC = () => {
                     </CardTitle>
                   </CardHeader>
 
-                  {/* 전력 데이터 테이블 */}
                   {/* 전력 데이터 테이블 */}
                   <CardContent className="p-0">
                     <div className="overflow-x-auto">
@@ -776,7 +731,7 @@ const Scope2Form: React.FC = () => {
                         onClick={() => {
                           setEditingItem(null)
                           setEditingType('STEAM')
-                          setModalOpen(true)
+                          setIsModalOpen(true)
                         }}
                         className="px-4 py-2 text-sm font-medium text-white transition-colors duration-200 bg-black rounded-lg hover:bg-gray-800">
                         <Plus className="w-4 h-4 mr-2" />
@@ -785,7 +740,6 @@ const Scope2Form: React.FC = () => {
                     </CardTitle>
                   </CardHeader>
 
-                  {/* 스팀 데이터 테이블 */}
                   {/* 스팀 데이터 테이블 */}
                   <CardContent className="p-0">
                     <div className="overflow-x-auto">
@@ -902,15 +856,23 @@ const Scope2Form: React.FC = () => {
           - 새로운 배출량 데이터 추가를 위한 모달 폼
           ======================================================================== */}
       <ScopeModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onSubmit={handleModalSubmit}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleFormSubmit}
+        partnerCompanies={realPartnerCompanies}
         defaultPartnerId={selectedPartnerId || undefined}
         defaultYear={selectedYear}
-        defaultMonth={editingItem?.reportingMonth || new Date().getMonth() + 1}
+        defaultMonth={selectedMonth || new Date().getMonth() + 1}
         scope="SCOPE2"
-        partnerCompanies={partners.map(convertToPartnerCompany)}
       />
+
+      {/* 디버깅: 실제 협력사 데이터 확인 */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="fixed z-50 p-2 text-xs text-white bg-black rounded top-2 right-2">
+          협력사 수: {realPartnerCompanies.length}
+        </div>
+      )}
+
       <DirectionButton
         direction="left"
         tooltip="scope1으로 이동"
@@ -922,5 +884,3 @@ const Scope2Form: React.FC = () => {
     </div>
   )
 }
-
-export default Scope2Form
