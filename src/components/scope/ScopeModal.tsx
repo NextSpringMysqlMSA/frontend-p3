@@ -370,23 +370,10 @@ export default function ScopeModal({
 
   const renderBasicInfo = () => (
     <Card className="overflow-hidden shadow-sm">
-      <CardHeader className="bg-white border-b border-gray-100">
-        <CardTitle className="flex items-center gap-3 text-gray-800">
-          <div className="p-2 rounded-lg bg-gray-50">
-            <Building2 className="w-5 h-5 text-gray-600" />
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold">기본 정보</h3>
-            <p className="text-sm font-normal text-gray-600">
-              선택된 협력사의 배출량 데이터를 입력하세요
-            </p>
-          </div>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="pt-6 space-y-6">
+      <CardContent>
         {/* 선택된 협력사 정보 표시 - corpCode 안전 처리 */}
         {selectedPartner ? (
-          <div className="p-6 border border-blue-200 shadow-lg bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl">
+          <div className="p-6 border border-blue-200 shadow-sm bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-blue-100 rounded-xl">
                 <Building2 className="w-6 h-6 text-blue-600" />
@@ -445,7 +432,7 @@ export default function ScopeModal({
         )}
 
         {/* 나머지 기본 정보 폼... */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 p-4 md:grid-cols-3">
           {/* 보고연도 */}
           <div className="space-y-2">
             <Label
@@ -506,22 +493,8 @@ export default function ScopeModal({
   )
 
   const renderActivityTypeSelector = () => (
-    <Card className="overflow-hidden shadow-sm">
-      <CardHeader className="bg-white border-b border-gray-100">
-        <CardTitle className="flex items-center gap-3 text-gray-800">
-          <div className="p-2 rounded-lg bg-gray-50">
-            <Factory className="w-5 h-5 text-gray-600" />
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold">배출활동 유형 선택</h3>
-            <p className="text-sm font-normal text-gray-600">
-              {scope}에 해당하는 배출활동을 선택하세요
-            </p>
-          </div>
-          <span className="ml-auto text-red-500">*</span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="pt-6">
+    <Card className="border-none shadow-none bg-none">
+      <CardContent>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {filteredActivityTypes.map(type => (
             <div
@@ -590,20 +563,7 @@ export default function ScopeModal({
 
   const renderStationaryCombustionForm = () => (
     <Card className="overflow-hidden shadow-sm">
-      <CardHeader className="bg-white border-b border-gray-100">
-        <CardTitle className="flex items-center gap-3 text-gray-800">
-          <div className="p-2 rounded-lg bg-gray-50">
-            <Factory className="w-5 h-5 text-gray-600" />
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold">고정연소 정보</h3>
-            <p className="text-sm font-normal text-gray-600">
-              보일러, 발전기 등 고정 설비 연료 사용량을 입력하세요
-            </p>
-          </div>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="pt-6 space-y-6">
+      <CardContent className="p-4 space-y-6">
         <div>
           <Label className="flex items-center gap-1 mb-3 text-sm font-medium text-gray-700">
             연료 유형
@@ -785,20 +745,7 @@ export default function ScopeModal({
 
   const renderMobileCombustionForm = () => (
     <Card className="overflow-hidden shadow-sm">
-      <CardHeader className="bg-white border-b border-gray-100">
-        <CardTitle className="flex items-center gap-3 text-gray-800">
-          <div className="p-2 rounded-lg bg-gray-50">
-            <Car className="w-5 h-5 text-gray-600" />
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold">이동연소 정보</h3>
-            <p className="text-sm font-normal text-gray-600">
-              차량, 항공기 등 이동 수단의 연료 사용량을 입력하세요
-            </p>
-          </div>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="pt-6 space-y-6">
+      <CardContent className="p-4 space-y-6">
         <div>
           <Label className="flex items-center gap-1 mb-3 text-sm font-medium text-gray-700">
             교통수단 유형
@@ -837,24 +784,15 @@ export default function ScopeModal({
                 )}
 
                 <div className="relative">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div
-                      className={`p-1.5 rounded-lg ${
-                        formData.mobileCombustion?.transportType === type.value
-                          ? 'bg-blue-100 text-blue-600'
-                          : 'bg-gray-100 text-gray-600 group-hover:bg-blue-100 group-hover:text-blue-600'
-                      }`}>
-                      {type.icon}
-                    </div>
-                    <div
-                      className={`text-sm font-semibold ${
-                        formData.mobileCombustion?.transportType === type.value
-                          ? 'text-blue-800'
-                          : 'text-gray-800 group-hover:text-blue-800'
-                      }`}>
-                      {type.label}
-                    </div>
+                  <div
+                    className={`text-sm font-semibold ${
+                      formData.mobileCombustion?.transportType === type.value
+                        ? 'text-blue-800'
+                        : 'text-gray-800 group-hover:text-blue-800'
+                    }`}>
+                    {type.label}
                   </div>
+
                   <div
                     className={`text-xs leading-relaxed ${
                       formData.mobileCombustion?.transportType === type.value
@@ -1439,7 +1377,7 @@ export default function ScopeModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto bg-white border-gray-200">
+      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto bg-white border-gray-200 custom-scrollbar">
         <DialogHeader className="pb-4 border-b border-gray-100">
           <DialogTitle className="flex items-center gap-3 text-2xl font-bold text-gray-800">
             <div className="p-3 bg-gray-100 rounded-xl">
@@ -1466,7 +1404,7 @@ export default function ScopeModal({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="py-2 space-y-8">
+        <div className="py-2 space-y-4">
           {/* 오류 메시지 */}
           {errors.length > 0 && (
             <Alert className="border-red-200 shadow-sm bg-red-50">

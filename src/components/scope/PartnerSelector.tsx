@@ -142,7 +142,7 @@ export function PartnerSelector({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            'w-full justify-between bg-white border-gray-200 hover:border-indigo-300 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 transition-all duration-200',
+            'w-full justify-between bg-white border-gray-200 hover:border-indigo-300 hover:bg-white',
             !selectedPartner && 'text-muted-foreground',
             className
           )}
@@ -174,7 +174,7 @@ export function PartnerSelector({
             placeholder="협력사 검색..."
             value={searchTerm}
             onValueChange={setSearchTerm}
-            className="border-0 focus-visible:ring-1 focus-visible:ring-indigo-500"
+            className="p-1 my-1 border-0 focus-visible:ring-1 focus-visible:ring-indigo-500"
           />
           <CommandEmpty className="py-6 text-center text-gray-500">
             {loading ? '로딩 중...' : '협력사를 찾을 수 없습니다.'}
