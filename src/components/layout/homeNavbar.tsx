@@ -1,6 +1,6 @@
 'use client'
 
-import {use, useEffect, useState} from 'react'
+import {use, useEffect, useState, useRef} from 'react'
 import Link from 'next/link'
 import {
   DropdownMenu,
@@ -22,24 +22,38 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger
+  NavigationMenuTrigger,
+
 } from '../ui/navigation-menu'
 import {Separator} from '@radix-ui/react-select'
-
+import { Button } from '../ui/button'
+import HomeNavCard from './homeNavCard'
+import  ImageCarousel from '@/components/tools/row_dotindicator'
 /**
  * 상단 네비게이션 바 컴포넌트
  * ESG 테마와 일치하는 녹색 디자인으로 구현
  */
 export default function HomeNavbar() {
+  const containerRef = useRef<HTMLDivElement>(null);
   // 상태 관리
   const {profile, fetchProfile} = useProfileStore()
   const {logout} = useAuthStore()
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const router = useRouter()
-  const [TCFDOpen, setTCFDOpen] = useState(false)
-  const [partnerOpen, setPartnerOpen] = useState(false)
-  const [scopeOpen, setScopeOpen] = useState(false)
   const pathname = usePathname()
+  const [openMenu, setOpenMenu] = useState<"scope" |"tcfd"|"manage"| null>(null)
+  const [prev, setPrev] = useState<string | null>(null)
+  
+  const handleToggle = (menu: "scope" | "tcfd" | "manage") => {
+    setOpenMenu(prev === menu ? null : menu);
+    if (prev === menu) {
+      setPrev(null);
+    } else {
+      setPrev(menu);
+    }
+  }
+  const closeMenu = () => setOpenMenu(null)
+
   /**
    * 로그아웃 처리 함수
    */
@@ -53,7 +67,19 @@ export default function HomeNavbar() {
   useEffect(() => {
     fetchProfile()
   }, [fetchProfile])
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        // 허공 클릭: 상태 초기화하거나 전환
+        setOpenMenu(null);
+      }
+    };
 
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   // 사용자 이름 또는 기본값 설정
   const fullName = profile?.name || '사용자'
   const position = profile?.position || '직책 미설정'
@@ -64,7 +90,8 @@ export default function HomeNavbar() {
       <div className="flex items-center justify-between w-full h-20 px-4 bg-white border-b border-gray-200 shadow-sm lg:px-6">
         {/* 로고 영역 */}
         <div className="flex items-center">
-          <Link href="/" className="flex flex-row items-center space-x-2">
+          <Link href="/" className="flex flex-row items-center space-x-2"
+          >
             <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-customG">
               <Leaf className="text-white" size={20} />
             </div>
@@ -82,56 +109,34 @@ export default function HomeNavbar() {
         </div>
 
         {/* --------------------------------------------------------------------------------------------------메뉴 영역 */}
-        <NavigationMenu>
+        <NavigationMenu >
           <NavigationMenuList className="flex flex-row items-center justify-center w-full h-full space-x-5 ">
-            {/* ==================================================================== 대시보드 */}
-            <NavigationMenuItem>
-              <NavigationMenuLink
-                href="/home"
+            <NavigationMenuItem >
+              <Button
+                onClick = {()=> router.push('/home')}
+                variant = "ghost"
                 className={`px-4 py-2 rounded-full text-base ${
                   pathname === '/home'
                     ? 'bg-customG text-white hover:bg-customG hover:text-white'
                     : 'hover:bg-gray-100'
                 }`}>
                 HOME
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-            {/* ==================================================================== Scope */}
-            <NavigationMenuItem>
-              <NavigationMenuTrigger
+              </Button>
+              <Button
+                variant = "ghost"
+                onClick = {()=>{
+       
+                  handleToggle('scope')}}
                 className={`px-4 py-2 rounded-full text-base ${
                   pathname === '/scope1' || pathname === '/scope2'
                     ? 'bg-customG text-white hover:bg-customG hover:text-white'
                     : 'hover:bg-gray-100'
                 }`}>
                 Scope
-              </NavigationMenuTrigger>
-              <NavigationMenuContent className="flex flex-col items-start p-2 space-y-1">
-                <NavigationMenuLink
-                  href="/scope1"
-                  className="w-64 p-2 text-base rounded-lg hover:bg-gray-100">
-                  <span
-                    className={` ${
-                      pathname === '/scope1' ? 'border-b border-black' : ''
-                    }`}>
-                    Scope 1
-                  </span>
-                </NavigationMenuLink>
-                <NavigationMenuLink
-                  href="/scope2"
-                  className="w-64 p-2 text-base rounded-lg hover:bg-gray-100">
-                  <span
-                    className={` ${
-                      pathname === '/scope2' ? 'border-b border-black' : ''
-                    }`}>
-                    Scope 2
-                  </span>
-                </NavigationMenuLink>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-            {/* ==================================================================== TCFD */}
-            <NavigationMenuItem>
-              <NavigationMenuTrigger
+              </Button>
+              <Button
+                variant = "ghost"
+                onClick = {()=>handleToggle('tcfd')}
                 className={`px-4 py-2 rounded-full text-base ${
                   pathname === '/governance' ||
                   pathname === '/strategy' ||
@@ -139,96 +144,38 @@ export default function HomeNavbar() {
                     ? 'bg-customG text-white hover:bg-customG hover:text-white'
                     : 'hover:bg-gray-100'
                 }`}>
-                {' '}
                 TCFD
-              </NavigationMenuTrigger>
-              <NavigationMenuContent className="flex flex-col items-start p-2 space-y-1">
-                <NavigationMenuLink
-                  href="/governance"
-                  className="w-64 p-2 text-base rounded-lg hover:bg-gray-100">
-                  <span
-                    className={` ${
-                      pathname === '/governance' ? 'border-b border-black' : ''
-                    }`}>
-                    거버넌스
-                  </span>
-                </NavigationMenuLink>
-                <NavigationMenuLink
-                  href="/strategy"
-                  className="w-64 p-2 text-base rounded-lg hover:bg-gray-100">
-                  <span
-                    className={` ${
-                      pathname === '/strategy' ? 'border-b border-black' : ''
-                    }`}>
-                    전략
-                  </span>
-                </NavigationMenuLink>
-                <NavigationMenuLink
-                  href="/goal"
-                  className="w-64 p-2 text-base rounded-lg hover:bg-gray-100">
-                  <span
-                    className={` ${pathname === '/goal' ? 'border-b border-black' : ''}`}>
-                    목표 및 지표
-                  </span>
-                </NavigationMenuLink>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-            {/* ==================================================================== GRI */}
-            <NavigationMenuItem>
-              <NavigationMenuLink
-                href="/GRI"
+              </Button>
+              <Button
+                onClick = {()=> router.push('/GRI')}
+                variant = "ghost"
                 className={`px-4 py-2 rounded-full text-base ${
                   pathname === '/GRI'
                     ? 'bg-customG text-white hover:bg-customG hover:text-white'
                     : 'hover:bg-gray-100'
                 }`}>
                 GRI
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-            {/* ==================================================================== 공급망 실사 */}
-            <NavigationMenuItem>
-              <NavigationMenuLink
-                href="/CSDDD"
+              </Button>
+              <Button
+              onClick = {()=> router.push('/CSDDD')}
+                variant = "ghost"
                 className={`px-4 py-2 rounded-full text-base ${
                   pathname === '/CSDDD'
                     ? 'bg-customG text-white hover:bg-customG hover:text-white'
-                    : 'hover:bg-gray-100 '
+                    : 'hover:bg-gray-100'
                 }`}>
-                공급망 실사
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-            {/* ==================================================================== 협력사 관리 */}
-            <NavigationMenuItem>
-              <NavigationMenuTrigger
+                공급망실사
+              </Button>
+              <Button
+                variant = "ghost"
+                onClick = {()=>handleToggle('manage')}
                 className={`px-4 py-2 rounded-full text-base ${
                   pathname === '/managePartner' || pathname === '/financialRisk'
                     ? 'bg-customG text-white hover:bg-customG hover:text-white'
                     : 'hover:bg-gray-100'
                 }`}>
                 협력사 관리
-              </NavigationMenuTrigger>
-              <NavigationMenuContent className="flex flex-col items-start p-2 space-y-1">
-                <NavigationMenuLink
-                  href="/managePartner"
-                  className="w-64 p-2 text-base rounded-lg hover:bg-gray-100">
-                  <span
-                    className={` ${
-                      pathname === '/managePartner' ? 'border-b border-black' : ''
-                    }`}>
-                    파트너사 관리
-                  </span>
-                </NavigationMenuLink>
-                <NavigationMenuLink
-                  href="/financialRisk"
-                  className="w-64 p-2 text-base rounded-lg hover:bg-gray-100">
-                  <span
-                    className={` ${
-                      pathname === '/financialRisk' ? 'border-b border-black' : ''
-                    }`}>
-                    재무제표 리스크 관리
-                  </span>
-                </NavigationMenuLink>
-              </NavigationMenuContent>
+              </Button>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
@@ -322,7 +269,7 @@ export default function HomeNavbar() {
                 />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 pt-3" sideOffset={13.5}>
+            <DropdownMenuContent align="end" className="w-fit  prt123" sideOffset={13.5}>
               <div className="flex items-center gap-2 p-2 md:hidden">
                 <Avatar className="w-8 h-8">
                   {profile?.profileImageUrl ? (
@@ -355,14 +302,172 @@ export default function HomeNavbar() {
 
               <DropdownMenuItem
                 onClick={handleLogout}
-                className="gap-2 text-red-600 cursor-pointer hover:text-red-700 hover:bg-red-50">
+                className="gap-2 text-red-300 cursor-pointer hover:text-red-700 hover:bg-red-50">
                 <LogOut size={16} />
                 <span>로그아웃</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+           
+
         </div>
       </div>
+      <div ref = {containerRef} className=" flex-row justify-center flex pointer-events-auto">
+        <div
+          className={`absolute top-20 transition-opacity duration-300 ${
+            openMenu === "scope" ? "opacity-100 visible" : "opacity-0 invisible"
+          }`}
+        ><HomeNavCard description='bg-white'>
+          <div className='flex flex-row '>
+            <div className='flex flex-col border-r space-y-2 border-gray-300'>
+          <Button
+              variant="ghost"
+                  onClick= {()=> 
+                  {
+                  router.push('/scope1')
+                  closeMenu()
+                  }}
+                  className="w-fit  pr-12 text-base ">
+                  <span
+                    className={`flex w-full justify-start${
+                      pathname === '/scope1' ? 'border-b border-black' : ''
+                    }`}>
+                    Scope 1
+                  </span>
+                </Button>
+                <Button
+                  variant="ghost"
+                   onClick= {
+                    ()=> {router.push('/scope2')
+                  closeMenu()
+                   }}
+                  className="w-fit  pr-12 text-base ">
+                  <span
+                    className={`flex w-full justify-start ${
+                      pathname === '/scope2' ? 'border-b border-black' : ''
+                    }`}>
+                    Scope 2
+                  </span>
+                </Button>
+            </div>
+            <div className='justify-start h-full pl-4 '
+            style={{ caretColor: "transparent" }}>
+              <ImageCarousel imgpath={
+                ['/images/scope1.png', '/images/scope2.png']
+              }
+              />
+            </div>
+            </div>
+
+          </HomeNavCard>
+          </div>
+        <div
+          className={`absolute top-20 transition-opacity duration-300 ${
+            openMenu === "tcfd" ? "opacity-100 visible" : "opacity-0 invisible"
+          }`}
+        >
+          <HomeNavCard description='bg-white'>
+          <div className='flex flex-row '>
+            <div className='flex flex-col border-r space-y-2 border-gray-300'>
+          <Button
+          variant="ghost"
+                  onClick= {()=> {router.push('/governance')
+                  closeMenu()
+                  }}
+                  className="w-fit  pr-12 text-base ">
+                  <span
+                    className={`flex w-full justify-start ${
+                      pathname === '/governance' ? 'border-b border-black' : ''
+                    }`}>
+                    거버넌스
+                  </span>
+                </Button>
+                <Button
+                  variant="ghost"
+                   onClick= {()=> {router.push('/strategy')
+                    closeMenu()
+                   }}
+                  className="w-fit  pr-12 text-base ">
+                  <span
+                    className={`flex w-full justify-start ${
+                      pathname === '/strategy' ? 'border-b border-black' : ''
+                    }`}>
+                    전략
+                  </span>
+                </Button>
+                <Button
+                  variant="ghost"
+                   onClick= {()=> {router.push('/goal')
+                    closeMenu()
+                   }}
+                  className="w-fit  pr-12 text-base ">
+                  <span
+                    className={`flex w-full justify-start ${
+                      pathname === '/goal' ? 'border-b border-black' : ''
+                    }`}>
+                    목표 및 지표
+                  </span>
+                </Button>
+            </div>
+            <div className='justify-start h-full pl-4 '
+            style={{ caretColor: "transparent" }}>
+              <ImageCarousel imgpath={
+                ['/images/governance.gif', '/images/lisk_manage.png', '/images/goal.png']
+              }
+              />
+            </div>
+            </div>
+
+          </HomeNavCard>
+        </div>
+        <div
+          className={`absolute top-20 transition-opacity duration-300 ${
+            openMenu === "manage" ? "opacity-100 visible" : "opacity-0 invisible"
+          }`}
+        >
+                    <HomeNavCard description='bg-white'>
+          <div className='flex flex-row '>
+            <div className='flex flex-col border-r space-y-2 border-gray-300'>
+          <Button
+          variant="ghost"
+                  onClick= {()=> {router.push('/managePartner')
+                  closeMenu()
+                  }}
+                  className="w-fit  pr-12 text-base ">
+                  <span
+                    className={`flex w-full justify-start ${
+                      pathname === '/managePartner' ? 'border-b border-black' : ''
+                    }`}>
+                    파트너사 관리
+                  </span>
+                </Button>
+                <Button
+                  variant="ghost"
+                   onClick= {()=> {router.push('/financialRisk')
+                    closeMenu()
+                   }}
+                  className="w-fit  pr-12 text-base ">
+                  <span
+                    className={`flex w-full justify-start ${
+                      pathname === '/financialRisk' ? 'border-b border-black' : ''
+                    }`}>
+                    제무제표 리스크 관리
+                  </span>
+                </Button>
+            </div>
+            <div className='justify-start h-full pl-4 '
+            style={{ caretColor: "transparent" }}>
+              <ImageCarousel imgpath={
+                ['/images/partner.gif', '/images/partner_manage.png']
+              }
+              />
+            </div>
+            </div>
+
+          </HomeNavCard>
+        </div>
+        </div>
     </header>
+    
   )
 }
