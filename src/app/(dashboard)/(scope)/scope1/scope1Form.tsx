@@ -439,7 +439,7 @@ export default function Scope1Form() {
                 협력사를 선택해주세요
               </motion.h3>
               <motion.p
-                className="max-w-md leading-relaxed text-customG-600"
+                className="max-w-md leading-relaxed text-customG-600 whitespace-nowrap"
                 initial={{opacity: 0, y: 20}}
                 animate={{opacity: 1, y: 0}}
                 transition={{delay: 1.1, duration: 0.5}}>
