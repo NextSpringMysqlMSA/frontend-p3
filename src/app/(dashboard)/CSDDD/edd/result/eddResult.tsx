@@ -162,7 +162,7 @@ export default function EddResult() {
       {/* ======== 헤더 섹션 ======== */}
       <div className="flex flex-row w-full h-full mb-6">
         <Link
-          href="/home"
+          href="/CSDDD"
           className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
           <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
           <PageHeader
