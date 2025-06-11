@@ -60,12 +60,14 @@ export default function Results() {
         <motion.div variants={itemVariants} className="flex-1">
           <Card className="flex flex-col w-full h-full overflow-hidden transition-shadow hover:shadow-lg">
             <CardHeader className="pb-2">
-              <CardTitle className="flex items-center text-xl text-[#4bc0c0]">
+              <CardTitle className="flex items-center text-lg text-[#4bc0c0]">
                 <Leaf className="w-5 h-5 mr-2 text-[#4bc0c0]" />
                 Net Zero 달성 경로
                 <span className="ml-2 text-xs font-normal">(단위:tCO₂e)</span>
               </CardTitle>
-              <CardDescription>탄소 중립 목표 및 감축 경로</CardDescription>
+              <CardDescription className="text-gray-500">
+                탄소 중립 목표 및 감축 경로
+              </CardDescription>
             </CardHeader>
             <CardContent className="flex items-center justify-center flex-1 p-4">
               <div className="flex items-center justify-between w-full h-full">

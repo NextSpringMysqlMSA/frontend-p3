@@ -120,7 +120,7 @@ export default function PartnerCompanyChart({refreshTrigger}: {refreshTrigger: n
           <h3 className="text-base font-semibold text-gray-900">등록된 협력사 목록</h3>
           <p className="mt-1 text-sm text-gray-500">전체 {data.length}개 협력사</p>
         </div>
-        <div className="relative w-64" onClick={e => e.preventDefault()}>
+        <div className="relative w-52" onClick={e => e.preventDefault()}>
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
           <Input
             type="text"
@@ -145,12 +145,12 @@ export default function PartnerCompanyChart({refreshTrigger}: {refreshTrigger: n
         </div>
       </div> */}
 
-      <ScrollArea className="flex-1 border border-gray-100 rounded-t-lg">
-        <div className="p-4 space-y-3 min-h-[400px]">
+      <ScrollArea className="flex-1 border border-gray-200 rounded-t-lg">
+        <div className="h-full p-4 space-y-3">
           {filteredData.map(company => (
             <div
               key={company.id}
-              className="flex items-center justify-between p-4 py-2 transition-all duration-200 bg-white border border-gray-100 rounded-lg cursor-pointer group hover:bg-gray-50 hover:border-gray-200"
+              className="flex items-center justify-between p-4 py-4 transition-all duration-200 bg-white border border-gray-100 rounded-lg cursor-pointer group hover:bg-gray-50 hover:border-gray-200"
               onClick={e => handleCompanyClick(e, company.id, company.name)}>
               <div className="flex items-center space-x-4">
                 <div className="flex items-center justify-center w-10 h-10 transition-colors rounded-full bg-green-50 group-hover:bg-green-100">

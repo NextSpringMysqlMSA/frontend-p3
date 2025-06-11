@@ -99,21 +99,21 @@ export default function GriChart({refreshTrigger = 0}: GriChartProps) {
       </div>
 
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col items-start pl-4">
           <div className="flex items-center">
             <div className="w-3 h-3 mr-2 bg-green-500 rounded-full"></div>
             <span className="mr-2 text-sm">작성 완료</span>
           </div>
-          <span className="text-sm font-bold">
+          <span className="pl-5 text-sm font-bold">
             {data.completedCount}개 ({data.completedRate}%)
           </span>
         </div>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col items-start pl-4">
           <div className="flex items-center">
             <div className="w-3 h-3 mr-2 bg-green-100 rounded-full"></div>
             <span className="mr-2 text-sm">미완료</span>
           </div>
-          <span className="text-sm font-bold">
+          <span className="pl-5 text-sm font-bold">
             {data.incompleteCount}개 ({100 - data.completedRate}%)
           </span>
         </div>
