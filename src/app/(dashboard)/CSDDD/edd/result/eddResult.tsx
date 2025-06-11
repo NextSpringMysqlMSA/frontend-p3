@@ -17,7 +17,8 @@ import {
   Home,
   AlertCircle,
   Info,
-  CheckCircle2
+  CheckCircle2,
+  ArrowLeft
 } from 'lucide-react'
 import {motion} from 'framer-motion'
 import Link from 'next/link'
@@ -33,6 +34,7 @@ import {StatCard} from '@/components/ui/stat-card'
 import {LoadingState} from '@/components/ui/loading-state'
 import {PageHeader} from '@/components/layout/PageHeader'
 import {fetchEddResult} from '@/services/csddd'
+import {DirectionButton} from '@/components/layout/direction'
 
 /**
  * 환경 실사 지침 자가진단 결과 페이지
@@ -158,13 +160,20 @@ export default function EddResult() {
       </motion.div>
 
       {/* ======== 헤더 섹션 ======== */}
-      <PageHeader
-        icon={<FileCheck className="w-6 h-6" />}
-        title="환경 실사 자가진단 결과"
-        description="환경 실사 지침 요구사항 이행 자가진단 결과 확인"
-        gradient="from-green-100 to-green-50" // 그라데이션 배경
-        iconColor="text-customG" // 아이콘 색상
-      ></PageHeader>
+      <div className="flex flex-row w-full h-full mb-6">
+        <Link
+          href="/CSDDD"
+          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
+          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
+          <PageHeader
+            icon={<FileCheck className="w-6 h-6" />}
+            title="환경 실사 자가진단 결과"
+            description="환경 실사 지침 요구사항 이행 자가진단 결과 확인"
+            gradient="from-green-100 to-green-50" // 그라데이션 배경
+            iconColor="text-customG" // 아이콘 색상
+          />
+        </Link>
+      </div>
 
       {/* ======== 로딩 상태, 오류, 데이터 없음 처리 ======== */}
       <LoadingState
@@ -455,6 +464,14 @@ export default function EddResult() {
         </>
         {/* LoadingState 닫는 태그 */}
       </LoadingState>
+      <DirectionButton
+        direction="left"
+        tooltip="인권 실사 결과로 이동"
+        href="/CSDDD/hrdd/result"
+        fixed
+        position="middle-left"
+        size={48}
+      />
     </div>
   )
 }

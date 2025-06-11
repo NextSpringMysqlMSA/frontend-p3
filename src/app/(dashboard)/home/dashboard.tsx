@@ -15,8 +15,11 @@ export default function Page() {
     let isScrolling = false
 
     const handleWheel = (e: WheelEvent) => {
-      if (isScrolling) return
+      // ✅ 내부 스크롤 가능한 영역은 wheel 무시
+      const isInsideScrollable = (e.target as HTMLElement)?.closest('.allow-scroll')
+      if (isInsideScrollable) return
 
+      if (isScrolling) return
       const delta = e.deltaY
       let newIndex = currentIndex
 

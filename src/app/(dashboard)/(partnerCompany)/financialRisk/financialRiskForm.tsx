@@ -12,7 +12,9 @@ import {
   FileSearch,
   Check,
   ChevronsUpDown,
-  RefreshCcw
+  RefreshCcw,
+  ArrowLeft,
+  Receipt
 } from 'lucide-react'
 import {Button} from '@/components/ui/button'
 import {
@@ -22,6 +24,7 @@ import {
   CardTitle,
   CardDescription
 } from '@/components/ui/card'
+import Link from 'next/link'
 import {PageHeader} from '@/components/layout/PageHeader'
 import {
   Command,
@@ -185,6 +188,42 @@ export default function FinancialRiskForm() {
   const [riskData, setRiskData] = useState<FinancialRiskAssessment | null>(null)
   const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set())
 
+  // URL 쿼리 파라미터에서 companyId와 companyName 가져오기
+  const searchParams = new URLSearchParams(window.location.search)
+  const companyId = searchParams.get('companyId')
+  const companyName = searchParams.get('companyName')
+
+  // 회사 자동 선택 및 데이터 로드
+  useEffect(() => {
+    if (companyId && companyName) {
+      // 자동으로 해당 회사 선택
+      setSelectedPartnerCode(companyId)
+      setSelectedPartnerName(decodeURIComponent(companyName))
+
+      // 재무 위험 데이터 로드
+      const loadFinancialRisk = async () => {
+        try {
+          setIsLoading(true)
+          setError(null)
+          const data = await fetchFinancialRiskAssessment(companyId, companyName)
+          setRiskData(data)
+        } catch (err) {
+          console.error('Failed to load financial risk data:', err)
+          setError('재무 위험 데이터를 불러오는데 실패했습니다.')
+          toast({
+            variant: 'destructive',
+            title: '오류',
+            description: '재무 위험 데이터를 불러오는데 실패했습니다.'
+          })
+        } finally {
+          setIsLoading(false)
+        }
+      }
+
+      loadFinancialRisk()
+    }
+  }, [companyId, companyName])
+
   // 확장/축소 토글 함수
   const toggleExpand = (itemNumber: number) => {
     setExpandedItems(prev => {
@@ -337,13 +376,23 @@ export default function FinancialRiskForm() {
           </BreadcrumbList>
         </Breadcrumb>
       </motion.div>
+      {/* PageHeader + ArrowLeft */}
+      <div className="flex flex-row w-full h-full mb-6">
+        <Link
+          href="/home"
+          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
+          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
+          <PageHeader
+            icon={<Receipt className="w-8 h-8 text-customG" />}
+            title="재무제표 리스크 관리"
+            description="재무제표 리스크 관리를 통해 파트너사의 재무 위험도를 분석하고 관리합니다."
+            module="Partner Company"
+          />
+        </Link>
+      </div>
 
       {/* Enhanced Selection Panel */}
       <div className="relative p-8 mt-2 overflow-hidden border shadow-sm bg-white/90 backdrop-blur-sm rounded-3xl border-slate-200/50">
-        {/* Decorative background elements */}
-        <div className="absolute top-0 right-0 w-32 h-32 translate-x-16 -translate-y-16 rounded-full bg-gradient-to-br from-blue-100/50 to-indigo-100/50"></div>
-        <div className="absolute bottom-0 left-0 w-24 h-24 -translate-x-12 translate-y-12 rounded-full bg-gradient-to-tr from-emerald-100/50 to-teal-100/50"></div>
-
         <div className="relative z-10">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <div className="flex-1 max-w-lg">
@@ -397,7 +446,7 @@ export default function FinancialRiskForm() {
                     파트너사 정보
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="relative z-10 pt-6">
+                <CardContent className="relative z-10 p-4">
                   <div className="mb-3 text-2xl font-bold transition-colors text-slate-800 group-hover:text-blue-700">
                     {riskData.partnerCompanyName}
                   </div>
@@ -421,7 +470,7 @@ export default function FinancialRiskForm() {
                     분석 기준
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="relative z-10 pt-6">
+                <CardContent className="relative z-10 p-4">
                   <div className="mb-3 text-2xl font-bold transition-colors text-slate-800 group-hover:text-emerald-700">
                     {riskData.assessmentYear}년도
                   </div>
@@ -475,7 +524,7 @@ export default function FinancialRiskForm() {
                     재무 위험 상태
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="relative z-10 pt-6">
+                <CardContent className="relative z-10 p-4">
                   <div
                     className={`text-2xl font-bold mb-3 transition-colors ${
                       statusInfo.color
@@ -508,9 +557,6 @@ export default function FinancialRiskForm() {
 
             {/* Enhanced Control Section */}
             <div className="relative p-8 overflow-hidden border-2 shadow-sm bg-white/90 backdrop-blur-sm rounded-3xl border-slate-200/50">
-              {/* Decorative elements */}
-              <div className="absolute top-0 right-0 w-20 h-20 translate-x-10 -translate-y-10 rounded-full bg-gradient-to-br from-amber-100/50 to-orange-100/50"></div>
-
               <div className="relative z-10 flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl">
