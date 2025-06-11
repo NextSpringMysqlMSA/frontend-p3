@@ -224,7 +224,7 @@ export default function NetZeroChart({refreshTrigger = 0}: NetZeroChartProps) {
   // )
 
   return (
-    <div className="relative w-full h-60">
+    <div className="relative w-full h-56">
       <Line data={lineData} options={options} />
       <div className="pt-2 mt-2 text-xs text-right text-gray-500">
         <span>

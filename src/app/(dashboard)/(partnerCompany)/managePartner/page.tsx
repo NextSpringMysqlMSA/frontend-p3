@@ -669,7 +669,7 @@ export default function ManagePartnerPage() {
         </Breadcrumb>
       </motion.div>
       {/* PageHeader + ArrowLeft */}
-      <div className="flex flex-row w-full h-full mb-6">
+      <div className="flex flex-row justify-between w-full h-full mb-6">
         <Link
           href="/home"
           className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
@@ -681,16 +681,16 @@ export default function ManagePartnerPage() {
             module="Partner Company"
           />
         </Link>
-      </div>
 
-      <div className="flex flex-col gap-6">
         {/* 검색 및 필터 섹션 */}
         <PartnerSearchSection
           searchQuery={searchQuery}
           onSearchQueryChange={setSearchQuery}
           onOpenAddDialog={openAddDialog}
         />
+      </div>
 
+      <div className="flex flex-col gap-6">
         {/* 파트너사 추가 모달 */}
         <PartnerCompanyModal
           isOpen={isAddDialogOpen}
