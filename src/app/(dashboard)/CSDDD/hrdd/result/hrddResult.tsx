@@ -16,7 +16,8 @@ import {
   Home,
   AlertCircle,
   Info,
-  CheckCircle2
+  CheckCircle2,
+  ArrowLeft
 } from 'lucide-react'
 import {motion} from 'framer-motion'
 import Link from 'next/link'
@@ -33,6 +34,7 @@ import {LoadingState} from '@/components/ui/loading-state'
 import {PageHeader} from '@/components/layout/PageHeader'
 import {fetchHrddResult} from '@/services/csddd'
 import type {HrddViolationDto} from '@/types/IFRS/csddd'
+import {DirectionButton} from '@/components/layout/direction'
 
 /**
  * 인권 실사(HRDD) 지침 자가진단 결과 페이지
@@ -149,13 +151,20 @@ export default function Hrdddesult() {
       </motion.div>
 
       {/* 페이지 헤더 */}
-      <PageHeader
-        icon={<FileCheck className="w-6 h-6" />}
-        title="인권 실사 자가진단 결과"
-        description="인권 실사 지침 요구사항 이행 자가진단 결과 확인"
-        gradient="from-green-100 to-green-50"
-        iconColor="text-customG"></PageHeader>
-
+      <div className="flex flex-row w-full h-full mb-6">
+        <Link
+          href="/CSDDD"
+          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
+          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
+          <PageHeader
+            icon={<FileCheck className="w-6 h-6" />}
+            title="인권 실사 자가진단 결과"
+            description="인권 실사 지침 요구사항 이행 자가진단 결과 확인"
+            gradient="from-green-100 to-green-50"
+            iconColor="text-customG"
+          />
+        </Link>
+      </div>
       {/* 로딩/오류/빈 상태 처리 */}
       <LoadingState
         isLoading={isLoading}
@@ -434,6 +443,23 @@ export default function Hrdddesult() {
           </motion.div>
         </>
       </LoadingState>
+      <DirectionButton
+        direction="left"
+        tooltip="EU공급망 실사 결과로 이동"
+        href="/CSDDD/eudd/result"
+        fixed
+        position="middle-left"
+        size={48}
+      />
+
+      <DirectionButton
+        direction="right"
+        tooltip="환경 실사 결과로 이동"
+        href="/CSDDD/edd/result"
+        fixed
+        position="middle-right"
+        size={48}
+      />
     </div>
   )
 }

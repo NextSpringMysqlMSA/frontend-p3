@@ -130,7 +130,7 @@ export default function CsdddChart({refreshTrigger = 0}: {refreshTrigger?: numbe
   }, [refreshTrigger])
 
   return (
-    <div className="flex flex-col items-center w-full space-y-3">
+    <div className="flex flex-col items-center justify-center w-full h-full space-y-3">
       {data.map(({name, isCompleted}) => (
         <div
           key={name}

@@ -11,6 +11,14 @@ export interface PartnerCompany {
   contactPhone?: string
   createdAt?: string
   updatedAt?: string
+
+  // 추가: DART 및 회사 정보 필드들
+  companyName?: string // 회사명 (name과 동일할 수 있음)
+  corpName?: string // 법인명
+  corpCode?: string // DART 기업 코드
+  corp_code?: string // 서버 호환성을 위한 필드
+  corp_name?: string // 서버 호환성을 위한 필드
+  stockCode?: string // 주식 코드
 }
 
 // Scope에서 사용하는 간소화된 협력사 정보

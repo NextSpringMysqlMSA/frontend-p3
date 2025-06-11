@@ -23,11 +23,21 @@ import {getFuelById, getAllFuels, getFuelsByActivityType} from '@/constants/fuel
 // 연료 관련 서비스
 // =============================================================================
 
+/**
+ * 모든 연료 타입 목록을 가져옵니다
+ * 사용처: ScopeModal 컴포넌트에서 연료 선택 옵션 제공
+ * 백엔드 필요: 아니요 (로컬 상수 데이터 사용)
+ */
 export const fetchFuelTypes = async (): Promise<FuelType[]> => {
   // 로컬 연료 데이터 반환 (필요시 API 호출로 변경 가능)
   return getAllFuels()
 }
 
+/**
+ * 배출활동 타입별 연료 목록을 가져옵니다
+ * 사용처: ScopeModal에서 활동 타입 변경 시 해당하는 연료만 필터링
+ * 백엔드 필요: 아니요 (로컬 상수 데이터 사용)
+ */
 export const fetchFuelsByActivityType = async (
   activityType: EmissionActivityType,
   subType?: string
@@ -35,6 +45,11 @@ export const fetchFuelsByActivityType = async (
   return getFuelsByActivityType(activityType, subType)
 }
 
+/**
+ * 특정 ID의 연료 정보를 가져옵니다
+ * 사용처: 배출량 계산 시 연료 정보 조회
+ * 백엔드 필요: 아니요 (로컬 상수 데이터 사용)
+ */
 export const fetchFuelById = async (fuelId: string): Promise<FuelType | null> => {
   const fuel = getFuelById(fuelId)
   return fuel || null
@@ -44,6 +59,11 @@ export const fetchFuelById = async (fuelId: string): Promise<FuelType | null> =>
 // 배출량 계산 서비스
 // =============================================================================
 
+/**
+ * 연료 사용량을 기반으로 CO₂ 배출량을 계산합니다
+ * 사용처: ScopeModal에서 '배출량 계산 미리 보기' 버튼 클릭 시
+ * 백엔드 필요: 아니요 (프론트엔드에서 계산 처리)
+ */
 export const calculateEmissions = async (
   fuelId: string,
   usage: number
@@ -125,6 +145,11 @@ export const calculateEmissions = async (
 // Scope 1 - 고정연소 (Stationary Combustion) API
 // =============================================================================
 
+/**
+ * 모든 고정연소 데이터 목록을 가져옵니다
+ * 사용처: 현재 사용 안함 (필요시 백엔드 구현)
+ * 백엔드 필요: 예 (전체 목록 조회)
+ */
 export const fetchStationaryCombustionList = async (): Promise<
   StationaryCombustion[]
 > => {
@@ -132,6 +157,11 @@ export const fetchStationaryCombustionList = async (): Promise<
   return response.data
 }
 
+/**
+ * 새로운 고정연소 데이터를 생성합니다
+ * 사용처: ScopeModal에서 고정연소 데이터 저장 시 (submitScopeData 함수에서 호출)
+ * 백엔드 필요: 예 (고정연소 데이터 생성 API)
+ */
 export const createStationaryCombustion = async (
   data: StationaryCombustionForm
 ): Promise<ScopeApiResponse<StationaryCombustion>> => {
@@ -146,6 +176,11 @@ export const createStationaryCombustion = async (
   }
 }
 
+/**
+ * 고정연소 데이터를 수정합니다
+ * 사용처: 현재 사용 안함 (편집 기능 미구현)
+ * 백엔드 필요: 예 (향후 편집 기능 구현 시)
+ */
 export const updateStationaryCombustion = async (
   id: number,
   data: StationaryCombustionForm
@@ -161,6 +196,11 @@ export const updateStationaryCombustion = async (
   }
 }
 
+/**
+ * 고정연소 데이터를 삭제합니다
+ * 사용처: scope1Form.tsx의 handleDeleteStationary 함수에서 호출
+ * 백엔드 필요: 예 (고정연소 데이터 삭제 API)
+ */
 export const deleteStationaryCombustion = async (
   id: number
 ): Promise<ScopeApiResponse<void>> => {
@@ -175,6 +215,11 @@ export const deleteStationaryCombustion = async (
   }
 }
 
+/**
+ * 특정 ID의 고정연소 데이터를 가져옵니다
+ * 사용처: 현재 사용 안함 (상세 조회 기능 미구현)
+ * 백엔드 필요: 예 (향후 상세 조회 기능 구현 시)
+ */
 export const getStationaryCombustionById = async (
   id: number
 ): Promise<StationaryCombustion> => {
@@ -186,11 +231,21 @@ export const getStationaryCombustionById = async (
 // Scope 1 - 이동연소 (Mobile Combustion) API
 // =============================================================================
 
+/**
+ * 모든 이동연소 데이터 목록을 가져옵니다
+ * 사용처: 현재 사용 안함 (필요시 백엔드 구현)
+ * 백엔드 필요: 예 (전체 목록 조회)
+ */
 export const fetchMobileCombustionList = async (): Promise<MobileCombustion[]> => {
   const response = await api.get('/api/v1/scope/mobile-combustion')
   return response.data
 }
 
+/**
+ * 새로운 이동연소 데이터를 생성합니다
+ * 사용처: ScopeModal에서 이동연소 데이터 저장 시 (submitScopeData 함수에서 호출)
+ * 백엔드 필요: 예 (이동연소 데이터 생성 API)
+ */
 export const createMobileCombustion = async (
   data: MobileCombustionForm
 ): Promise<ScopeApiResponse<MobileCombustion>> => {
@@ -205,6 +260,11 @@ export const createMobileCombustion = async (
   }
 }
 
+/**
+ * 이동연소 데이터를 수정합니다
+ * 사용처: 현재 사용 안함 (편집 기능 미구현)
+ * 백엔드 필요: 예 (향후 편집 기능 구현 시)
+ */
 export const updateMobileCombustion = async (
   id: number,
   data: MobileCombustionForm
@@ -220,6 +280,11 @@ export const updateMobileCombustion = async (
   }
 }
 
+/**
+ * 이동연소 데이터를 삭제합니다
+ * 사용처: scope1Form.tsx의 handleDeleteMobile 함수에서 호출
+ * 백엔드 필요: 예 (이동연소 데이터 삭제 API)
+ */
 export const deleteMobileCombustion = async (
   id: number
 ): Promise<ScopeApiResponse<void>> => {
@@ -234,6 +299,11 @@ export const deleteMobileCombustion = async (
   }
 }
 
+/**
+ * 특정 ID의 이동연소 데이터를 가져옵니다
+ * 사용처: 현재 사용 안함 (상세 조회 기능 미구현)
+ * 백엔드 필요: 예 (향후 상세 조회 기능 구현 시)
+ */
 export const getMobileCombustionById = async (id: number): Promise<MobileCombustion> => {
   const response = await api.get(`/api/v1/scope/mobile-combustion/${id}`)
   return response.data
@@ -243,11 +313,21 @@ export const getMobileCombustionById = async (id: number): Promise<MobileCombust
 // Scope 2 - 전력 사용량 (Electricity Usage) API
 // =============================================================================
 
+/**
+ * 모든 전력 사용량 데이터 목록을 가져옵니다
+ * 사용처: 현재 사용 안함 (필요시 백엔드 구현)
+ * 백엔드 필요: 예 (전체 목록 조회)
+ */
 export const fetchElectricityUsageList = async (): Promise<ElectricityUsage[]> => {
   const response = await api.get('/api/v1/scope/electricity-usage')
   return response.data
 }
 
+/**
+ * 새로운 전력 사용량 데이터를 생성합니다
+ * 사용처: ScopeModal에서 전력 데이터 저장 시 (submitScopeData 함수에서 호출)
+ * 백엔드 필요: 예 (전력 사용량 데이터 생성 API)
+ */
 export const createElectricityUsage = async (
   data: ElectricityUsageForm
 ): Promise<ScopeApiResponse<ElectricityUsage>> => {
@@ -266,6 +346,11 @@ export const createElectricityUsage = async (
   }
 }
 
+/**
+ * 전력 사용량 데이터를 수정합니다
+ * 사용처: 현재 사용 안함 (편집 기능 미구현)
+ * 백엔드 필요: 예 (향후 편집 기능 구현 시)
+ */
 export const updateElectricityUsage = async (
   id: number,
   data: ElectricityUsageForm
@@ -285,6 +370,11 @@ export const updateElectricityUsage = async (
   }
 }
 
+/**
+ * 전력 사용량 데이터를 삭제합니다
+ * 사용처: scope2Form.tsx의 handleDeleteElectricity 함수에서 호출 (현재 TODO 상태)
+ * 백엔드 필요: 예 (전력 사용량 데이터 삭제 API)
+ */
 export const deleteElectricityUsage = async (
   id: number
 ): Promise<ScopeApiResponse<void>> => {
@@ -303,6 +393,11 @@ export const deleteElectricityUsage = async (
   }
 }
 
+/**
+ * 특정 ID의 전력 사용량 데이터를 가져옵니다
+ * 사용처: 현재 사용 안함 (상세 조회 기능 미구현)
+ * 백엔드 필요: 예 (향후 상세 조회 기능 구현 시)
+ */
 export const getElectricityUsageById = async (id: number): Promise<ElectricityUsage> => {
   const response = await api.get(`/api/v1/scope/electricity-usage/${id}`)
   return response.data
@@ -312,11 +407,21 @@ export const getElectricityUsageById = async (id: number): Promise<ElectricityUs
 // Scope 2 - 스팀 사용량 (Steam Usage) API
 // =============================================================================
 
+/**
+ * 모든 스팀 사용량 데이터 목록을 가져옵니다
+ * 사용처: 현재 사용 안함 (필요시 백엔드 구현)
+ * 백엔드 필요: 예 (전체 목록 조회)
+ */
 export const fetchSteamUsageList = async (): Promise<SteamUsage[]> => {
   const response = await api.get('/api/v1/scope/steam-usage')
   return response.data
 }
 
+/**
+ * 새로운 스팀 사용량 데이터를 생성합니다
+ * 사용처: ScopeModal에서 스팀 데이터 저장 시 (submitScopeData 함수에서 호출)
+ * 백엔드 필요: 예 (스팀 사용량 데이터 생성 API)
+ */
 export const createSteamUsage = async (
   data: SteamUsageForm
 ): Promise<ScopeApiResponse<SteamUsage>> => {
@@ -335,6 +440,11 @@ export const createSteamUsage = async (
   }
 }
 
+/**
+ * 스팀 사용량 데이터를 수정합니다
+ * 사용처: 현재 사용 안함 (편집 기능 미구현)
+ * 백엔드 필요: 예 (향후 편집 기능 구현 시)
+ */
 export const updateSteamUsage = async (
   id: number,
   data: SteamUsageForm
@@ -354,6 +464,11 @@ export const updateSteamUsage = async (
   }
 }
 
+/**
+ * 스팀 사용량 데이터를 삭제합니다
+ * 사용처: scope2Form.tsx의 handleDeleteSteam 함수에서 호출 (현재 TODO 상태)
+ * 백엔드 필요: 예 (스팀 사용량 데이터 삭제 API)
+ */
 export const deleteSteamUsage = async (id: number): Promise<ScopeApiResponse<void>> => {
   const loadingId = showLoading('스팀 사용량 데이터를 삭제하는 중...')
   try {
@@ -370,20 +485,35 @@ export const deleteSteamUsage = async (id: number): Promise<ScopeApiResponse<voi
   }
 }
 
+/**
+ * 특정 ID의 스팀 사용량 데이터를 가져옵니다
+ * 사용처: 현재 사용 안함 (상세 조회 기능 미구현)
+ * 백엔드 필요: 예 (향후 상세 조회 기능 구현 시)
+ */
 export const getSteamUsageById = async (id: number): Promise<SteamUsage> => {
   const response = await api.get(`/api/v1/scope/steam-usage/${id}`)
   return response.data
 }
 
 // =============================================================================
-// 연료 타입 (Fuel Type) API
+// 연료 타입 (Fuel Type) API - 필요없음 (로컬 상수 데이터 사용)
 // =============================================================================
 
+/**
+ * 모든 연료 타입 목록을 가져옵니다
+ * 사용처: 현재 사용 안함 (로컬 상수 데이터로 대체)
+ * 백엔드 필요: 아니요 (필요없음)
+ */
 export const fetchFuelTypeList = async (): Promise<FuelType[]> => {
   const response = await api.get('/api/v1/scope/fuel-types')
   return response.data
 }
 
+/**
+ * 새로운 연료 타입을 생성합니다
+ * 사용처: 현재 사용 안함 (로컬 상수 데이터로 대체)
+ * 백엔드 필요: 아니요 (필요없음)
+ */
 export const createFuelType = async (
   data: Omit<FuelType, 'id'>
 ): Promise<ScopeApiResponse<FuelType>> => {
@@ -391,6 +521,11 @@ export const createFuelType = async (
   return response.data
 }
 
+/**
+ * 연료 타입을 수정합니다
+ * 사용처: 현재 사용 안함 (로컬 상수 데이터로 대체)
+ * 백엔드 필요: 아니요 (필요없음)
+ */
 export const updateFuelType = async (
   id: number,
   data: Omit<FuelType, 'id'>
@@ -399,20 +534,35 @@ export const updateFuelType = async (
   return response.data
 }
 
+/**
+ * 연료 타입을 삭제합니다
+ * 사용처: 현재 사용 안함 (로컬 상수 데이터로 대체)
+ * 백엔드 필요: 아니요 (필요없음)
+ */
 export const deleteFuelType = async (id: number): Promise<ScopeApiResponse<void>> => {
   const response = await api.delete(`/api/v1/scope/fuel-types/${id}`)
   return response.data
 }
 
+/**
+ * 특정 ID의 연료 타입을 가져옵니다
+ * 사용처: 현재 사용 안함 (로컬 상수 데이터로 대체)
+ * 백엔드 필요: 아니요 (필요없음)
+ */
 export const getFuelTypeById = async (id: number): Promise<FuelType> => {
   const response = await api.get(`/api/v1/scope/fuel-types/${id}`)
   return response.data
 }
 
 // =============================================================================
-// 요약 및 통계 API
+// 요약 및 통계 API - 필요없음 (현재 미사용)
 // =============================================================================
 
+/**
+ * Scope 전체 요약 통계를 가져옵니다
+ * 사용처: 현재 사용 안함 (대시보드 미구현)
+ * 백엔드 필요: 아니요 (필요없음)
+ */
 export const fetchScopeSummary = async (
   reportingYear?: number
 ): Promise<ScopeSummary> => {
@@ -421,6 +571,11 @@ export const fetchScopeSummary = async (
   return response.data
 }
 
+/**
+ * Scope 1 요약 통계를 가져옵니다
+ * 사용처: 현재 사용 안함 (대시보드 미구현)
+ * 백엔드 필요: 아니요 (필요없음)
+ */
 export const fetchScope1Summary = async (
   reportingYear?: number
 ): Promise<{
@@ -433,6 +588,11 @@ export const fetchScope1Summary = async (
   return response.data
 }
 
+/**
+ * Scope 2 요약 통계를 가져옵니다
+ * 사용처: 현재 사용 안함 (대시보드 미구현)
+ * 백엔드 필요: 아니요 (필요없음)
+ */
 export const fetchScope2Summary = async (
   reportingYear?: number
 ): Promise<{
@@ -447,9 +607,14 @@ export const fetchScope2Summary = async (
 }
 
 // =============================================================================
-// 회사별 및 연도별 필터링 API
+// 회사별 및 연도별 필터링 API - 필요없음 (협력사별 API로 대체)
 // =============================================================================
 
+/**
+ * 회사별 고정연소 데이터를 가져옵니다
+ * 사용처: 현재 사용 안함 (협력사별 API로 대체됨)
+ * 백엔드 필요: 아니요 (필요없음)
+ */
 export const fetchStationaryCombustionByCompanyAndYear = async (
   companyId: number,
   year: number
@@ -460,6 +625,11 @@ export const fetchStationaryCombustionByCompanyAndYear = async (
   return response.data
 }
 
+/**
+ * 회사별 이동연소 데이터를 가져옵니다
+ * 사용처: 현재 사용 안함 (협력사별 API로 대체됨)
+ * 백엔드 필요: 아니요 (필요없음)
+ */
 export const fetchMobileCombustionByCompanyAndYear = async (
   companyId: number,
   year: number
@@ -470,6 +640,11 @@ export const fetchMobileCombustionByCompanyAndYear = async (
   return response.data
 }
 
+/**
+ * 회사별 전력 사용량 데이터를 가져옵니다
+ * 사용처: 현재 사용 안함 (협력사별 API로 대체됨)
+ * 백엔드 필요: 아니요 (필요없음)
+ */
 export const fetchElectricityUsageByCompanyAndYear = async (
   companyId: number,
   year: number
@@ -480,6 +655,11 @@ export const fetchElectricityUsageByCompanyAndYear = async (
   return response.data
 }
 
+/**
+ * 회사별 스팀 사용량 데이터를 가져옵니다
+ * 사용처: 현재 사용 안함 (협력사별 API로 대체됨)
+ * 백엔드 필요: 아니요 (필요없음)
+ */
 export const fetchSteamUsageByCompanyAndYear = async (
   companyId: number,
   year: number
@@ -491,9 +671,14 @@ export const fetchSteamUsageByCompanyAndYear = async (
 }
 
 // =============================================================================
-// 협력사별 및 연도별 필터링 API (새로운 방식)
+// 협력사별 및 연도별 필터링 API (실제 사용 중인 핵심 API)
 // =============================================================================
 
+/**
+ * 협력사별 고정연소 데이터를 연도로 필터링하여 가져옵니다
+ * 사용처: scope1Form.tsx의 loadData 함수에서 호출
+ * 백엔드 필요: 예 (고정연소 데이터 조회 API - 핵심)
+ */
 export const fetchStationaryCombustionByPartnerAndYear = async (
   partnerCompanyId: string,
   year: number
@@ -504,6 +689,11 @@ export const fetchStationaryCombustionByPartnerAndYear = async (
   return response.data
 }
 
+/**
+ * 협력사별 이동연소 데이터를 연도로 필터링하여 가져옵니다
+ * 사용처: scope1Form.tsx의 loadData 함수에서 호출
+ * 백엔드 필요: 예 (이동연소 데이터 조회 API - 핵심)
+ */
 export const fetchMobileCombustionByPartnerAndYear = async (
   partnerCompanyId: string,
   year: number
@@ -514,6 +704,11 @@ export const fetchMobileCombustionByPartnerAndYear = async (
   return response.data
 }
 
+/**
+ * 협력사별 전력 사용량 데이터를 연도로 필터링하여 가져옵니다
+ * 사용처: scope2Form.tsx의 loadData 함수에서 호출
+ * 백엔드 필요: 예 (전력 사용량 데이터 조회 API - 핵심)
+ */
 export const fetchElectricityUsageByPartnerAndYear = async (
   partnerCompanyId: string,
   year: number
@@ -524,6 +719,11 @@ export const fetchElectricityUsageByPartnerAndYear = async (
   return response.data
 }
 
+/**
+ * 협력사별 스팀 사용량 데이터를 연도로 필터링하여 가져옵니다
+ * 사용처: scope2Form.tsx의 loadData 함수에서 호출
+ * 백엔드 필요: 예 (스팀 사용량 데이터 조회 API - 핵심)
+ */
 export const fetchSteamUsageByPartnerAndYear = async (
   partnerCompanyId: string,
   year: number
@@ -538,6 +738,11 @@ export const fetchSteamUsageByPartnerAndYear = async (
 // 통합된 Scope 데이터 처리 서비스
 // =============================================================================
 
+/**
+ * 폼 데이터의 활동 타입에 따라 적절한 API를 호출하여 데이터를 저장합니다
+ * 사용처: ScopeModal의 handleSubmit 함수에서 호출 (핵심 저장 로직)
+ * 백엔드 필요: 예 (위의 create 함수들 필요)
+ */
 export const submitScopeData = async (
   formData: ScopeFormData
 ): Promise<ScopeApiResponse<any>> => {
@@ -583,31 +788,11 @@ export const submitScopeData = async (
   }
 }
 
-export const fetchAllScopeDataByPartnerAndYear = async (
-  partnerCompanyId: string,
-  year: number
-) => {
-  const [stationaryCombustion, mobileCombustion, electricityUsage, steamUsage] =
-    await Promise.all([
-      fetchStationaryCombustionByPartnerAndYear(partnerCompanyId, year),
-      fetchMobileCombustionByPartnerAndYear(partnerCompanyId, year),
-      fetchElectricityUsageByPartnerAndYear(partnerCompanyId, year),
-      fetchSteamUsageByPartnerAndYear(partnerCompanyId, year)
-    ])
-
-  return {
-    stationaryCombustion,
-    mobileCombustion,
-    electricityUsage,
-    steamUsage,
-    totalRecords:
-      stationaryCombustion.length +
-      mobileCombustion.length +
-      electricityUsage.length +
-      steamUsage.length
-  }
-}
-
+/**
+ * Scope 폼 데이터의 유효성을 검사합니다
+ * 사용처: ScopeModal의 handleSubmit 함수에서 호출
+ * 백엔드 필요: 아니요 (프론트엔드 유효성 검사)
+ */
 export const validateScopeFormData = (formData: ScopeFormData): string[] => {
   const errors: string[] = []
 
@@ -625,12 +810,5 @@ export const validateScopeFormData = (formData: ScopeFormData): string[] => {
     errors.push('배출활동 타입을 선택해주세요.')
   }
 
-  // 배출활동별 세부 필드 검사
-  // ...existing validation logic...
-
   return errors
 }
-
-// =============================================================================
-// 기존 함수들 (호환성 유지)
-// =============================================================================

@@ -669,7 +669,7 @@ export default function ManagePartnerPage() {
         </Breadcrumb>
       </motion.div>
       {/* PageHeader + ArrowLeft */}
-      <div className="flex flex-row w-full h-full mb-6">
+      <div className="flex flex-row justify-between w-full h-full mb-6">
         <Link
           href="/home"
           className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
@@ -678,19 +678,19 @@ export default function ManagePartnerPage() {
             icon={<Building2 className="w-8 h-8 text-customG" />}
             title="파트너사 관리"
             description="파트너사를 등록, 조회, 수정 및 삭제합니다."
-            module="CSDD"
+            module="Partner Company"
           />
         </Link>
-      </div>
 
-      <div className="flex flex-col gap-6">
         {/* 검색 및 필터 섹션 */}
         <PartnerSearchSection
           searchQuery={searchQuery}
           onSearchQueryChange={setSearchQuery}
           onOpenAddDialog={openAddDialog}
         />
+      </div>
 
+      <div className="flex flex-col gap-6">
         {/* 파트너사 추가 모달 */}
         <PartnerCompanyModal
           isOpen={isAddDialogOpen}
@@ -704,6 +704,7 @@ export default function ManagePartnerPage() {
           selectedDartCompany={selectedDartCompany}
           onSelectDartCompany={handleSelectDartCompany}
           dialogError={dialogError}
+          duplicateCheckResult={duplicateCheckResult}
         />
 
         {/* 파트너사 수정 모달 */}
@@ -747,6 +748,14 @@ export default function ManagePartnerPage() {
         onConfirmDelete={handleDeletePartner}
         isSubmitting={isSubmitting}
         onClearSelection={() => setSelectedPartner(null)}
+      />
+      <DirectionButton
+        direction="right"
+        tooltip="재무 제표 리스크 관리로 이동"
+        href="/financialRisk"
+        fixed
+        position="middle-right"
+        size={48}
       />
     </div>
   )

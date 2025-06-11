@@ -1,6 +1,7 @@
 'use client'
 
 import api from '@/lib/axios'
+import {useAuthStore} from '@/stores/authStore'
 
 export const fetchTcfdProgress = async () => {
   const response = await api.get(`/api/v1/dashboard/tcfd/progress`)
@@ -23,7 +24,7 @@ export const fetchCsdddProgress = async () => {
 }
 
 export const fetchPartnerCompanyProgress = async () => {
-  const response = await api.get(`/api/v1/dashboard/partnercompany/progress`)
+  const response = await api.get(`/api/v1/partners/partner-companies`)
   return response.data
 }
 
@@ -32,6 +33,44 @@ export const fetchNetZeroEmission = async () => {
   return response.data
 }
 
+// SSE 기반 실시간 알림 연결 (Gateway 인증 기반)
+export const connectReminderSSE = (
+  onAlert?: (alert: any) => void,
+  onError?: (error: Event) => void
+): EventSource | null => {
+  try {
+    // Gateway를 통한 인증된 SSE 연결
+    // Gateway에서 JWT 토큰을 검증하고 X-MEMBER-ID 헤더를 설정
+    const url = '/api/v1/dashboard/reminder/stream'
+    
+    const eventSource = new EventSource(url, {
+      withCredentials: true  // Gateway 인증을 위해 쿠키 포함
+    })
+    
+    eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data)
+        if (data.eventType === 'news-alert' && typeof data.message === 'object') {
+          onAlert?.(data.message)
+        }
+      } catch (err) {
+        console.error('Failed to parse SSE message:', event.data, err)
+      }
+    }
+    
+    eventSource.onerror = (event) => {
+      console.error('SSE connection error:', event)
+      onError?.(event)
+    }
+    
+    return eventSource
+  } catch (err) {
+    console.error('Failed to create SSE connection:', err)
+    return null
+  }
+}
+
+// 기존 폴링 기반 fetchReminder (fallback용으로 유지)
 export const fetchReminder = async () => {
   const response = await api.get(`/api/v1/dashboard/reminder`)
   return response.data

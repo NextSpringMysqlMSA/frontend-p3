@@ -73,6 +73,7 @@ import {
   deleteStationaryCombustion, // 고정연소 데이터 삭제
   deleteMobileCombustion // 이동연소 데이터 삭제
 } from '@/services/scope'
+import {fetchPartnerCompaniesForScope} from '@/services/partnerCompany' // 실제 협력사 API 추가
 
 // 브레드크럼 네비게이션 컴포넌트 임포트
 import {
@@ -82,39 +83,8 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator
 } from '@/components/ui/breadcrumb'
-
-/**
- * 목업 협력사 데이터
- * 실제 운영 환경에서는 API를 통해 동적으로 로드됩니다.
- */
-const MOCK_PARTNERS: PartnerCompanyForScope[] = [
-  {
-    id: '550e8400-e29b-41d4-a716-446655440001',
-    name: '삼성전자',
-    status: 'ACTIVE'
-  },
-  {
-    id: '550e8400-e29b-41d4-a716-446655440002',
-    name: 'LG전자',
-    status: 'ACTIVE'
-  },
-  {
-    id: '550e8400-e29b-41d4-a716-446655440003',
-    name: '현대자동차',
-    status: 'ACTIVE'
-  }
-]
-
-// PartnerCompanyForScope를 PartnerCompany로 변환하는 함수 (ScopeModal용)
-const convertToPartnerCompany = (partner: PartnerCompanyForScope) => {
-  return {
-    id: partner.id, // UUID 그대로 사용
-    name: partner.name,
-    businessNumber: '',
-    status: partner.status,
-    companyType: '일반기업'
-  }
-}
+import {DirectionButton} from '@/components/layout/direction'
+import {PageHeader} from '@/components/layout/PageHeader'
 
 /**
  * Scope 1 배출량 관리 메인 컴포넌트
@@ -138,10 +108,36 @@ export default function Scope1Form() {
   // 데이터 관련 상태
   const [stationaryData, setStationaryData] = useState<StationaryCombustion[]>([]) // 고정연소 배출량 데이터
   const [mobileData, setMobileData] = useState<MobileCombustion[]>([]) // 이동연소 배출량 데이터
+  const [realPartnerCompanies, setRealPartnerCompanies] = useState<any[]>([]) // 실제 협력사 데이터
 
   // UI 관련 상태
   const [isModalOpen, setIsModalOpen] = useState(false) // 데이터 입력 모달 표시 여부
   const [searchTerm, setSearchTerm] = useState('') // 검색어 (현재 미사용)
+
+  // ============================================================================
+  // 실제 협력사 데이터 로딩 (Real Partner Data Loading)
+  // ============================================================================
+
+  /**
+   * 실제 API에서 협력사 목록을 가져옵니다
+   */
+  const loadPartnerCompanies = async () => {
+    try {
+      console.log('🔄 실제 협력사 API 호출 시작')
+      const response = await fetchPartnerCompaniesForScope(1, 100, '', false)
+      const partners = response.data || response.content || []
+      console.log('✅ 실제 협력사 데이터 로드:', partners.length, '개')
+      setRealPartnerCompanies(partners)
+    } catch (error) {
+      console.error('❌ 협력사 데이터 로딩 실패:', error)
+      setRealPartnerCompanies([])
+    }
+  }
+
+  // 컴포넌트 마운트 시 협력사 데이터 로드
+  useEffect(() => {
+    loadPartnerCompanies()
+  }, [])
 
   // ============================================================================
   // 데이터 로딩 함수 (Data Loading Functions)
@@ -303,7 +299,7 @@ export default function Scope1Form() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/scope1">Scope 1</BreadcrumbLink>
+              <span className="font-bold text-customG">Scope1</span>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -313,22 +309,19 @@ export default function Scope1Form() {
           헤더 섹션 (Header Section)
           - 뒤로가기 버튼과 페이지 제목/설명
           ======================================================================== */}
+
       <div className="flex flex-row w-full h-full mb-6">
         <Link
           href="/home"
-          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200 group">
-          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-customG-600" />
-          <div className="flex items-center space-x-6">
-            <div className="p-4 border shadow-sm rounded-2xl bg-gradient-to-br from-customG-100 via-customG-200 to-emerald-200 border-customG-300/20">
-              <Factory className="w-6 h-6 text-customG-700" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-customG-800">Scope 1 배출량 관리</h1>
-              <p className="text-base font-medium text-customG-600">
-                직접 배출량 (고정연소, 이동연소) 데이터를 관리하고 추적합니다
-              </p>
-            </div>
-          </div>
+          className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
+          <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
+          <PageHeader
+            icon={<Factory className="w-6 h-6 text-blue-600" />}
+            title="Scope 1 배출량 관리"
+            description="직접 배출량 (고정연소, 이동연소) 데이터를 관리하고 추적합니다"
+            module="Scope"
+            submodule="Scope1"
+          />
         </Link>
       </div>
 
@@ -340,30 +333,11 @@ export default function Scope1Form() {
         initial={{opacity: 0, y: 20}}
         animate={{opacity: 1, y: 0}}
         transition={{delay: 0.5, duration: 0.6}}>
-        <Card className="mb-8 overflow-hidden shadow-sm">
-          <CardHeader className="border-b border-customG-100/50 bg-gradient-to-r from-customG-50 to-emerald-50">
-            <CardTitle className="flex items-center gap-4 text-customG-800">
-              <motion.div
-                className="p-3 border bg-gradient-to-br from-customG-100 to-customG-200 rounded-xl border-customG-300/30"
-                whileHover={{scale: 1.1}}
-                transition={{type: 'spring', stiffness: 400}}>
-                <Filter className="w-5 h-5 text-customG-700" />
-              </motion.div>
-              <div>
-                <h3 className="text-xl font-bold">데이터 필터</h3>
-                <p className="mt-1 text-sm font-normal text-customG-600">
-                  조회할 협력사와 기간을 선택하세요
-                </p>
-              </div>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="px-4 pt-8 pb-6">
+        <Card className="mb-6 overflow-hidden shadow-sm">
+          <CardContent className="px-4 py-6">
             <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
               {/* 협력사 선택 드롭다운 */}
-              <motion.div
-                className="space-y-3"
-                whileHover={{scale: 1.02}}
-                transition={{type: 'spring', stiffness: 300}}>
+              <div className="space-y-3">
                 <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
                   <Building className="w-4 h-4" />
                   협력사 선택
@@ -374,13 +348,10 @@ export default function Scope1Form() {
                     onSelect={setSelectedPartnerId}
                   />
                 </div>
-              </motion.div>
+              </div>
 
               {/* 보고연도 입력 필드 */}
-              <motion.div
-                className="space-y-3"
-                whileHover={{scale: 1.02}}
-                transition={{type: 'spring', stiffness: 300}}>
+              <div className="space-y-3">
                 <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
                   <CalendarDays className="w-4 h-4" />
                   보고연도
@@ -393,13 +364,10 @@ export default function Scope1Form() {
                   max="2200"
                   className="w-full px-3 py-2 text-sm h-9 border-customG-200 focus:border-customG-400 focus:ring-customG-100 bg-white/80 backdrop-blur-sm"
                 />
-              </motion.div>
+              </div>
 
               {/* 보고월 선택 드롭다운 (선택사항) */}
-              <motion.div
-                className="space-y-3"
-                whileHover={{scale: 1.02}}
-                transition={{type: 'spring', stiffness: 300}}>
+              <div className="space-y-3">
                 <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
                   <CalendarDays className="w-4 h-4" />
                   보고월 (선택사항)
@@ -408,7 +376,7 @@ export default function Scope1Form() {
                   selectedMonth={selectedMonth}
                   onSelect={setSelectedMonth}
                 />
-              </motion.div>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -429,7 +397,7 @@ export default function Scope1Form() {
                 initial={{scale: 0}}
                 animate={{scale: 1}}
                 transition={{delay: 0.8, type: 'spring', stiffness: 200}}
-                className="p-6 mx-auto mb-6 border bg-gradient-to-br from-customG-100 to-customG-200 rounded-3xl w-fit border-customG-300/30">
+                className="p-6 mx-auto mb-4 border bg-gradient-to-br from-customG-100 to-customG-200 rounded-3xl w-fit border-customG-300/30">
                 <Building className="w-16 h-16 text-customG-600" />
               </motion.div>
               <motion.h3
@@ -440,7 +408,7 @@ export default function Scope1Form() {
                 협력사를 선택해주세요
               </motion.h3>
               <motion.p
-                className="max-w-md leading-relaxed text-customG-600"
+                className="max-w-md leading-relaxed text-customG-600 whitespace-nowrap"
                 initial={{opacity: 0, y: 20}}
                 animate={{opacity: 1, y: 0}}
                 transition={{delay: 1.1, duration: 0.5}}>
@@ -467,7 +435,7 @@ export default function Scope1Form() {
             initial={{opacity: 0}}
             animate={{opacity: 1}}
             transition={{duration: 0.4, delay: 0.1}}
-            className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2 lg:grid-cols-4">
+            className="grid grid-cols-1 gap-4 mb-4 md:grid-cols-2 lg:grid-cols-4">
             {/* 총 Scope 1 배출량 카드 */}
             <Card className="border-blue-100 bg-gradient-to-br from-blue-50 to-white">
               <CardContent className="flex items-center p-4">
@@ -539,7 +507,7 @@ export default function Scope1Form() {
               ================================================================== */}
           <Tabs defaultValue="stationary" className="w-full">
             {/* 탭 헤더 - 고정연소/이동연소 전환 */}
-            <TabsList className="grid w-full grid-cols-2 p-1 mb-6 bg-gray-100 rounded-lg">
+            <TabsList className="grid w-full grid-cols-2 p-1 bg-gray-100 rounded-lg">
               <TabsTrigger
                 value="stationary"
                 className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md font-medium">
@@ -558,7 +526,7 @@ export default function Scope1Form() {
                 고정연소 데이터 탭 (Stationary Combustion Tab)
                 - 고정연소 배출량 데이터 목록 및 관리 기능
                 ================================================================ */}
-            <TabsContent value="stationary" className="mt-6">
+            <TabsContent value="stationary" className="mt-4">
               <motion.div
                 initial={{opacity: 0, y: 20}}
                 animate={{opacity: 1, y: 0}}
@@ -730,7 +698,7 @@ export default function Scope1Form() {
                 이동연소 데이터 탭 (Mobile Combustion Tab)
                 - 이동연소 배출량 데이터 목록 및 관리 기능
                 ================================================================ */}
-            <TabsContent value="mobile" className="mt-6">
+            <TabsContent value="mobile" className="mt-4">
               <motion.div
                 initial={{opacity: 0, y: 20}}
                 animate={{opacity: 1, y: 0}}
@@ -920,11 +888,25 @@ export default function Scope1Form() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleFormSubmit}
-        partnerCompanies={MOCK_PARTNERS.map(convertToPartnerCompany)}
+        partnerCompanies={realPartnerCompanies}
         defaultPartnerId={selectedPartnerId || undefined}
         defaultYear={selectedYear}
         defaultMonth={selectedMonth || new Date().getMonth() + 1}
         scope="SCOPE1"
+      />
+      {/* 디버깅: 실제 협력사 데이터 확인 ----------------------------------------------------------------------------------------- 오른쪽 상단 협력사 수 생김*/}
+      {/* {process.env.NODE_ENV === 'development' && (
+        <div className="fixed z-50 p-2 text-xs text-white bg-black rounded top-2 right-2">
+          협력사 수: {realPartnerCompanies.length}
+        </div>
+      )} */}
+      <DirectionButton
+        direction="right"
+        tooltip="scope2으로 이동"
+        href="/scope2"
+        fixed
+        position="middle-right"
+        size={48}
       />
     </div>
   )

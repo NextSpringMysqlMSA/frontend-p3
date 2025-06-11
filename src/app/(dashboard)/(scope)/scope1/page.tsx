@@ -1,5 +1,3 @@
-'use client'
-
 import Scope1Form from './scope1Form'
 
 export default function Scope1Page() {
