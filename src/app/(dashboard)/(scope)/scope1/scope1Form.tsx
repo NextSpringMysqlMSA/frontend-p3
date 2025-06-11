@@ -333,30 +333,11 @@ export default function Scope1Form() {
         initial={{opacity: 0, y: 20}}
         animate={{opacity: 1, y: 0}}
         transition={{delay: 0.5, duration: 0.6}}>
-        <Card className="mb-8 overflow-hidden shadow-sm">
-          <CardHeader className="border-b border-customG-100/50 bg-gradient-to-r from-customG-50 to-emerald-50">
-            <CardTitle className="flex items-center gap-4 text-customG-800">
-              <motion.div
-                className="p-3 border bg-gradient-to-br from-customG-100 to-customG-200 rounded-xl border-customG-300/30"
-                whileHover={{scale: 1.1}}
-                transition={{type: 'spring', stiffness: 400}}>
-                <Filter className="w-5 h-5 text-customG-700" />
-              </motion.div>
-              <div>
-                <h3 className="text-xl font-bold">데이터 필터</h3>
-                <p className="mt-1 text-sm font-normal text-customG-600">
-                  조회할 협력사와 기간을 선택하세요
-                </p>
-              </div>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="px-4 pt-8 pb-6">
+        <Card className="mb-6 overflow-hidden shadow-sm">
+          <CardContent className="px-4 py-6">
             <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
               {/* 협력사 선택 드롭다운 */}
-              <motion.div
-                className="space-y-3"
-                whileHover={{scale: 1.02}}
-                transition={{type: 'spring', stiffness: 300}}>
+              <div className="space-y-3">
                 <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
                   <Building className="w-4 h-4" />
                   협력사 선택
@@ -367,13 +348,10 @@ export default function Scope1Form() {
                     onSelect={setSelectedPartnerId}
                   />
                 </div>
-              </motion.div>
+              </div>
 
               {/* 보고연도 입력 필드 */}
-              <motion.div
-                className="space-y-3"
-                whileHover={{scale: 1.02}}
-                transition={{type: 'spring', stiffness: 300}}>
+              <div className="space-y-3">
                 <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
                   <CalendarDays className="w-4 h-4" />
                   보고연도
@@ -386,13 +364,10 @@ export default function Scope1Form() {
                   max="2200"
                   className="w-full px-3 py-2 text-sm h-9 border-customG-200 focus:border-customG-400 focus:ring-customG-100 bg-white/80 backdrop-blur-sm"
                 />
-              </motion.div>
+              </div>
 
               {/* 보고월 선택 드롭다운 (선택사항) */}
-              <motion.div
-                className="space-y-3"
-                whileHover={{scale: 1.02}}
-                transition={{type: 'spring', stiffness: 300}}>
+              <div className="space-y-3">
                 <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
                   <CalendarDays className="w-4 h-4" />
                   보고월 (선택사항)
@@ -401,7 +376,7 @@ export default function Scope1Form() {
                   selectedMonth={selectedMonth}
                   onSelect={setSelectedMonth}
                 />
-              </motion.div>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -422,7 +397,7 @@ export default function Scope1Form() {
                 initial={{scale: 0}}
                 animate={{scale: 1}}
                 transition={{delay: 0.8, type: 'spring', stiffness: 200}}
-                className="p-6 mx-auto mb-6 border bg-gradient-to-br from-customG-100 to-customG-200 rounded-3xl w-fit border-customG-300/30">
+                className="p-6 mx-auto mb-4 border bg-gradient-to-br from-customG-100 to-customG-200 rounded-3xl w-fit border-customG-300/30">
                 <Building className="w-16 h-16 text-customG-600" />
               </motion.div>
               <motion.h3
@@ -460,7 +435,7 @@ export default function Scope1Form() {
             initial={{opacity: 0}}
             animate={{opacity: 1}}
             transition={{duration: 0.4, delay: 0.1}}
-            className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2 lg:grid-cols-4">
+            className="grid grid-cols-1 gap-4 mb-4 md:grid-cols-2 lg:grid-cols-4">
             {/* 총 Scope 1 배출량 카드 */}
             <Card className="border-blue-100 bg-gradient-to-br from-blue-50 to-white">
               <CardContent className="flex items-center p-4">
@@ -532,7 +507,7 @@ export default function Scope1Form() {
               ================================================================== */}
           <Tabs defaultValue="stationary" className="w-full">
             {/* 탭 헤더 - 고정연소/이동연소 전환 */}
-            <TabsList className="grid w-full grid-cols-2 p-1 mb-6 bg-gray-100 rounded-lg">
+            <TabsList className="grid w-full grid-cols-2 p-1 bg-gray-100 rounded-lg">
               <TabsTrigger
                 value="stationary"
                 className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md font-medium">
@@ -551,7 +526,7 @@ export default function Scope1Form() {
                 고정연소 데이터 탭 (Stationary Combustion Tab)
                 - 고정연소 배출량 데이터 목록 및 관리 기능
                 ================================================================ */}
-            <TabsContent value="stationary" className="mt-6">
+            <TabsContent value="stationary" className="mt-4">
               <motion.div
                 initial={{opacity: 0, y: 20}}
                 animate={{opacity: 1, y: 0}}
@@ -723,7 +698,7 @@ export default function Scope1Form() {
                 이동연소 데이터 탭 (Mobile Combustion Tab)
                 - 이동연소 배출량 데이터 목록 및 관리 기능
                 ================================================================ */}
-            <TabsContent value="mobile" className="mt-6">
+            <TabsContent value="mobile" className="mt-4">
               <motion.div
                 initial={{opacity: 0, y: 20}}
                 animate={{opacity: 1, y: 0}}
@@ -919,12 +894,12 @@ export default function Scope1Form() {
         defaultMonth={selectedMonth || new Date().getMonth() + 1}
         scope="SCOPE1"
       />
-      {/* 디버깅: 실제 협력사 데이터 확인 */}
-      {process.env.NODE_ENV === 'development' && (
+      {/* 디버깅: 실제 협력사 데이터 확인 ----------------------------------------------------------------------------------------- 오른쪽 상단 협력사 수 생김*/}
+      {/* {process.env.NODE_ENV === 'development' && (
         <div className="fixed z-50 p-2 text-xs text-white bg-black rounded top-2 right-2">
           협력사 수: {realPartnerCompanies.length}
         </div>
-      )}
+      )} */}
       <DirectionButton
         direction="right"
         tooltip="scope2으로 이동"
