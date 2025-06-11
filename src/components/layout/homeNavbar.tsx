@@ -269,7 +269,7 @@ export default function HomeNavbar() {
                 />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-fit  prt123" sideOffset={13.5}>
+            <DropdownMenuContent align="end" className="w-full  prt123" sideOffset={13.5}>
               <div className="flex items-center gap-2 p-2 md:hidden">
                 <Avatar className="w-8 h-8">
                   {profile?.profileImageUrl ? (
@@ -327,9 +327,9 @@ export default function HomeNavbar() {
                   router.push('/scope1')
                   closeMenu()
                   }}
-                  className="w-fit  pr-12 text-base ">
+                  className="w-full text-base">
                   <span
-                    className={`flex w-full justify-start${
+                    className={`flex w-full justify-start pr-12${
                       pathname === '/scope1' ? 'border-b border-black' : ''
                     }`}>
                     Scope 1
@@ -341,9 +341,9 @@ export default function HomeNavbar() {
                     ()=> {router.push('/scope2')
                   closeMenu()
                    }}
-                  className="w-fit  pr-12 text-base ">
+                  className="w-full text-base ">
                   <span
-                    className={`flex w-full justify-start ${
+                    className={`flex w-full justify-start pr-12 ${
                       pathname === '/scope2' ? 'border-b border-black' : ''
                     }`}>
                     Scope 2
@@ -374,9 +374,9 @@ export default function HomeNavbar() {
                   onClick= {()=> {router.push('/governance')
                   closeMenu()
                   }}
-                  className="w-fit  pr-12 text-base ">
+                  className="w-full text-base ">
                   <span
-                    className={`flex w-full justify-start ${
+                    className={`flex w-full justify-start pr-12 ${
                       pathname === '/governance' ? 'border-b border-black' : ''
                     }`}>
                     거버넌스
@@ -387,9 +387,9 @@ export default function HomeNavbar() {
                    onClick= {()=> {router.push('/strategy')
                     closeMenu()
                    }}
-                  className="w-fit  pr-12 text-base ">
+                  className="w-full text-base ">
                   <span
-                    className={`flex w-full justify-start ${
+                    className={`flex w-full justify-start pr-12 ${
                       pathname === '/strategy' ? 'border-b border-black' : ''
                     }`}>
                     전략
@@ -400,9 +400,9 @@ export default function HomeNavbar() {
                    onClick= {()=> {router.push('/goal')
                     closeMenu()
                    }}
-                  className="w-fit  pr-12 text-base ">
+                  className="w-full text-base ">
                   <span
-                    className={`flex w-full justify-start ${
+                    className={`flex w-full justify-start pr-12 ${
                       pathname === '/goal' ? 'border-b border-black' : ''
                     }`}>
                     목표 및 지표
@@ -433,9 +433,9 @@ export default function HomeNavbar() {
                   onClick= {()=> {router.push('/managePartner')
                   closeMenu()
                   }}
-                  className="w-fit  pr-12 text-base ">
+                  className="w-full text-base ">
                   <span
-                    className={`flex w-full justify-start ${
+                    className={`flex w-full justify-start pr-12${
                       pathname === '/managePartner' ? 'border-b border-black' : ''
                     }`}>
                     파트너사 관리
@@ -446,9 +446,9 @@ export default function HomeNavbar() {
                    onClick= {()=> {router.push('/financialRisk')
                     closeMenu()
                    }}
-                  className="w-fit  pr-12 text-base ">
+                  className="w-full text-base ">
                   <span
-                    className={`flex w-full justify-start ${
+                    className={`flex w-full justify-start pr-12${
                       pathname === '/financialRisk' ? 'border-b border-black' : ''
                     }`}>
                     제무제표 리스크 관리
