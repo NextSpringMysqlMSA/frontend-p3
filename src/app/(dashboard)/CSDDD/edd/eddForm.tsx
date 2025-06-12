@@ -14,7 +14,7 @@ import {
   BreadcrumbSeparator
 } from '@/components/ui/breadcrumb'
 import {showError, showSuccess} from '@/util/toast'
-import {BadgeCheck, ChevronRight, FileQuestion, Home} from 'lucide-react'
+import {BadgeCheck, FileQuestion, Home} from 'lucide-react'
 import {fetchEddResult, updateEddAnswers} from '@/services/csddd'
 import {useRouter} from 'next/navigation'
 import type {EddViolationDto} from '@/types/IFRS/csddd'
@@ -516,7 +516,6 @@ export default function EddForm() {
           </BreadcrumbList>
         </Breadcrumb>
       </motion.div>
-        
 
       {/* 페이지 헤더 및 뒤로가기 */}
       <div className="flex flex-row w-full h-full mb-6">

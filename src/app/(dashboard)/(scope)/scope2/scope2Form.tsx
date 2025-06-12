@@ -66,12 +66,12 @@ import {
 import ScopeModal from '@/components/scope/ScopeModal'
 
 // 타입 정의 및 API 서비스 임포트
-import {ElectricityUsage, SteamUsage} from '@/types/scope'
+import {ElectricityUsage, SteamUsage} from '@/types/scopeType'
 import {
   submitScopeData,
   fetchElectricityUsageByPartnerAndYear,
   fetchSteamUsageByPartnerAndYear
-} from '@/services/scope'
+} from '@/services/scopeService'
 import {fetchPartnerCompaniesForScope} from '@/services/partnerCompany' // 실제 협력사 API 추가
 import {PartnerSelector} from '@/components/scope/PartnerSelector'
 import {DirectionButton} from '@/components/layout/direction'

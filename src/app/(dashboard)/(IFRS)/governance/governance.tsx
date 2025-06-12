@@ -60,7 +60,6 @@ import {
 } from '@/components/ui/breadcrumb'
 import {DirectionButton} from '@/components/layout/direction'
 
-
 /**
  * Governance 컴포넌트
  *

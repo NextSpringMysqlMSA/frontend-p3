@@ -13,7 +13,7 @@ import {
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover'
 import {Badge} from '@/components/ui/badge'
 import {cn} from '@/lib/utils'
-import {PartnerCompanyForScope} from '@/types/scope'
+import {PartnerCompanyForScope} from '@/types/scopeType'
 import {fetchPartnerCompaniesForScope} from '@/services/partnerCompany'
 
 interface PartnerSelectorProps {

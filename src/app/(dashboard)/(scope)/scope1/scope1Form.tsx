@@ -64,7 +64,7 @@ import type {
   StationaryCombustion, // 고정연소 배출량 타입
   MobileCombustion, // 이동연소 배출량 타입
   ScopeFormData // Scope 폼 데이터 타입
-} from '@/types/scope'
+} from '@/types/scopeType'
 
 // API 서비스 함수 임포트
 import {
@@ -72,7 +72,7 @@ import {
   fetchMobileCombustionByPartnerAndYear, // 이동연소 데이터 조회
   deleteStationaryCombustion, // 고정연소 데이터 삭제
   deleteMobileCombustion // 이동연소 데이터 삭제
-} from '@/services/scope'
+} from '@/services/scopeService'
 import {fetchPartnerCompaniesForScope} from '@/services/partnerCompany' // 실제 협력사 API 추가
 
 // 브레드크럼 네비게이션 컴포넌트 임포트
