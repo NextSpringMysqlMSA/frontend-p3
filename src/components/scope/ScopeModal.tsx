@@ -189,7 +189,7 @@ export default function ScopeModal({
   )
 
   const [formData, setFormData] = useState<ScopeFormData>({
-    partnerCompanyId: defaultPartnerId || '',
+    companyId: defaultPartnerId || '',
     reportingYear: defaultYear,
     reportingMonth: defaultMonth,
     emissionActivityType: scope === 'SCOPE1' ? 'STATIONARY_COMBUSTION' : 'ELECTRICITY'
@@ -242,27 +242,37 @@ export default function ScopeModal({
 
   // 배출량 계산
   const handleCalculateEmissions = async () => {
+    // 이미 계산 중이면 중복 실행 방지
+    if (isCalculating) {
+      return
+    }
+
     let fuelId: string | undefined
     let usage: number | undefined
+
+    // 안전한 숫자 변환 함수
+    const toNumber = (value: string | number): number => {
+      return typeof value === 'string' ? parseFloat(value) : value
+    }
 
     if (
       formData.emissionActivityType === 'STATIONARY_COMBUSTION' &&
       formData.stationaryCombustion
     ) {
       fuelId = formData.stationaryCombustion.fuelId
-      usage = parseFloat(formData.stationaryCombustion.fuelUsage)
+      usage = toNumber(formData.stationaryCombustion.fuelUsage)
     } else if (
       formData.emissionActivityType === 'MOBILE_COMBUSTION' &&
       formData.mobileCombustion
     ) {
       fuelId = formData.mobileCombustion.fuelId
-      usage = parseFloat(formData.mobileCombustion.fuelUsage)
+      usage = toNumber(formData.mobileCombustion.fuelUsage)
     } else if (formData.emissionActivityType === 'ELECTRICITY' && formData.electricity) {
       fuelId = 'ELECTRICITY_KWH'
-      usage = parseFloat(formData.electricity.electricityUsage)
+      usage = toNumber(formData.electricity.electricityUsage)
     } else if (formData.emissionActivityType === 'STEAM' && formData.steam) {
       fuelId = `STEAM_${formData.steam.steamType}`
-      usage = parseFloat(formData.steam.steamUsage)
+      usage = toNumber(formData.steam.steamUsage)
     }
 
     if (!fuelId || !usage || usage <= 0) {
@@ -290,6 +300,11 @@ export default function ScopeModal({
 
   // 폼 제출
   const handleSubmit = async () => {
+    // 이미 로딩 중이면 중복 실행 방지
+    if (isLoading) {
+      return
+    }
+
     // 협력사 선택 확인
     if (!defaultPartnerId || !selectedPartner) {
       setErrors(['협력사를 먼저 선택해주세요.'])
@@ -306,70 +321,13 @@ export default function ScopeModal({
 
     setIsLoading(true)
     try {
-      // DB 저장을 위한 데이터 구조 생성 - corpCode 안전 처리
+      // DB 저장을 위한 데이터 구조 생성
       const submitData = {
         ...formData,
-        partnerCompanyId: defaultPartnerId,
-        partnerCompanyName:
-          selectedPartner.companyName ||
-          selectedPartner.corpName ||
-          selectedPartner.name ||
-          'N/A',
-        partnerCompanyCorpCode:
-          selectedPartner.corpCode || selectedPartner.corp_code || undefined,
-        scope: scope,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      }
-
-      // 각 활동 타입별 데이터에 필수 필드들 추가
-      if (submitData.stationaryCombustion) {
-        submitData.stationaryCombustion.companyId = defaultPartnerId
-        submitData.stationaryCombustion.partnerCompanyId = defaultPartnerId
-        submitData.stationaryCombustion.reportingYear = formData.reportingYear
-        submitData.stationaryCombustion.reportingMonth = formData.reportingMonth
-        submitData.stationaryCombustion.createdBy = 'current-user' // TODO: 실제 사용자 정보로 변경
-      }
-      if (submitData.mobileCombustion) {
-        submitData.mobileCombustion.companyId = defaultPartnerId
-        submitData.mobileCombustion.partnerCompanyId = defaultPartnerId
-        submitData.mobileCombustion.reportingYear = formData.reportingYear
-        submitData.mobileCombustion.reportingMonth = formData.reportingMonth
-        submitData.mobileCombustion.createdBy = 'current-user' // TODO: 실제 사용자 정보로 변경
-      }
-      if (submitData.electricity) {
-        submitData.electricity.companyId = defaultPartnerId
-        submitData.electricity.partnerCompanyId = defaultPartnerId
-        submitData.electricity.reportingYear = formData.reportingYear
-        submitData.electricity.reportingMonth = formData.reportingMonth
-        submitData.electricity.createdBy = 'current-user' // TODO: 실제 사용자 정보로 변경
-      }
-      if (submitData.steam) {
-        submitData.steam.companyId = defaultPartnerId
-        submitData.steam.partnerCompanyId = defaultPartnerId
-        submitData.steam.reportingYear = formData.reportingYear
-        submitData.steam.reportingMonth = formData.reportingMonth
-        submitData.steam.createdBy = 'current-user' // TODO: 실제 사용자 정보로 변경
+        companyId: defaultPartnerId
       }
 
       console.log('💾 DB 저장 데이터:', submitData)
-      console.log('🔍 활동별 세부 데이터 확인:')
-      if (submitData.stationaryCombustion) {
-        console.log('🏭 고정연소 데이터:', {
-          reportingYear: submitData.stationaryCombustion.reportingYear,
-          reportingMonth: submitData.stationaryCombustion.reportingMonth,
-          companyId: submitData.stationaryCombustion.companyId,
-          partnerCompanyId: submitData.stationaryCombustion.partnerCompanyId
-        })
-      }
-      if (submitData.mobileCombustion) {
-        console.log('🚗 이동연소 데이터:', {
-          reportingYear: submitData.mobileCombustion.reportingYear,
-          reportingMonth: submitData.mobileCombustion.reportingMonth,
-          companyId: submitData.mobileCombustion.companyId,
-          partnerCompanyId: submitData.mobileCombustion.partnerCompanyId
-        })
-      }
 
       await submitScopeData(submitData)
       onSubmit(submitData)
@@ -404,7 +362,6 @@ export default function ScopeModal({
     // 활동 타입에 따라 기본 구조 초기화
     if (activityType === 'STATIONARY_COMBUSTION') {
       baseFormData.stationaryCombustion = {
-        partnerCompanyId: defaultPartnerId || '',
         companyId: defaultPartnerId || '',
         reportingYear: formData.reportingYear,
         reportingMonth: formData.reportingMonth,
@@ -418,7 +375,6 @@ export default function ScopeModal({
       }
     } else if (activityType === 'MOBILE_COMBUSTION') {
       baseFormData.mobileCombustion = {
-        partnerCompanyId: defaultPartnerId || '',
         companyId: defaultPartnerId || '',
         reportingYear: formData.reportingYear,
         reportingMonth: formData.reportingMonth,
@@ -432,7 +388,6 @@ export default function ScopeModal({
       }
     } else if (activityType === 'ELECTRICITY') {
       baseFormData.electricity = {
-        partnerCompanyId: defaultPartnerId || '',
         companyId: defaultPartnerId || '',
         reportingYear: formData.reportingYear,
         reportingMonth: formData.reportingMonth,
@@ -446,7 +401,6 @@ export default function ScopeModal({
       }
     } else if (activityType === 'STEAM') {
       baseFormData.steam = {
-        partnerCompanyId: defaultPartnerId || '',
         companyId: defaultPartnerId || '',
         reportingYear: formData.reportingYear,
         reportingMonth: formData.reportingMonth,
@@ -1441,7 +1395,7 @@ export default function ScopeModal({
       // 협력사가 선택된 경우에만 폼 데이터 초기화
       if (defaultPartnerId && selectedPartner) {
         setFormData({
-          partnerCompanyId: defaultPartnerId,
+          companyId: defaultPartnerId,
           reportingYear: defaultYear,
           reportingMonth: defaultMonth,
           emissionActivityType:
@@ -1450,7 +1404,7 @@ export default function ScopeModal({
       } else {
         // 협력사가 선택되지 않은 경우 기본 값만 설정
         setFormData({
-          partnerCompanyId: '',
+          companyId: '',
           reportingYear: defaultYear,
           reportingMonth: defaultMonth,
           emissionActivityType:
