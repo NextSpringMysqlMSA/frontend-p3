@@ -70,12 +70,12 @@ export default function PartnerCompanyChart({refreshTrigger}: {refreshTrigger: n
 
   const handleCompanyClick = (
     e: React.MouseEvent,
-    companyId: string,
+    corpCode: string,
     companyName: string
   ) => {
     e.preventDefault()
     router.push(
-      `/financialRisk?companyId=${companyId}&companyName=${encodeURIComponent(
+      `/financialRisk?companyId=${corpCode}&companyName=${encodeURIComponent(
         companyName
       )}`
     )
@@ -140,15 +140,6 @@ export default function PartnerCompanyChart({refreshTrigger}: {refreshTrigger: n
           />
         </div>
       </div>
-      {/* <ScrollArea className="w-full border border-gray-100 rounded-md h-44">
-      <div className="p-4">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-medium text-gray-700">등록된 협력사 목록</h3>
-          <Badge variant="outline" className="text-xs">
-            총 {data.length}개사
-          </Badge>
-        </div>
-      </div> */}
 
       <ScrollArea className="flex-1 border border-gray-200 rounded-t-lg">
         <div className="h-full p-4 space-y-3">
@@ -156,7 +147,7 @@ export default function PartnerCompanyChart({refreshTrigger}: {refreshTrigger: n
             <div
               key={company.id}
               className="flex items-center justify-between p-4 py-4 transition-all duration-200 bg-white border border-gray-100 rounded-lg cursor-pointer group hover:bg-gray-50 hover:border-gray-200"
-              onClick={e => handleCompanyClick(e, company.id, company.name)}>
+              onClick={e => handleCompanyClick(e, company.corpCode, company.name)}>
               <div className="flex items-center space-x-4">
                 <div className="flex items-center justify-center w-10 h-10 transition-colors rounded-full bg-green-50 group-hover:bg-green-100">
                   <Building2 className="w-5 h-5 text-customG" />
