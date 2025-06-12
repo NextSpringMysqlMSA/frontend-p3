@@ -20,6 +20,18 @@ import type {
 import {getFuelById, getAllFuels, getFuelsByActivityType} from '@/constants/fuel-data'
 
 // =============================================================================
+// 헬퍼 함수
+// =============================================================================
+
+/**
+ * 연료 ID로 연료 이름을 조회합니다
+ */
+const getFuelNameById = async (fuelId: string): Promise<string> => {
+  const fuel = getFuelById(fuelId)
+  return fuel?.name || fuelId
+}
+
+// =============================================================================
 // 연료 관련 서비스
 // =============================================================================
 
@@ -167,7 +179,25 @@ export const createStationaryCombustion = async (
 ): Promise<ScopeApiResponse<StationaryCombustion>> => {
   const loadingId = showLoading('고정연소 데이터를 저장하는 중...')
   try {
-    const response = await api.post('/api/v1/scope/stationary-combustion', data)
+    // 백엔드 API 형식에 맞게 데이터 변환
+    const apiData = {
+      memberId: 1, // TODO: 실제 memberId로 변경
+      companyId: data.companyId || data.partnerCompanyId,
+      reportingYear: data.reportingYear,
+      reportingMonth: data.reportingMonth,
+      facilityName: data.facilityName,
+      facilityLocation: data.facilityLocation || '',
+      combustionType: data.combustionType,
+      fuelId: data.fuelId,
+      fuelName: await getFuelNameById(data.fuelId), // 연료 이름 추가
+      fuelUsage: parseFloat(data.fuelUsage), // 문자열을 숫자로 변환
+      unit: data.unit,
+      createdBy: data.createdBy,
+      notes: ''
+    }
+
+    console.log('🚀 API 전송 데이터 (고정연소):', apiData)
+    const response = await api.post('/api/v1/scope/stationary-combustion', apiData)
     dismissLoading(loadingId, '고정연소 데이터가 성공적으로 저장되었습니다.', 'success')
     return response.data
   } catch (error) {
@@ -251,7 +281,24 @@ export const createMobileCombustion = async (
 ): Promise<ScopeApiResponse<MobileCombustion>> => {
   const loadingId = showLoading('이동연소 데이터를 저장하는 중...')
   try {
-    const response = await api.post('/api/v1/scope/mobile-combustion', data)
+    // 백엔드 API 형식에 맞게 데이터 변환
+    const apiData = {
+      memberId: 1, // TODO: 실제 memberId로 변경
+      companyId: data.companyId || data.partnerCompanyId,
+      reportingYear: data.reportingYear,
+      reportingMonth: data.reportingMonth,
+      vehicleType: data.vehicleType,
+      transportType: data.transportType,
+      fuelId: data.fuelId,
+      fuelName: await getFuelNameById(data.fuelId),
+      fuelUsage: parseFloat(data.fuelUsage),
+      unit: data.unit,
+      distance: data.distance ? parseFloat(data.distance) : 0,
+      createdBy: data.createdBy
+    }
+
+    console.log('🚀 API 전송 데이터 (이동연소):', apiData)
+    const response = await api.post('/api/v1/scope/mobile-combustion', apiData)
     dismissLoading(loadingId, '이동연소 데이터가 성공적으로 저장되었습니다.', 'success')
     return response.data
   } catch (error) {
@@ -333,7 +380,23 @@ export const createElectricityUsage = async (
 ): Promise<ScopeApiResponse<ElectricityUsage>> => {
   const loadingId = showLoading('전력 사용량 데이터를 저장하는 중...')
   try {
-    const response = await api.post('/api/v1/scope/electricity-usage', data)
+    // 백엔드 API 형식에 맞게 데이터 변환
+    const apiData = {
+      memberId: 1, // TODO: 실제 memberId로 변경
+      companyId: data.companyId || data.partnerCompanyId,
+      reportingYear: data.reportingYear,
+      reportingMonth: data.reportingMonth,
+      facilityName: data.facilityName,
+      facilityLocation: data.facilityLocation || '',
+      electricityUsage: parseFloat(data.electricityUsage),
+      unit: data.unit,
+      isRenewable: data.isRenewable,
+      renewableType: data.renewableType || '',
+      createdBy: data.createdBy
+    }
+
+    console.log('🚀 API 전송 데이터 (전력):', apiData)
+    const response = await api.post('/api/v1/scope/electricity-usage', apiData)
     dismissLoading(
       loadingId,
       '전력 사용량 데이터가 성공적으로 저장되었습니다.',
@@ -427,7 +490,22 @@ export const createSteamUsage = async (
 ): Promise<ScopeApiResponse<SteamUsage>> => {
   const loadingId = showLoading('스팀 사용량 데이터를 저장하는 중...')
   try {
-    const response = await api.post('/api/v1/scope/steam-usage', data)
+    // 백엔드 API 형식에 맞게 데이터 변환
+    const apiData = {
+      memberId: 1, // TODO: 실제 memberId로 변경
+      companyId: data.companyId || data.partnerCompanyId,
+      reportingYear: data.reportingYear,
+      reportingMonth: data.reportingMonth,
+      facilityName: data.facilityName,
+      facilityLocation: data.facilityLocation || '',
+      steamType: data.steamType,
+      steamUsage: parseFloat(data.steamUsage),
+      unit: data.unit,
+      createdBy: data.createdBy
+    }
+
+    console.log('🚀 API 전송 데이터 (스팀):', apiData)
+    const response = await api.post('/api/v1/scope/steam-usage', apiData)
     dismissLoading(
       loadingId,
       '스팀 사용량 데이터가 성공적으로 저장되었습니다.',

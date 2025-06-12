@@ -322,7 +322,54 @@ export default function ScopeModal({
         updatedAt: new Date().toISOString()
       }
 
+      // 각 활동 타입별 데이터에 필수 필드들 추가
+      if (submitData.stationaryCombustion) {
+        submitData.stationaryCombustion.companyId = defaultPartnerId
+        submitData.stationaryCombustion.partnerCompanyId = defaultPartnerId
+        submitData.stationaryCombustion.reportingYear = formData.reportingYear
+        submitData.stationaryCombustion.reportingMonth = formData.reportingMonth
+        submitData.stationaryCombustion.createdBy = 'current-user' // TODO: 실제 사용자 정보로 변경
+      }
+      if (submitData.mobileCombustion) {
+        submitData.mobileCombustion.companyId = defaultPartnerId
+        submitData.mobileCombustion.partnerCompanyId = defaultPartnerId
+        submitData.mobileCombustion.reportingYear = formData.reportingYear
+        submitData.mobileCombustion.reportingMonth = formData.reportingMonth
+        submitData.mobileCombustion.createdBy = 'current-user' // TODO: 실제 사용자 정보로 변경
+      }
+      if (submitData.electricity) {
+        submitData.electricity.companyId = defaultPartnerId
+        submitData.electricity.partnerCompanyId = defaultPartnerId
+        submitData.electricity.reportingYear = formData.reportingYear
+        submitData.electricity.reportingMonth = formData.reportingMonth
+        submitData.electricity.createdBy = 'current-user' // TODO: 실제 사용자 정보로 변경
+      }
+      if (submitData.steam) {
+        submitData.steam.companyId = defaultPartnerId
+        submitData.steam.partnerCompanyId = defaultPartnerId
+        submitData.steam.reportingYear = formData.reportingYear
+        submitData.steam.reportingMonth = formData.reportingMonth
+        submitData.steam.createdBy = 'current-user' // TODO: 실제 사용자 정보로 변경
+      }
+
       console.log('💾 DB 저장 데이터:', submitData)
+      console.log('🔍 활동별 세부 데이터 확인:')
+      if (submitData.stationaryCombustion) {
+        console.log('🏭 고정연소 데이터:', {
+          reportingYear: submitData.stationaryCombustion.reportingYear,
+          reportingMonth: submitData.stationaryCombustion.reportingMonth,
+          companyId: submitData.stationaryCombustion.companyId,
+          partnerCompanyId: submitData.stationaryCombustion.partnerCompanyId
+        })
+      }
+      if (submitData.mobileCombustion) {
+        console.log('🚗 이동연소 데이터:', {
+          reportingYear: submitData.mobileCombustion.reportingYear,
+          reportingMonth: submitData.mobileCombustion.reportingMonth,
+          companyId: submitData.mobileCombustion.companyId,
+          partnerCompanyId: submitData.mobileCombustion.partnerCompanyId
+        })
+      }
 
       await submitScopeData(submitData)
       onSubmit(submitData)
@@ -344,14 +391,75 @@ export default function ScopeModal({
 
   // 배출활동 타입 변경
   const handleActivityTypeChange = (activityType: EmissionActivityType) => {
-    setFormData({
+    // 기본 폼 데이터 구조 생성
+    const baseFormData: ScopeFormData = {
       ...formData,
       emissionActivityType: activityType,
       stationaryCombustion: undefined,
       mobileCombustion: undefined,
       electricity: undefined,
       steam: undefined
-    })
+    }
+
+    // 활동 타입에 따라 기본 구조 초기화
+    if (activityType === 'STATIONARY_COMBUSTION') {
+      baseFormData.stationaryCombustion = {
+        partnerCompanyId: defaultPartnerId || '',
+        companyId: defaultPartnerId || '',
+        reportingYear: formData.reportingYear,
+        reportingMonth: formData.reportingMonth,
+        facilityName: '',
+        facilityLocation: '',
+        combustionType: 'LIQUID' as StationaryCombustionType,
+        fuelId: '',
+        fuelUsage: '',
+        unit: '',
+        createdBy: 'current-user'
+      }
+    } else if (activityType === 'MOBILE_COMBUSTION') {
+      baseFormData.mobileCombustion = {
+        partnerCompanyId: defaultPartnerId || '',
+        companyId: defaultPartnerId || '',
+        reportingYear: formData.reportingYear,
+        reportingMonth: formData.reportingMonth,
+        vehicleType: '',
+        transportType: 'ROAD' as MobileCombustionType,
+        fuelId: '',
+        fuelUsage: '',
+        unit: '',
+        distance: '',
+        createdBy: 'current-user'
+      }
+    } else if (activityType === 'ELECTRICITY') {
+      baseFormData.electricity = {
+        partnerCompanyId: defaultPartnerId || '',
+        companyId: defaultPartnerId || '',
+        reportingYear: formData.reportingYear,
+        reportingMonth: formData.reportingMonth,
+        facilityName: '',
+        facilityLocation: '',
+        electricityUsage: '',
+        unit: 'kWh',
+        isRenewable: false,
+        renewableType: '',
+        createdBy: 'current-user'
+      }
+    } else if (activityType === 'STEAM') {
+      baseFormData.steam = {
+        partnerCompanyId: defaultPartnerId || '',
+        companyId: defaultPartnerId || '',
+        reportingYear: formData.reportingYear,
+        reportingMonth: formData.reportingMonth,
+        facilityName: '',
+        facilityLocation: '',
+        steamType: 'TYPE_A' as SteamType,
+        steamUsage: '',
+        unit: 'GJ',
+        createdBy: 'current-user'
+      }
+    }
+
+    setFormData(baseFormData)
     setCalculationResult(null)
     setErrors([])
   }

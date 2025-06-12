@@ -249,7 +249,8 @@ export interface SteamUsage {
 
 // === 폼 데이터 타입들 (백엔드 API 요청용) ===
 export interface StationaryCombustionForm {
-  partnerCompanyId: string // UUID 형태
+  partnerCompanyId: string // UUID 형태 (협력사 ID)
+  companyId?: string // 회사 ID (백엔드 호환성을 위해 추가)
   reportingYear: number
   reportingMonth: number
   facilityName: string
@@ -262,7 +263,8 @@ export interface StationaryCombustionForm {
 }
 
 export interface MobileCombustionForm {
-  partnerCompanyId: string // UUID 형태
+  partnerCompanyId: string // UUID 형태 (협력사 ID)
+  companyId?: string // 회사 ID (백엔드 호환성을 위해 추가)
   reportingYear: number
   reportingMonth: number
   vehicleType: string
@@ -275,7 +277,8 @@ export interface MobileCombustionForm {
 }
 
 export interface ElectricityUsageForm {
-  partnerCompanyId: string // UUID 형태
+  partnerCompanyId: string // UUID 형태 (협력사 ID)
+  companyId?: string // 회사 ID (백엔드 호환성을 위해 추가)
   reportingYear: number
   reportingMonth: number
   facilityName: string
@@ -288,7 +291,8 @@ export interface ElectricityUsageForm {
 }
 
 export interface SteamUsageForm {
-  partnerCompanyId: string // UUID 형태
+  partnerCompanyId: string // UUID 형태 (협력사 ID)
+  companyId?: string // 회사 ID (백엔드 호환성을 위해 추가)
   reportingYear: number
   reportingMonth: number
   facilityName: string
