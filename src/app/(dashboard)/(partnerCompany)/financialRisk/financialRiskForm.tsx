@@ -60,6 +60,7 @@ import {
 import {DirectionButton} from '@/components/layout/direction'
 import {motion} from 'framer-motion'
 import {FinancialRiskAssessment} from '@/types/IFRS/partnerCompany'
+import {useSearchParams} from 'next/navigation' // 추가
 
 // API 응답 타입 정의
 interface RiskItem {
@@ -223,7 +224,7 @@ export default function FinancialRiskForm() {
   const [accordionValue, setAccordionValue] = useState<string[]>([])
 
   // URL 쿼리 파라미터에서 companyId와 companyName 가져오기
-  const searchParams = new URLSearchParams(window.location.search)
+  const searchParams = useSearchParams()
   const companyId = searchParams.get('companyId')
   const companyName = searchParams.get('companyName')
 
