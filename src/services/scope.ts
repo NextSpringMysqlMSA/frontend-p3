@@ -18,6 +18,19 @@ import type {
   EmissionActivityType
 } from '@/types/scope'
 import {getFuelById, getAllFuels, getFuelsByActivityType} from '@/constants/fuel-data'
+import {convertScopeFormDataForAPI} from '@/utils/scope-data-converter'
+
+// =============================================================================
+// 헬퍼 함수
+// =============================================================================
+
+/**
+ * 연료 ID로 연료 이름을 조회합니다
+ */
+const getFuelNameById = async (fuelId: string): Promise<string> => {
+  const fuel = getFuelById(fuelId)
+  return fuel?.name || fuelId
+}
 
 // =============================================================================
 // 연료 관련 서비스
@@ -167,6 +180,12 @@ export const createStationaryCombustion = async (
 ): Promise<ScopeApiResponse<StationaryCombustion>> => {
   const loadingId = showLoading('고정연소 데이터를 저장하는 중...')
   try {
+    // 연료 이름 설정 (없으면 ID로 조회)
+    if (!data.fuelName) {
+      data.fuelName = await getFuelNameById(data.fuelId)
+    }
+
+    console.log('🚀 API 전송 데이터 (고정연소):', data)
     const response = await api.post('/api/v1/scope/stationary-combustion', data)
     dismissLoading(loadingId, '고정연소 데이터가 성공적으로 저장되었습니다.', 'success')
     return response.data
@@ -251,6 +270,12 @@ export const createMobileCombustion = async (
 ): Promise<ScopeApiResponse<MobileCombustion>> => {
   const loadingId = showLoading('이동연소 데이터를 저장하는 중...')
   try {
+    // 연료 이름 설정 (없으면 ID로 조회)
+    if (!data.fuelName) {
+      data.fuelName = await getFuelNameById(data.fuelId)
+    }
+
+    console.log('🚀 API 전송 데이터 (이동연소):', data)
     const response = await api.post('/api/v1/scope/mobile-combustion', data)
     dismissLoading(loadingId, '이동연소 데이터가 성공적으로 저장되었습니다.', 'success')
     return response.data
@@ -333,6 +358,7 @@ export const createElectricityUsage = async (
 ): Promise<ScopeApiResponse<ElectricityUsage>> => {
   const loadingId = showLoading('전력 사용량 데이터를 저장하는 중...')
   try {
+    console.log('🚀 API 전송 데이터 (전력):', data)
     const response = await api.post('/api/v1/scope/electricity-usage', data)
     dismissLoading(
       loadingId,
@@ -427,6 +453,7 @@ export const createSteamUsage = async (
 ): Promise<ScopeApiResponse<SteamUsage>> => {
   const loadingId = showLoading('스팀 사용량 데이터를 저장하는 중...')
   try {
+    console.log('🚀 API 전송 데이터 (스팀):', data)
     const response = await api.post('/api/v1/scope/steam-usage', data)
     dismissLoading(
       loadingId,
@@ -749,34 +776,37 @@ export const submitScopeData = async (
   try {
     const {emissionActivityType} = formData
 
+    // UI 데이터를 API 형식으로 변환
+    const convertedData = convertScopeFormDataForAPI(formData)
+
     switch (emissionActivityType) {
       case 'STATIONARY_COMBUSTION':
-        if (!formData.stationaryCombustion) {
+        if (!convertedData.stationaryCombustion) {
           showError('고정연소 데이터가 필요합니다.')
           throw new Error('고정연소 데이터가 필요합니다.')
         }
-        return createStationaryCombustion(formData.stationaryCombustion)
+        return createStationaryCombustion(convertedData.stationaryCombustion)
 
       case 'MOBILE_COMBUSTION':
-        if (!formData.mobileCombustion) {
+        if (!convertedData.mobileCombustion) {
           showError('이동연소 데이터가 필요합니다.')
           throw new Error('이동연소 데이터가 필요합니다.')
         }
-        return createMobileCombustion(formData.mobileCombustion)
+        return createMobileCombustion(convertedData.mobileCombustion)
 
       case 'ELECTRICITY':
-        if (!formData.electricity) {
+        if (!convertedData.electricity) {
           showError('전력 사용량 데이터가 필요합니다.')
           throw new Error('전력 사용량 데이터가 필요합니다.')
         }
-        return createElectricityUsage(formData.electricity)
+        return createElectricityUsage(convertedData.electricity)
 
       case 'STEAM':
-        if (!formData.steam) {
+        if (!convertedData.steam) {
           showError('스팀 사용량 데이터가 필요합니다.')
           throw new Error('스팀 사용량 데이터가 필요합니다.')
         }
-        return createSteamUsage(formData.steam)
+        return createSteamUsage(convertedData.steam)
 
       default:
         showError(`지원하지 않는 배출활동 타입입니다: ${emissionActivityType}`)
@@ -797,7 +827,7 @@ export const validateScopeFormData = (formData: ScopeFormData): string[] => {
   const errors: string[] = []
 
   // 공통 필드 검사
-  if (!formData.partnerCompanyId || !formData.partnerCompanyId.trim()) {
+  if (!formData.companyId || !formData.companyId.trim()) {
     errors.push('협력사를 선택해주세요.')
   }
   if (!formData.reportingYear) {
