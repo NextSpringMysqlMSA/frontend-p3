@@ -23,76 +23,76 @@ type RowData = {
 // 타입별 테마 설정 정의
 export const typeThemeConfig = {
   committee: {
-    color: 'blue',
-    bgLight: 'bg-blue-50',
-    bgHeader: 'bg-blue-100',
-    textColor: 'text-blue-600',
-    buttonBg: 'bg-blue-600 hover:bg-blue-700',
-    border: 'border-blue-200',
-    hover: 'hover:bg-blue-50/70'
+    color: 'customG',
+    bgLight: 'bg-customG/5',
+    bgHeader: 'bg-customG/10',
+    textColor: 'text-customG',
+    buttonBg: 'bg-customG hover:bg-customG/90',
+    border: 'border-2 border-customG/20',
+    hover: 'hover:bg-customG/5'
   },
   meeting: {
-    color: 'emerald',
-    bgLight: 'bg-emerald-50',
-    bgHeader: 'bg-emerald-100',
-    textColor: 'text-emerald-600',
-    buttonBg: 'bg-emerald-600 hover:bg-emerald-700',
-    border: 'border-emerald-200',
-    hover: 'hover:bg-emerald-50/70'
+    color: 'customG',
+    bgLight: 'bg-customG/5',
+    bgHeader: 'bg-customG/10',
+    textColor: 'text-customG',
+    buttonBg: 'bg-customG hover:bg-customG/90',
+    border: 'border-2 border-customG/20',
+    hover: 'hover:bg-customG/5'
   },
   KPI: {
-    color: 'purple',
-    bgLight: 'bg-purple-50',
-    bgHeader: 'bg-purple-100',
-    textColor: 'text-purple-600',
-    buttonBg: 'bg-purple-600 hover:bg-purple-700',
-    border: 'border-purple-200',
-    hover: 'hover:bg-purple-50/70'
+    color: 'customG',
+    bgLight: 'bg-customG/5',
+    bgHeader: 'bg-customG/10',
+    textColor: 'text-customG',
+    buttonBg: 'bg-customG hover:bg-customG/90',
+    border: 'border-2 border-customG/20',
+    hover: 'hover:bg-customG/5'
   },
   education: {
-    color: 'amber',
-    bgLight: 'bg-amber-50',
-    bgHeader: 'bg-amber-100',
-    textColor: 'text-amber-600',
-    buttonBg: 'bg-amber-600 hover:bg-amber-700',
-    border: 'border-amber-200',
-    hover: 'hover:bg-amber-50/70'
+    color: 'customG',
+    bgLight: 'bg-customG/5',
+    bgHeader: 'bg-customG/10',
+    textColor: 'text-customG',
+    buttonBg: 'bg-customG hover:bg-customG/90',
+    border: 'border-2 border-customG/20',
+    hover: 'hover:bg-customG/5'
   },
   risk: {
-    color: 'rose',
-    bgLight: 'bg-rose-50',
-    bgHeader: 'bg-rose-100',
-    textColor: 'text-rose-600',
-    buttonBg: 'bg-rose-600 hover:bg-rose-700',
-    border: 'border-rose-200',
-    hover: 'hover:bg-rose-50/70'
+    color: 'customG',
+    bgLight: 'bg-customG/5',
+    bgHeader: 'bg-customG/10',
+    textColor: 'text-customG',
+    buttonBg: 'bg-customG hover:bg-customG/90',
+    border: 'border-2 border-customG/20',
+    hover: 'hover:bg-customG/5'
   },
   scenario: {
-    color: 'sky',
-    bgLight: 'bg-sky-50',
-    bgHeader: 'bg-sky-100',
-    textColor: 'text-sky-600',
-    buttonBg: 'bg-sky-600 hover:bg-sky-700',
-    border: 'border-sky-200',
-    hover: 'hover:bg-sky-50/70'
+    color: 'customG',
+    bgLight: 'bg-customG/5',
+    bgHeader: 'bg-customG/10',
+    textColor: 'text-customG',
+    buttonBg: 'bg-customG hover:bg-customG/90',
+    border: 'border-2 border-customG/20',
+    hover: 'hover:bg-customG/5'
   },
   kpiGoal: {
-    color: 'purple',
-    bgLight: 'bg-purple-50',
-    bgHeader: 'bg-purple-100',
-    textColor: 'text-purple-600',
-    buttonBg: 'bg-purple-600 hover:bg-purple-700',
-    border: 'border-purple-200',
-    hover: 'hover:bg-purple-50/70'
+    color: 'customG',
+    bgLight: 'bg-customG/5',
+    bgHeader: 'bg-customG/10',
+    textColor: 'text-customG',
+    buttonBg: 'bg-customG hover:bg-customG/90',
+    border: 'border-2 border-customG/20',
+    hover: 'hover:bg-customG/5'
   },
   netZero: {
-    color: 'green',
-    bgLight: 'bg-green-50',
-    bgHeader: 'bg-green-100',
-    textColor: 'text-green-600',
-    buttonBg: 'bg-green-600 hover:bg-green-700',
-    border: 'border-green-200',
-    hover: 'hover:bg-green-50/70'
+    color: 'customG',
+    bgLight: 'bg-customG/5',
+    bgHeader: 'bg-customG/10',
+    textColor: 'text-customG',
+    buttonBg: 'bg-customG hover:bg-customG/90',
+    border: 'border-2 border-customG/20',
+    hover: 'hover:bg-customG/5'
   }
 }
 
@@ -176,15 +176,7 @@ export default function CollapsibleWindow({
             )}
 
             <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-              <DialogTrigger asChild>
-                <Button
-                  onClick={handleAdd}
-                  className={`${theme.buttonBg} text-white shadow-sm hover:shadow-md transition-all duration-200 flex items-center gap-1.5 px-3 py-1.5`}
-                  size="sm">
-                  <PlusCircle className="w-4 h-4" />
-                  <span>항목 추가</span>
-                </Button>
-              </DialogTrigger>
+              <DialogTrigger asChild></DialogTrigger>
               <DialogContent className="sm:max-w-[550px]">
                 <DialogHeader>
                   <DialogTitle className="flex items-center text-xl sr-only" hidden>
@@ -245,13 +237,11 @@ export default function CollapsibleWindow({
         initial={{opacity: 0}}
         animate={{opacity: 1}}
         transition={{duration: 0.4, delay: 0.1}}
-        className="w-full overflow-hidden bg-white border rounded-lg shadow-sm">
+        className="w-full overflow-hidden bg-white border-2 shadow-sm border-[#0D1359]/20 rounded-xl">
         {data.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-48 p-6 text-center rounded-lg bg-gray-50">
-            <div className="flex items-center justify-center w-16 h-16 mb-4 bg-gray-100 rounded-full">
-              {icons.empty}
-            </div>
-            <h3 className="mb-1 text-base font-medium text-gray-600">
+          <div className="flex flex-col items-center justify-center h-48 p-6 text-center">
+            <div className="p-2 mb-4 rounded-full bg-[#0D1359]/10">{icons.empty}</div>
+            <h3 className="mb-1 text-base font-medium text-slate-700">
               데이터가 없습니다
             </h3>
             <p className="mb-4 text-sm text-gray-500">
@@ -259,24 +249,30 @@ export default function CollapsibleWindow({
             </p>
             <Button
               onClick={handleAdd}
-              className={`text-white ${theme.buttonBg}`}
+              className="text-white bg-[#0D1359] hover:bg-[#0D1359]/90"
               size="sm">
-              <PlusCircle className="w-4 h-4 mr-1.5 text-white" /> 첫 항목 추가하기
+              <PlusCircle className="w-4 h-4 mr-1.5" /> 첫 항목 추가하기
             </Button>
           </div>
         ) : (
-          <CustomTable
-            headers={headers}
-            data={data}
-            type={type}
-            theme={theme}
-            onRowClick={(_, row, rowId) => {
-              console.log('[CollapsibleWindow] Row clicked:', row)
-              console.log('[CollapsibleWindow] Row ID:', rowId)
-              setSelectedRowData({row, rowId})
-              setIsEditOpen(true)
-            }}
-          />
+          <div className="bg-white">
+            <CustomTable
+              headers={headers}
+              data={data}
+              type={type}
+              theme={{
+                ...theme,
+                border: 'border-2 border-[#0D1359]/20',
+                bgHeader: 'bg-[#0D1359]/10',
+                bgLight: 'bg-[#0D1359]/5',
+                textColor: 'text-[#0D1359]'
+              }}
+              onRowClick={(_, row, rowId) => {
+                setSelectedRowData({row, rowId})
+                setIsEditOpen(true)
+              }}
+            />
+          </div>
         )}
       </motion.div>
     </div>

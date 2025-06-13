@@ -12,7 +12,7 @@ import {
   UpdateEducationDto,
   UpdateKpiDto,
   UpdateMeetingDto
-} from '@/types/IFRS/governance'
+} from '@/types/IFRS/governanceType'
 
 // 위원회 데이터 항목 타입 (조회 및 수정 시 사용)
 

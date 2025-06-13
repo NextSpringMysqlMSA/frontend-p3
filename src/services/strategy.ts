@@ -6,7 +6,7 @@ import {
   ScenarioItem,
   UpdateRiskDto,
   UpdateScenarioDto
-} from '@/types/IFRS/strategy'
+} from '@/types/IFRS/strategyType'
 
 // ========================= 시나리오 관련 API 및 타입 ===============================================
 

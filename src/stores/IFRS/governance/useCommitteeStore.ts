@@ -1,5 +1,5 @@
 import {create} from 'zustand'
-import type {committeeState as CommitteeFields} from '@/types/IFRS/governance'
+import type {committeeState as CommitteeFields} from '@/types/IFRS/governanceType'
 import {fetchCommitteeById} from '@/services/governance'
 
 export type CommitteeItem = CommitteeFields & {id: number}

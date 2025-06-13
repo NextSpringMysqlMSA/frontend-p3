@@ -1,5 +1,5 @@
 import {create} from 'zustand'
-import type {meetingState as MeetingFields} from '@/types/IFRS/governance'
+import type {meetingState as MeetingFields} from '@/types/IFRS/governanceType'
 import {fetchMeetingById} from '@/services/governance' // API 함수 import 추가
 
 export type MeetingItem = MeetingFields

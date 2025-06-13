@@ -32,8 +32,8 @@ import {
 import {StatCard} from '@/components/ui/stat-card'
 import {LoadingState} from '@/components/ui/loading-state'
 import {PageHeader} from '@/components/layout/PageHeader'
-import {fetchHrddResult} from '@/services/csddd'
-import type {HrddViolationDto} from '@/types/IFRS/csddd'
+import {fetchHrddResult} from '@/services/csdddService'
+import type {HrddViolationDto} from '@/types/IFRS/csdddType'
 import {DirectionButton} from '@/components/layout/direction'
 
 /**

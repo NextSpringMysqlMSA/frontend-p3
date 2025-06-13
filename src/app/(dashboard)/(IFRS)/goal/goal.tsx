@@ -32,7 +32,7 @@ import {
 } from '@/components/ui/dialog'
 import {useEffect, useState} from 'react'
 import {useKPIGoalStore} from '@/stores/IFRS/goal/useKPIGoalStore'
-import {KPIGoalState, NetZeroResponse} from '@/types/IFRS/goal'
+import {KPIGoalState, NetZeroResponse} from '@/types/IFRS/goalType'
 import {fetchKPIGoal, fetchNetZeroList} from '@/services/goal'
 import {
   Card,

@@ -1,6 +1,6 @@
 // src/stores/useRiskStore.ts
 import {create} from 'zustand'
-import type {riskState as RiskFields} from '@/types/IFRS/strategy'
+import type {riskState as RiskFields} from '@/types/IFRS/strategyType'
 import {fetchRiskById} from '@/services/strategy'
 
 export type RiskItem = RiskFields
