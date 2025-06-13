@@ -34,7 +34,7 @@ export default function CalculationResult({calculationResult}: CalculationResult
     <Card className="overflow-hidden shadow-sm">
       <CardHeader className="bg-white border-b border-gray-100">
         <CardTitle className="flex items-center gap-3 text-gray-800">
-          <div className="p-2 bg-blue-500 rounded-full">
+          <div className="p-2 rounded-full bg-customG">
             <CheckCircle2 className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -45,23 +45,23 @@ export default function CalculationResult({calculationResult}: CalculationResult
           </div>
         </CardTitle>
       </CardHeader>
-      <CardContent className="pt-6">
+      <CardContent className="p-4">
         <div className="space-y-6">
           {/* 총 배출량 - 메인 결과 */}
-          <div className="p-6 border border-blue-200 shadow-sm bg-blue-50 rounded-xl">
+          <div className="p-6 border shadow-sm border-customG bg-customGLight rounded-xl">
             <div className="flex items-center justify-between">
               <div>
                 <span className="text-sm font-medium text-gray-600">총 CO₂ 배출량</span>
                 <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-3xl font-bold text-blue-900">
+                  <span className="text-3xl font-bold text-customGDark">
                     {formatNumber(calculationResult.totalCo2Equivalent)}
                   </span>
-                  <span className="text-lg font-medium text-blue-700">tCO₂eq</span>
+                  <span className="text-lg font-medium text-customG">tCO₂eq</span>
                 </div>
               </div>
               <div className="text-right">
-                <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-blue-100 to-blue-200">
-                  <Calculator className="w-8 h-8 text-blue-600" />
+                <div className="flex items-center justify-center w-16 h-16 border rounded-full bg-customGLight border-customG">
+                  <Calculator className="w-8 h-8 text-customG" />
                 </div>
               </div>
             </div>
@@ -69,39 +69,45 @@ export default function CalculationResult({calculationResult}: CalculationResult
 
           {/* 상세 배출량 (가스별) - CH₄, N₂O 배출량이 있는 경우에만 표시 */}
           {(calculationResult.ch4Emission || calculationResult.n2oEmission) && (
-            <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
-              <h4 className="mb-4 text-base font-semibold text-gray-800">
+            <div className="p-4 pb-6 bg-white border border-gray-200 shadow-sm rounded-xl">
+              <h4 className="mb-6 text-base font-semibold text-gray-800">
                 가스별 배출량 상세
               </h4>
               <div className="grid grid-cols-3 gap-4">
                 {/* CO₂ 배출량 */}
-                <div className="text-center">
+                <div className="flex flex-col items-center text-center">
                   <div className="mb-1 text-sm text-gray-600">CO₂</div>
-                  <div className="text-lg font-semibold text-gray-900">
-                    {formatNumber(calculationResult.co2Emission || 0)}
+                  <div className="flex flex-row items-center gap-3">
+                    <div className="text-lg font-semibold text-gray-900">
+                      {formatNumber(calculationResult.co2Emission || 0)}
+                    </div>
+                    <div className="text-xs text-gray-500">tCO₂</div>
                   </div>
-                  <div className="text-xs text-gray-500">tCO₂</div>
                 </div>
 
                 {/* CH₄ 배출량 */}
                 {calculationResult.ch4Emission && (
-                  <div className="text-center">
+                  <div className="flex flex-col items-center text-center">
                     <div className="mb-1 text-sm text-gray-600">CH₄</div>
-                    <div className="text-lg font-semibold text-gray-900">
-                      {formatNumber(calculationResult.ch4Emission)}
+                    <div className="flex flex-row items-center gap-3">
+                      <div className="text-lg font-semibold text-gray-900">
+                        {formatNumber(calculationResult.ch4Emission)}
+                      </div>
+                      <div className="text-xs text-gray-500">tCO₂eq</div>
                     </div>
-                    <div className="text-xs text-gray-500">tCO₂eq</div>
                   </div>
                 )}
 
                 {/* N₂O 배출량 */}
                 {calculationResult.n2oEmission && (
-                  <div className="text-center">
+                  <div className="flex flex-col items-center text-center">
                     <div className="mb-1 text-sm text-gray-600">N₂O</div>
-                    <div className="text-lg font-semibold text-gray-900">
-                      {formatNumber(calculationResult.n2oEmission)}
+                    <div className="flex flex-row items-center gap-3">
+                      <div className="text-lg font-semibold text-gray-900">
+                        {formatNumber(calculationResult.n2oEmission)}
+                      </div>
+                      <div className="text-xs text-gray-500">tCO₂eq</div>
                     </div>
-                    <div className="text-xs text-gray-500">tCO₂eq</div>
                   </div>
                 )}
               </div>
@@ -111,12 +117,14 @@ export default function CalculationResult({calculationResult}: CalculationResult
           {/* 계산식 표시 */}
           {calculationResult.calculationFormula && (
             <div className="p-4 border border-gray-200 bg-gray-50 rounded-xl">
-              <div className="flex items-start gap-3">
-                <div className="flex items-center justify-center w-6 h-6 bg-gray-300 rounded-full flex-shrink-0 mt-0.5">
-                  <Calculator className="w-3 h-3 text-gray-600" />
+              <div className="flex flex-col items-start gap-3">
+                <div className="flex flex-row items-center gap-2">
+                  <div className="flex items-center justify-center flex-shrink-0 w-6 h-6 bg-gray-300 rounded-full">
+                    <Calculator className="w-3 h-3 text-gray-600" />
+                  </div>
+                  <span className="text-sm font-medium text-gray-700">계산식</span>
                 </div>
                 <div className="flex-1">
-                  <div className="mb-1 text-sm font-medium text-gray-700">계산식</div>
                   <div className="p-2 font-mono text-sm text-gray-600 bg-white border rounded">
                     {calculationResult.calculationFormula}
                   </div>

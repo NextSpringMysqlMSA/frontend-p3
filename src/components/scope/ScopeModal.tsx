@@ -511,7 +511,7 @@ export default function ScopeModal({
               type="button"
               onClick={handleSubmit}
               disabled={isLoading || !selectedPartner || !calculationResult}
-              className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50">
+              className="bg-customG hover:bg-customGDark disabled:opacity-50">
               {isLoading ? '저장 중...' : '저장'}
             </Button>
           </div>

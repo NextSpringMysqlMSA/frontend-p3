@@ -34,15 +34,9 @@ export default function ActivityTypeSelector({
   )
 
   return (
-    <Card className="mb-6">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <Fuel className="w-5 h-5 text-green-600" />
-          배출 활동 유형
-        </CardTitle>
-      </CardHeader>
+    <Card className="mb-6 border-none shadow-none">
       <CardContent>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="flex flex-row justify-between w-full gap-4">
           {filteredActivityTypes.map(item => {
             const IconComponent = item.icon
             const isSelected = selectedActivityType === item.value
@@ -50,9 +44,9 @@ export default function ActivityTypeSelector({
             return (
               <div
                 key={item.value}
-                className={`relative p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 ${
+                className={`group relative p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 flex-1 ${
                   isSelected
-                    ? 'border-blue-500 bg-blue-50 shadow-md ring-2 ring-blue-500/20'
+                    ? 'border-customG bg-customGLight shadow-md'
                     : 'bg-gray-50 border-gray-200 hover:border-gray-300 hover:bg-gray-100'
                 }`}
                 onClick={() => onActivityTypeChange(item.value)}
@@ -69,7 +63,7 @@ export default function ActivityTypeSelector({
                 {/* 선택 상태 표시 아이콘 */}
                 {isSelected && (
                   <div className="absolute top-2 right-2">
-                    <div className="flex items-center justify-center w-5 h-5 bg-blue-500 rounded-full">
+                    <div className="flex items-center justify-center w-5 h-5 rounded-full bg-customG">
                       <CheckCircle2 className="w-3 h-3 text-white" />
                     </div>
                   </div>
@@ -79,18 +73,18 @@ export default function ActivityTypeSelector({
                 <div className="flex flex-col items-center text-center">
                   <IconComponent
                     className={`w-8 h-8 mb-2 ${
-                      isSelected ? 'text-blue-600' : 'text-gray-600'
+                      isSelected ? 'text-black' : 'text-gray-600 group-hover:text-customG'
                     }`}
                   />
                   <div
                     className={`text-sm font-medium mb-1 ${
-                      isSelected ? 'text-blue-900' : 'text-gray-900'
+                      isSelected ? 'text-black' : 'text-gray-900 group-hover:text-customG'
                     }`}>
                     {item.label}
                   </div>
                   <div
                     className={`text-xs ${
-                      isSelected ? 'text-blue-700' : 'text-gray-500'
+                      isSelected ? 'text-black' : 'text-gray-500 group-hover:text-customG'
                     }`}>
                     {item.description}
                   </div>
