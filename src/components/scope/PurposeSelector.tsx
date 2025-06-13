@@ -46,10 +46,10 @@ export default function PurposeSelector({
           return (
             <div
               key={category.value}
-              className={`group p-3 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:shadow-sm ${
+              className={`group p-3 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:shadow-md ${
                 isSelected
-                  ? 'border-blue-500 bg-blue-50 shadow-sm ring-1 ring-blue-500/20'
-                  : 'border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50'
+                  ? 'border-customG bg-customGLight shadow-sm'
+                  : 'border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 hover:text-customG'
               }`}
               onClick={() => onPurposeChange(category.value)}
               role="button"
@@ -62,15 +62,6 @@ export default function PurposeSelector({
                   onPurposeChange(category.value)
                 }
               }}>
-              {/* 선택 표시 */}
-              {isSelected && (
-                <div className="absolute top-2 right-2">
-                  <div className="flex items-center justify-center w-4 h-4 bg-blue-500 rounded-full">
-                    <CheckCircle2 className="w-2.5 h-2.5 text-white" />
-                  </div>
-                </div>
-              )}
-
               <div className="relative">
                 <div className={`text-sm font-medium mb-1`}>{category.label}</div>
                 <div className={`text-xs leading-relaxed`}>{category.description}</div>

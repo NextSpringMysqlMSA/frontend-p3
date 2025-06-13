@@ -21,18 +21,12 @@ interface BasicInfoFormProps {
 export default function BasicInfoForm({selectedPartner}: BasicInfoFormProps) {
   return (
     <Card className="mb-6">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <Building2 className="w-5 h-5 text-blue-600" />
-          협력사 정보
-        </CardTitle>
-      </CardHeader>
       <CardContent className="space-y-4">
         {/* 협력사가 선택된 경우 정보 표시 */}
         {selectedPartner && (
-          <div className="p-4 border border-blue-200 rounded-lg bg-blue-50">
+          <div className="p-4 border rounded-lg border-customG bg-customGLight">
             <div className="flex items-center gap-2 mb-2">
-              <Badge variant="secondary" className="text-blue-800 bg-blue-100">
+              <Badge variant="secondary" className="text-white bg-customGDark">
                 선택된 협력사
               </Badge>
             </div>
@@ -40,8 +34,13 @@ export default function BasicInfoForm({selectedPartner}: BasicInfoFormProps) {
               <div className="font-medium text-gray-900">
                 {selectedPartner.companyName}
               </div>
-              <div className="text-sm text-gray-600">
-                사업자번호: {selectedPartner.businessNumber}
+              <div className="flex flex-row w-full space-x-1">
+                <div className="text-sm text-gray-600">
+                  DART CODE: {selectedPartner.corpCode} /
+                </div>
+                <div className="text-sm text-gray-600">
+                  주식 코드: {selectedPartner.stockCode}
+                </div>
               </div>
             </div>
           </div>
