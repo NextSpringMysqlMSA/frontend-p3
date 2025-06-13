@@ -80,7 +80,6 @@ export default function HomeNavbar() {
   }
   const closeMenu = () => {
     setOpenMenu(null)
-    setSelectedTab(getActiveTab(pathname))
   }
 
   const handleLogout = () => {
