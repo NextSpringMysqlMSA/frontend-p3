@@ -455,7 +455,7 @@ export default function ScopeModal({
                   </div>
                 </div>
               </div>
-              <div className="p-2 bg-green-100 rounded-lg">
+              <div className="p-2 bg-green-100 rounded-full">
                 <CheckCircle2 className="w-5 h-5 text-green-600" />
               </div>
             </div>
@@ -588,8 +588,8 @@ export default function ScopeModal({
                       variant={type.scope === 'SCOPE1' ? 'default' : 'secondary'}
                       className={`text-xs ${
                         type.scope === 'SCOPE1'
-                          ? 'bg-blue-100 text-blue-700 border-blue-200'
-                          : 'bg-gray-100 text-gray-700 border-gray-200'
+                          ? 'bg-blue-100 text-blue-700 border-blue-200 '
+                          : 'bg-gray-100 text-gray-700 border-gray-200 '
                       }`}>
                       {type.scope}
                     </Badge>
@@ -642,18 +642,9 @@ export default function ScopeModal({
                     }
                   })
                 }>
-                {/* 선택 표시 */}
-                {formData.stationaryCombustion?.combustionType === type.value && (
-                  <div className="absolute top-2 right-2">
-                    <div className="flex items-center justify-center w-5 h-5 bg-blue-500 rounded-full">
-                      <CheckCircle2 className="w-3 h-3 text-white" />
-                    </div>
-                  </div>
-                )}
-
                 <div className="relative">
                   <div
-                    className={`text-sm font-semibold mb-1 ${
+                    className={`text-sm font-semibold ${
                       formData.stationaryCombustion?.combustionType === type.value
                         ? 'text-blue-800'
                         : 'text-gray-800 group-hover:text-blue-800'
@@ -824,15 +815,6 @@ export default function ScopeModal({
                     }
                   })
                 }>
-                {/* 선택 표시 */}
-                {formData.mobileCombustion?.transportType === type.value && (
-                  <div className="absolute top-2 right-2">
-                    <div className="flex items-center justify-center w-5 h-5 bg-blue-500 rounded-full">
-                      <CheckCircle2 className="w-3 h-3 text-white" />
-                    </div>
-                  </div>
-                )}
-
                 <div className="relative">
                   <div
                     className={`text-sm font-semibold ${
@@ -1311,7 +1293,7 @@ export default function ScopeModal({
             </div>
           </CardTitle>
         </CardHeader>
-        <CardContent className="pt-6">
+        <CardContent className="p-4">
           <div className="space-y-6">
             {/* 총 배출량 - 메인 결과 */}
             <div className="p-6 border border-blue-200 shadow-sm bg-blue-50 rounded-xl">

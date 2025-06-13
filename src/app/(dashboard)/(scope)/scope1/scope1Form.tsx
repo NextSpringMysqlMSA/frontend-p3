@@ -324,63 +324,6 @@ export default function Scope1Form() {
       </div>
 
       {/* ========================================================================
-          협력사 및 연도 선택 섹션 (Partner & Year Selection)
-          - 데이터 조회를 위한 필터 조건 설정
-          ======================================================================== */}
-      <motion.div
-        initial={{opacity: 0, y: 20}}
-        animate={{opacity: 1, y: 0}}
-        transition={{delay: 0.5, duration: 0.6}}>
-        <Card className="mb-6 overflow-hidden shadow-sm">
-          <CardContent className="px-4 py-6">
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-              {/* 협력사 선택 드롭다운 */}
-              <div className="space-y-3">
-                <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
-                  <Building className="w-4 h-4" />
-                  협력사 선택
-                </label>
-                <div className="relative">
-                  <PartnerSelector
-                    selectedPartnerId={selectedPartnerId}
-                    onSelect={setSelectedPartnerId}
-                  />
-                </div>
-              </div>
-
-              {/* 보고연도 입력 필드 */}
-              <div className="space-y-3">
-                <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
-                  <CalendarDays className="w-4 h-4" />
-                  보고연도
-                </label>
-                <Input
-                  type="number"
-                  value={selectedYear}
-                  onChange={e => setSelectedYear(parseInt(e.target.value))}
-                  min="1900"
-                  max="2200"
-                  className="w-full px-3 py-2 text-sm h-9 border-customG-200 focus:border-customG-400 focus:ring-customG-100 bg-white/80 backdrop-blur-sm"
-                />
-              </div>
-
-              {/* 보고월 선택 드롭다운 (선택사항) */}
-              <div className="space-y-3">
-                <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
-                  <CalendarDays className="w-4 h-4" />
-                  보고월 (선택사항)
-                </label>
-                <MonthSelector
-                  selectedMonth={selectedMonth}
-                  onSelect={setSelectedMonth}
-                />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {/* ========================================================================
           협력사 미선택 시 안내 메시지 (Partner Not Selected Message)
           - 협력사 선택을 유도하는 UI
           ======================================================================== */}
@@ -389,6 +332,63 @@ export default function Scope1Form() {
           initial={{opacity: 0, scale: 0.95}}
           animate={{opacity: 1, scale: 1}}
           transition={{delay: 0.6, duration: 0.5}}>
+          {/* ========================================================================
+          협력사 및 연도 선택 섹션 (Partner & Year Selection)
+          - 데이터 조회를 위한 필터 조건 설정
+          ======================================================================== */}
+          <motion.div
+            initial={{opacity: 0}}
+            animate={{opacity: 1}}
+            transition={{duration: 0.4, delay: 0.1}}>
+            <Card className="mb-6 overflow-hidden shadow-sm">
+              <CardContent className="px-4 py-6">
+                <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+                  {/* 협력사 선택 드롭다운 */}
+                  <div className="space-y-3">
+                    <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
+                      <Building className="w-4 h-4" />
+                      협력사 선택
+                    </label>
+                    <div className="relative">
+                      <PartnerSelector
+                        selectedPartnerId={selectedPartnerId}
+                        onSelect={setSelectedPartnerId}
+                      />
+                    </div>
+                  </div>
+
+                  {/* 보고연도 입력 필드 */}
+                  <div className="space-y-3">
+                    <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
+                      <CalendarDays className="w-4 h-4" />
+                      보고연도
+                    </label>
+                    <Input
+                      type="number"
+                      value={selectedYear}
+                      onChange={e => setSelectedYear(parseInt(e.target.value))}
+                      min="1900"
+                      max="2200"
+                      className="w-full px-3 py-2 text-sm h-9 border-customG-200 focus:border-customG-400 focus:ring-customG-100 bg-white/80 backdrop-blur-sm"
+                    />
+                  </div>
+
+                  {/* 보고월 선택 드롭다운 (선택사항) */}
+                  <div className="space-y-3">
+                    <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
+                      <CalendarDays className="w-4 h-4" />
+                      보고월 (선택사항)
+                    </label>
+                    <MonthSelector
+                      selectedMonth={selectedMonth}
+                      onSelect={setSelectedMonth}
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
           <Card className="flex items-center justify-center shadow-sm h-80 border-customG-200/50 bg-gradient-to-br from-white via-customG-25 to-emerald-25">
             <CardContent className="py-12 text-center">
               <motion.div
@@ -494,6 +494,63 @@ export default function Scope1Form() {
                     {filteredStationaryData.length + filteredMobileData.length}
                     <span className="ml-1 text-sm font-normal text-gray-500">건</span>
                   </h3>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* ========================================================================
+          협력사 및 연도 선택 섹션 (Partner & Year Selection)
+          - 데이터 조회를 위한 필터 조건 설정
+          ======================================================================== */}
+          <motion.div
+            initial={{opacity: 0}}
+            animate={{opacity: 1}}
+            transition={{duration: 0.4, delay: 0.1}}>
+            <Card className="mb-4 overflow-hidden shadow-sm">
+              <CardContent className="px-4 py-6">
+                <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+                  {/* 협력사 선택 드롭다운 */}
+                  <div className="space-y-3">
+                    <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
+                      <Building className="w-4 h-4" />
+                      협력사 선택
+                    </label>
+                    <div className="relative">
+                      <PartnerSelector
+                        selectedPartnerId={selectedPartnerId}
+                        onSelect={setSelectedPartnerId}
+                      />
+                    </div>
+                  </div>
+
+                  {/* 보고연도 입력 필드 */}
+                  <div className="space-y-3">
+                    <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
+                      <CalendarDays className="w-4 h-4" />
+                      보고연도
+                    </label>
+                    <Input
+                      type="number"
+                      value={selectedYear}
+                      onChange={e => setSelectedYear(parseInt(e.target.value))}
+                      min="1900"
+                      max="2200"
+                      className="w-full px-3 py-2 text-sm h-9 border-customG-200 focus:border-customG-400 focus:ring-customG-100 bg-white/80 backdrop-blur-sm"
+                    />
+                  </div>
+
+                  {/* 보고월 선택 드롭다운 (선택사항) */}
+                  <div className="space-y-3">
+                    <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
+                      <CalendarDays className="w-4 h-4" />
+                      보고월 (선택사항)
+                    </label>
+                    <MonthSelector
+                      selectedMonth={selectedMonth}
+                      onSelect={setSelectedMonth}
+                    />
+                  </div>
                 </div>
               </CardContent>
             </Card>
