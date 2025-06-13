@@ -145,53 +145,7 @@ export default function ElectricityForm({formData, setFormData}: ElectricityForm
               </div>
             </div>
           </div>
-
-          {/* 재생에너지 여부 체크박스 */}
-          <div className="flex items-center pt-8 space-x-3">
-            <Checkbox
-              id="isRenewable"
-              checked={formData.electricity?.isRenewable || false}
-              onCheckedChange={handleRenewableChange}
-              className="data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
-            />
-            <Label
-              htmlFor="isRenewable"
-              className="text-sm font-medium text-gray-700 cursor-pointer">
-              재생에너지 전력
-            </Label>
-          </div>
         </div>
-
-        {/* 재생에너지 유형 선택 (재생에너지인 경우에만 표시) */}
-        {formData.electricity?.isRenewable && (
-          <div className="space-y-2">
-            <Label htmlFor="renewableType" className="text-sm font-medium text-gray-700">
-              재생에너지 유형
-            </Label>
-            <Select
-              value={formData.electricity?.renewableType || ''}
-              onValueChange={value =>
-                setFormData({
-                  ...formData,
-                  electricity: {
-                    ...formData.electricity!,
-                    renewableType: value
-                  }
-                })
-              }>
-              <SelectTrigger className="border-gray-300 h-11 focus:border-blue-500 focus:ring-blue-500/20">
-                <SelectValue placeholder="재생에너지 유형을 선택해주세요" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="solar">태양광</SelectItem>
-                <SelectItem value="wind">풍력</SelectItem>
-                <SelectItem value="hydro">수력</SelectItem>
-                <SelectItem value="biomass">바이오매스</SelectItem>
-                <SelectItem value="other">기타</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        )}
       </CardContent>
     </Card>
   )
