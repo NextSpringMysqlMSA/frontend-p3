@@ -173,8 +173,8 @@ export default function Education({onClose, rowId, mode}: EducationProps) {
       className="flex flex-col space-y-5">
       {/* 헤더 섹션 */}
       <div className="flex items-center pb-2 mb-2 border-b">
-        <div className="p-2 mr-3 rounded-full bg-amber-50">
-          <GraduationCap className="w-5 h-5 text-amber-600" />
+        <div className="p-2 mr-3 rounded-full bg-blue-50">
+          <GraduationCap className="w-5 h-5 text-[#0D1359]-600" />
         </div>
         <div>
           <h3 className="text-base font-medium">
@@ -199,7 +199,7 @@ export default function Education({onClose, rowId, mode}: EducationProps) {
             placeholder="예: 2025년 전사 환경교육"
             value={educationTitle}
             onChange={e => setField('educationTitle', e.target.value)}
-            className="border focus-visible:ring-customG"
+            className="border focus-visible:ring-[#0D1359]"
           />
         </div>
 
@@ -213,10 +213,10 @@ export default function Education({onClose, rowId, mode}: EducationProps) {
                 <Button
                   id="educationDate"
                   variant={'outline'}
-                  className={`w-full justify-start text-left font-normal focus-visible:ring-customG ${
+                  className={`w-full justify-start text-left font-normal focus-visible:ring-[#0D1359] ${
                     !educationDate && 'text-gray-400'
                   }`}>
-                  <CalendarDays className="w-4 h-4 mr-2 text-customG" />
+                  <CalendarDays className="w-4 h-4 mr-2 text-[#0D1359]" />
                   {educationDate
                     ? format(educationDate, 'yyyy년 MM월 dd일')
                     : '날짜 선택'}
@@ -253,7 +253,7 @@ export default function Education({onClose, rowId, mode}: EducationProps) {
                   const value = e.target.value === '' ? 0 : parseInt(e.target.value, 10)
                   setField('participantCount', value)
                 }}
-                className="border focus-visible:ring-customG"
+                className="border focus-visible:ring-[#0D1359]"
               />
               <div className="flex items-center ml-2 text-gray-500">
                 <Users className="w-4 h-4 mr-1" />
@@ -273,7 +273,7 @@ export default function Education({onClose, rowId, mode}: EducationProps) {
             rows={4}
             value={content}
             onChange={e => setField('content', e.target.value)}
-            className="border resize-none focus-visible:ring-customG"
+            className="border resize-none focus-visible:ring-[#0D1359]"
           />
         </div>
       </div>
@@ -331,7 +331,7 @@ export default function Education({onClose, rowId, mode}: EducationProps) {
           <Button
             onClick={handleSubmit}
             disabled={submitting}
-            className="gap-1 text-white bg-customG hover:bg-customGDark">
+            className="gap-1 text-white bg-[#0D1359] hover:bg-[#0D1359]Dark">
             {submitting ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />

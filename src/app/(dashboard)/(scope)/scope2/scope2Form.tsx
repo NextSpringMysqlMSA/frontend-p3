@@ -400,13 +400,9 @@ export default function Scope2Form() {
               <h3 className="mb-4 text-2xl font-bold text-customG-800">
                 협력사를 선택해주세요
               </h3>
-              <motion.p
-                className="max-w-md leading-relaxed text-customG-600"
-                initial={{opacity: 0, y: 20}}
-                animate={{opacity: 1, y: 0}}
-                transition={{delay: 1.1, duration: 0.5}}>
+              <p className="max-w-md leading-relaxed text-customG-600 whitespace-nowrap">
                 먼저 협력사를 선택하여 해당 협력사의 배출량 데이터를 관리하고 추적하세요
-              </motion.p>
+              </p>
             </CardContent>
           </Card>
         </motion.div>
