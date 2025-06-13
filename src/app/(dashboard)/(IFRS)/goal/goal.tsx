@@ -374,7 +374,7 @@ export default function Goal() {
             icon={<BarChart3 className="w-6 h-6" />}
             title="목표 및 지표"
             description="IFRS S2/TCFD 기반 기후 목표 및 지표 관리"
-            module="IFRS"
+            module="TCFD"
             submodule="goal"></PageHeader>
         </Link>
       </div>

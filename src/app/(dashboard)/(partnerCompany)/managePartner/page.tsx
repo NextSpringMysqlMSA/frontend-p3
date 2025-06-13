@@ -654,7 +654,7 @@ export default function ManagePartnerPage() {
         initial={{opacity: 0, y: -10}}
         animate={{opacity: 1, y: 0}}
         transition={{duration: 0.3}}
-        className="flex flex-row items-center px-4 py-2 mb-4 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
+        className="flex flex-row items-center px-4 py-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -675,10 +675,11 @@ export default function ManagePartnerPage() {
           className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
           <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
           <PageHeader
-            icon={<Building2 className="w-8 h-8 text-customG" />}
+            icon={<Building2 className="w-6 h-6 text-customG" />}
             title="파트너사 관리"
             description="파트너사를 등록, 조회, 수정 및 삭제합니다."
-            module="Partner Company"
+            module="PARTNERCOMPANY"
+            submodule="managePartner"
           />
         </Link>
 
@@ -690,7 +691,7 @@ export default function ManagePartnerPage() {
         />
       </div>
 
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-8">
         {/* 파트너사 추가 모달 */}
         <PartnerCompanyModal
           isOpen={isAddDialogOpen}

@@ -23,16 +23,11 @@ import {
   Car, // 자동차 아이콘 (이동연소)
   Factory, // 공장 아이콘 (고정연소)
   Plus, // 플러스 아이콘 (데이터 추가)
-  Search, // 검색 아이콘
   TrendingUp, // 상승 트렌드 아이콘 (총 배출량)
   Edit, // 편집 아이콘
   Trash2, // 삭제 아이콘
   BarChart, // 차트 아이콘 (통계)
   CalendarDays, // 달력 아이콘 (날짜 선택)
-  FileText, // 파일 아이콘
-  Filter, // 필터 아이콘
-  Activity, // 활동 아이콘
-  Zap, // 번개 아이콘
   ArrowLeft, // 왼쪽 화살표 (뒤로가기)
   Home // 홈 아이콘
 } from 'lucide-react'
@@ -314,11 +309,11 @@ export default function Scope1Form() {
           className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
           <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
           <PageHeader
-            icon={<Factory className="w-6 h-6 text-blue-600" />}
+            icon={<Factory className="w-6 h-6 text-customG-600" />}
             title="Scope 1 배출량 관리"
             description="직접 배출량 (고정연소, 이동연소) 데이터를 관리하고 추적합니다"
-            module="Scope"
-            submodule="Scope1"
+            module="SCOPE"
+            submodule="scope1"
           />
         </Link>
       </div>
@@ -391,27 +386,12 @@ export default function Scope1Form() {
           transition={{delay: 0.6, duration: 0.5}}>
           <Card className="flex items-center justify-center shadow-sm h-80 border-customG-200/50 bg-gradient-to-br from-white via-customG-25 to-emerald-25">
             <CardContent className="py-12 text-center">
-              <motion.div
-                initial={{scale: 0}}
-                animate={{scale: 1}}
-                transition={{delay: 0.8, type: 'spring', stiffness: 200}}
-                className="p-6 mx-auto mb-4 border bg-gradient-to-br from-customG-100 to-customG-200 rounded-3xl w-fit border-customG-300/30">
-                <Building className="w-16 h-16 text-customG-600" />
-              </motion.div>
-              <motion.h3
-                className="mb-4 text-2xl font-bold text-customG-800"
-                initial={{opacity: 0, y: 20}}
-                animate={{opacity: 1, y: 0}}
-                transition={{delay: 1, duration: 0.5}}>
+              <h3 className="mb-4 text-2xl font-bold text-customG-800">
                 협력사를 선택해주세요
-              </motion.h3>
-              <motion.p
-                className="max-w-md leading-relaxed text-customG-600 whitespace-nowrap"
-                initial={{opacity: 0, y: 20}}
-                animate={{opacity: 1, y: 0}}
-                transition={{delay: 1.1, duration: 0.5}}>
+              </h3>
+              <p className="max-w-md leading-relaxed text-customG-600 whitespace-nowrap">
                 먼저 협력사를 선택하여 해당 협력사의 배출량 데이터를 관리하고 추적하세요
-              </motion.p>
+              </p>
             </CardContent>
           </Card>
         </motion.div>
@@ -421,7 +401,7 @@ export default function Scope1Form() {
             - 통계 카드, 데이터 테이블 포함
             ====================================================================== */
         <motion.div
-          className="space-y-8"
+          className="space-y-6"
           initial={{opacity: 0, y: 20}}
           animate={{opacity: 1, y: 0}}
           transition={{delay: 0.7, duration: 0.6}}>
@@ -509,13 +489,13 @@ export default function Scope1Form() {
               <TabsTrigger
                 value="stationary"
                 className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md font-medium">
-                <Factory className="w-4 h-4" />
+                {/* 여기 팩토리 아이콘 삭제 */}
                 고정연소 ({filteredStationaryData.length})
               </TabsTrigger>
               <TabsTrigger
                 value="mobile"
                 className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md font-medium">
-                <Car className="w-4 h-4" />
+                {/* 여기 자동차 아이콘 삭제 */}
                 이동연소 ({filteredMobileData.length})
               </TabsTrigger>
             </TabsList>
@@ -524,7 +504,7 @@ export default function Scope1Form() {
                 고정연소 데이터 탭 (Stationary Combustion Tab)
                 - 고정연소 배출량 데이터 목록 및 관리 기능
                 ================================================================ */}
-            <TabsContent value="stationary" className="mt-4">
+            <TabsContent value="stationary" className="mt-6">
               <motion.div
                 initial={{opacity: 0, y: 20}}
                 animate={{opacity: 1, y: 0}}
@@ -534,9 +514,7 @@ export default function Scope1Form() {
                   <CardHeader className="border-b border-customG-100/50 bg-gradient-to-r from-customG-50 to-emerald-50">
                     <CardTitle className="flex items-center justify-between text-customG-800">
                       <div className="flex items-center gap-3">
-                        <div className="p-2 border rounded-lg bg-gradient-to-br from-emerald-100 to-emerald-200 border-emerald-300/30">
-                          <Factory className="w-5 h-5 text-emerald-700" />
-                        </div>
+                        {/* 이부분도 아이콘 삭제 */}
                         <div>
                           <h3 className="text-lg font-bold">고정연소 배출량 데이터</h3>
                           <p className="text-sm font-normal text-customG-600">
@@ -669,10 +647,9 @@ export default function Scope1Form() {
                             <TableRow>
                               <TableCell colSpan={8} className="py-16 text-center">
                                 <div className="flex flex-col items-center justify-center space-y-4">
-                                  <div className="p-4 border bg-gradient-to-br from-customG-100 to-customG-200 rounded-2xl border-customG-300/30">
-                                    <Factory className="w-12 h-12 text-customG-500" />
-                                  </div>
+                                  {/* 여기도 팩토리 아이콘 삭제 */}
                                   <div>
+                                    {/* 팩토리 아이콘 삭제 */}
                                     <h3 className="mb-2 text-lg font-semibold text-customG-700">
                                       데이터가 없습니다
                                     </h3>
@@ -706,9 +683,7 @@ export default function Scope1Form() {
                   <CardHeader className="border-b border-customG-100/50 bg-gradient-to-r from-customG-50 to-emerald-50">
                     <CardTitle className="flex items-center justify-between text-customG-800">
                       <div className="flex items-center gap-3">
-                        <div className="p-2 border rounded-lg bg-gradient-to-br from-amber-100 to-amber-200 border-amber-300/30">
-                          <Car className="w-5 h-5 text-amber-700" />
-                        </div>
+                        {/* 자동차 아이콘 삭제 */}
                         <div>
                           <h3 className="text-lg font-bold">이동연소 배출량 데이터</h3>
                           <p className="text-sm font-normal text-customG-600">
@@ -852,9 +827,7 @@ export default function Scope1Form() {
                             <TableRow>
                               <TableCell colSpan={9} className="py-16 text-center">
                                 <div className="flex flex-col items-center justify-center space-y-4">
-                                  <div className="p-4 border bg-gradient-to-br from-customG-100 to-customG-200 rounded-2xl border-customG-300/30">
-                                    <Car className="w-12 h-12 text-customG-500" />
-                                  </div>
+                                  {/* 여기도 아이콘 삭제 */}
                                   <div>
                                     <h3 className="mb-2 text-lg font-semibold text-customG-700">
                                       데이터가 없습니다
