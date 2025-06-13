@@ -29,7 +29,7 @@ export default function CustomTable({
   className
 }: CustomTableProps) {
   return (
-    <div className={cn('w-full overflow-hidden border border-gray-200', className)}>
+    <div className={cn('w-full overflow-hidden border border-black', className)}>
       <div className="overflow-x-auto">
         <table className="w-full text-sm border-collapse table-fixed">
           <thead>

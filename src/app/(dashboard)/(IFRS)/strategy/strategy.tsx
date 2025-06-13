@@ -242,7 +242,7 @@ export default function Strategy() {
             variant="ghost"
             size="sm"
             onClick={toggleInfoCards}
-            className="text-gray-500 hover:text-blue-600">
+            className="text-gray-500 hover:text-green-600">
             {showInfoCards ? '정보 카드 숨기기' : '정보 카드 표시하기'}
           </Button>
         </div>
