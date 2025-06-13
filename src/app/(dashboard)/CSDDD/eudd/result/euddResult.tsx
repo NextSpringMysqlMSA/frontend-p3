@@ -1,7 +1,7 @@
 'use client'
 
 import {useEffect, useState, useCallback} from 'react'
-import type {EuddViolationDto} from '@/types/IFRS/csddd'
+import type {EuddViolationDto} from '@/types/IFRS/csdddType'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -33,7 +33,7 @@ import {
 import {StatCard} from '@/components/ui/stat-card'
 import {LoadingState} from '@/components/ui/loading-state'
 import {PageHeader} from '@/components/layout/PageHeader'
-import {fetchEuddResult} from '@/services/csddd'
+import {fetchEuddResult} from '@/services/csdddService'
 import {DirectionButton} from '@/components/layout/direction'
 
 /**

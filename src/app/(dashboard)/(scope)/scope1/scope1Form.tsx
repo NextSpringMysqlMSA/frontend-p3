@@ -67,7 +67,7 @@ import {
   fetchMobileCombustionByPartnerAndYear, // 이동연소 데이터 조회
   deleteStationaryCombustion, // 고정연소 데이터 삭제
   deleteMobileCombustion // 이동연소 데이터 삭제
-} from '@/services/scopeService'
+} from '@/services/scopeService' // Scope 관련 API 서비스 함수
 import {fetchPartnerCompaniesForScope} from '@/services/partnerCompany' // 실제 협력사 API 추가
 
 // 브레드크럼 네비게이션 컴포넌트 임포트
@@ -98,7 +98,8 @@ export default function Scope1Form() {
   // 필터 관련 상태
   const [selectedPartnerId, setSelectedPartnerId] = useState<string | null>(null) // 선택된 협력사 ID (UUID)
   const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear()) // 선택된 연도
-  const [selectedMonth, setSelectedMonth] = useState<number | null>(null) // 선택된 월 (null이면 전체)
+  const currentMonth = new Date().getMonth() + 1 // JavaScript의 월은 0부터 시작하므로 1을 더함
+  const [selectedMonth, setSelectedMonth] = useState<number | null>(currentMonth) // 선택된 월 (null이면 전체)
 
   // 데이터 관련 상태
   const [stationaryData, setStationaryData] = useState<StationaryCombustion[]>([]) // 고정연소 배출량 데이터
@@ -368,6 +369,7 @@ export default function Scope1Form() {
                 <MonthSelector
                   selectedMonth={selectedMonth}
                   onSelect={setSelectedMonth}
+                  placeholder={`${currentMonth}월`}
                 />
               </div>
             </div>
@@ -865,12 +867,7 @@ export default function Scope1Form() {
         defaultMonth={selectedMonth || new Date().getMonth() + 1}
         scope="SCOPE1"
       />
-      {/* 디버깅: 실제 협력사 데이터 확인 ----------------------------------------------------------------------------------------- 오른쪽 상단 협력사 수 생김*/}
-      {/* {process.env.NODE_ENV === 'development' && (
-        <div className="fixed z-50 p-2 text-xs text-white bg-black rounded top-2 right-2">
-          협력사 수: {realPartnerCompanies.length}
-        </div>
-      )} */}
+
       <DirectionButton
         direction="right"
         tooltip="scope2으로 이동"

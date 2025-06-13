@@ -1,5 +1,5 @@
 import {create} from 'zustand'
-import type {educationState as EducationFields} from '@/types/IFRS/governance'
+import type {educationState as EducationFields} from '@/types/IFRS/governanceType'
 import {fetchEducationById} from '@/services/governance' // API 함수 import 추가
 
 export type EducationItem = EducationFields

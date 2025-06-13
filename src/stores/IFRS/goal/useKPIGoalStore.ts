@@ -1,5 +1,5 @@
 import {create} from 'zustand'
-import {KPIGoalFields, KPIGoalState} from '@/types/IFRS/goal'
+import {KPIGoalFields, KPIGoalState} from '@/types/IFRS/goalType'
 import {fetchKpiGoalById} from '@/services/goal'
 
 // 기본 필드 정의 - CommitteeStore 패턴과 일치

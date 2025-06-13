@@ -31,7 +31,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
-import {CreateRiskDto, UpdateRiskDto} from '@/types/IFRS/strategy'
+import {CreateRiskDto, UpdateRiskDto} from '@/types/IFRS/strategyType'
 
 type RiskProps = {
   onClose: () => void

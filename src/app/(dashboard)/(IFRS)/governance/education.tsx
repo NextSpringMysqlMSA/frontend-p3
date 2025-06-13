@@ -40,7 +40,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
-import {CreateEducationDto, UpdateEducationDto} from '@/types/IFRS/governance'
+import {CreateEducationDto, UpdateEducationDto} from '@/types/IFRS/governanceType'
 
 type EducationProps = {
   onClose: () => void

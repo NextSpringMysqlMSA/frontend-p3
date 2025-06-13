@@ -1,5 +1,5 @@
 import {create} from 'zustand'
-import {kpiState as KPIFields} from '@/types/IFRS/governance'
+import {kpiState as KPIFields} from '@/types/IFRS/governanceType'
 import {fetchKpiById} from '@/services/governance' // API 함수 import 추가
 
 export type KPIItem = KPIFields

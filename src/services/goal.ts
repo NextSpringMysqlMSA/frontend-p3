@@ -5,7 +5,7 @@ import {
   NetZeroCreateDTO, // 추가
   NetZeroResponse,
   NetZeroUpdateDTO
-} from '@/types/IFRS/goal'
+} from '@/types/IFRS/goalType'
 
 // NetZero 관련 함수
 /**
