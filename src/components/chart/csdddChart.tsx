@@ -80,7 +80,7 @@
 // }
 'use client'
 import {useEffect, useState} from 'react'
-import {fetchEuddResult, fetchHrddResult, fetchEddResult} from '@/services/csddd'
+import {fetchEuddResult, fetchHrddResult, fetchEddResult} from '@/services/csdddService'
 import {CheckCircle, XCircle} from 'lucide-react'
 
 interface Status {

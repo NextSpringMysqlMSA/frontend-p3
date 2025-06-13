@@ -42,26 +42,54 @@ export type StationaryCombustionType =
   | 'GAS' // 가스연료
 
 // 이동연소 세부 타입
-export type MobileCombustionType =
-  | 'ROAD' // 도로교통
-  | 'AVIATION' // 항공
+export type MobileCombustionType = 'ROAD' // 도로교통
 
 // 스팀 타입
 export type SteamType = 'TYPE_A' | 'TYPE_B' | 'TYPE_C'
+
+// 🔥 새로 추가: 용도 구분 타입
+export type PurposeCategory =
+  | 'ENERGY' // 에너지산업
+  | 'MANUFACTURING' // 제조업/건설업
+  | 'COMMERCIAL' // 상업/공공
+  | 'DOMESTIC' // 가정/기타
+
+// 용도별 배출계수 타입
+export interface EmissionFactorByPurpose {
+  energy: number
+  manufacturing: number
+  commercial: number
+  domestic: number
+}
+
+// 이동연소 배출계수 타입
+export interface MobileEmissionFactors {
+  co2: number
+  ch4: number
+  n2o: number
+}
 
 // === 연료 타입 정의 ===
 export interface FuelType {
   id: string
   name: string
   category: string
-  subcategory?: string
   unit: string
-  description?: string
-  co2Factor?: number
-  ch4Factor?: number
-  n2oFactor?: number
   emissionActivityType: EmissionActivityType
   subcategoryType?: string
+  description?: string
+
+  // 발열량 (scope.md 기준)
+  gcv?: number // 총발열량 (Gross Calorific Value)
+  ncv: number // 순발열량 (Net Calorific Value) - 필수
+
+  // 고정연소 배출계수 (scope.md 정수형 기준)
+  co2Factor: number // CO2 배출계수 (정수형)
+  ch4Factor: EmissionFactorByPurpose // CH4 배출계수 (용도별)
+  n2oFactor: EmissionFactorByPurpose // N2O 배출계수 (용도별)
+
+  // 이동연소 배출계수 (scope.md에서 이동연소 컬럼에 데이터가 있는 연료만)
+  mobileEmissionFactors?: MobileEmissionFactors
 }
 
 // === 연료 카테고리 상수 ===
@@ -332,6 +360,7 @@ export interface StationaryCombustionFormUI {
   facilityName: string
   facilityLocation?: string
   combustionType: StationaryCombustionType
+  purposeCategory: PurposeCategory // 🔥 용도 구분 추가
   fuelId: string
   fuelName?: string
   fuelUsage: string | number // UI에서는 문자열, API에서는 숫자
@@ -346,6 +375,7 @@ export interface MobileCombustionFormUI {
   reportingMonth: number
   vehicleType: string
   transportType: MobileCombustionType
+  purposeCategory: PurposeCategory // 🔥 용도 구분 추가
   fuelId: string
   fuelName?: string
   fuelUsage: string | number // UI에서는 문자열, API에서는 숫자
@@ -421,6 +451,7 @@ export interface EmissionFactor {
   unit: string
   category: string
   description?: string
+  purposeCategory?: PurposeCategory
 }
 
 // === 계산 결과 타입 ===

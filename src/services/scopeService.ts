@@ -12,12 +12,17 @@ import type {
   SteamUsageForm,
   ScopeFormData,
   ScopeApiResponse,
-  ScopeListResponse,
   ScopeSummary,
   EmissionCalculationResult,
-  EmissionActivityType
-} from '@/types/scope'
-import {getFuelById, getAllFuels, getFuelsByActivityType} from '@/constants/fuel-data'
+  EmissionActivityType,
+  PurposeCategory
+} from '@/types/scopeType'
+import {
+  getFuelById,
+  getAllFuels,
+  getFuelsByActivityType,
+  getEmissionFactorByPurpose
+} from '@/constants/fuel-data'
 import {convertScopeFormDataForAPI} from '@/utils/scope-data-converter'
 
 // =============================================================================
@@ -73,80 +78,163 @@ export const fetchFuelById = async (fuelId: string): Promise<FuelType | null> =>
 // =============================================================================
 
 /**
- * 연료 사용량을 기반으로 CO₂ 배출량을 계산합니다
+ * 연료 사용량을 기반으로 CO₂ 배출량을 계산합니다 (scope.md 기준 완전 준수)
  * 사용처: ScopeModal에서 '배출량 계산 미리 보기' 버튼 클릭 시
  * 백엔드 필요: 아니요 (프론트엔드에서 계산 처리)
+ *
+ * 계산 공식 (scope.md 완전 준수):
+ * - 고정연소: 사용량 × NCV × 배출계수 × GWP × 10^-6
+ * - 이동연소: 사용량 × NCV × 이동연소배출계수 × GWP × 10^-6 (mobileEmissionFactors 사용)
+ * - 전력: 사용량(kWh) × 0.4653 × 10^-3
+ * - 스팀: 사용량(GJ) × 스팀계수 (A:56.452, B:60.974, C:59.685)
+ * - GWP: CH4=21, N2O=310
  */
 export const calculateEmissions = async (
   fuelId: string,
-  usage: number
+  usage: number,
+  purposeCategory?: PurposeCategory
 ): Promise<EmissionCalculationResult> => {
   const fuel = getFuelById(fuelId)
   if (!fuel) {
     throw new Error(`연료 정보를 찾을 수 없습니다: ${fuelId}`)
   }
 
+  // 고정연소와 이동연소의 경우 용도 구분 필수
+  if (
+    (fuel.emissionActivityType === 'STATIONARY_COMBUSTION' ||
+      fuel.emissionActivityType === 'MOBILE_COMBUSTION') &&
+    !purposeCategory
+  ) {
+    throw new Error('고정연소 및 이동연소의 경우 용도 구분이 필요합니다.')
+  }
+
+  // GWP 상수 (scope.md 기준: CH4=21, N2O=310)
+  const GWP_CH4 = 21
+  const GWP_N2O = 310
+
   let result: EmissionCalculationResult
 
   if (fuel.emissionActivityType === 'ELECTRICITY') {
-    // 전력: CO2 = 전력사용량(kWh) × 0.0004653
-    const co2Emission = usage * fuel.co2Factor!
+    // 전력 (scope.md): CO2 = 전력사용량(kWh) × 0.4653 × 10^-3
+    const co2Emission = usage * 0.4653 * Math.pow(10, -3)
     result = {
       co2Emission,
       totalCo2Equivalent: co2Emission,
-      calculationFormula: `CO2 = ${usage} kWh × ${fuel.co2Factor} = ${co2Emission.toFixed(
-        3
+      calculationFormula: `전력 배출량 = ${usage} kWh × 0.4653 × 10^-3 = ${co2Emission.toFixed(
+        6
       )} tCO2`,
       appliedFactors: {
         fuelId: fuel.id,
         fuelName: fuel.name,
-        co2Factor: fuel.co2Factor!,
+        co2Factor: 0.4653,
         unit: fuel.unit,
         category: fuel.category
       }
     }
   } else if (fuel.emissionActivityType === 'STEAM') {
-    // 스팀: CO2 = 스팀사용량(GJ) × 배출계수
-    const co2Emission = usage * fuel.co2Factor!
+    // 스팀 (scope.md): CO2 = 스팀사용량(GJ) × 스팀계수
+    // A타입: 56.452, B타입: 60.974, C타입: 59.685 (scope.md 기준)
+    let steamFactor = 56.452 // 기본값 A타입
+    if (fuel.co2Factor) {
+      steamFactor = fuel.co2Factor
+    } else {
+      // fuel.id나 name으로 스팀 타입 판별
+      if (fuel.id.includes('TYPE_B') || fuel.name.includes('B타입')) {
+        steamFactor = 60.974
+      } else if (fuel.id.includes('TYPE_C') || fuel.name.includes('C타입')) {
+        steamFactor = 59.685
+      }
+    }
+
+    const co2Emission = usage * steamFactor * Math.pow(10, -3) // GJ → tCO2 변환
     result = {
       co2Emission,
       totalCo2Equivalent: co2Emission,
-      calculationFormula: `CO2 = ${usage} GJ × ${fuel.co2Factor} = ${co2Emission.toFixed(
-        3
+      calculationFormula: `스팀 배출량 = ${usage} GJ × ${steamFactor} × 10^-3 = ${co2Emission.toFixed(
+        6
       )} tCO2`,
       appliedFactors: {
         fuelId: fuel.id,
         fuelName: fuel.name,
-        co2Factor: fuel.co2Factor!,
+        co2Factor: steamFactor,
         unit: fuel.unit,
         category: fuel.category
       }
     }
-  } else {
-    // 연료연소: 총 CO2eq = CO2 + (CH4×25) + (N2O×298)
-    const co2Emission = usage * fuel.co2Factor!
-    const ch4Emission = usage * (fuel.ch4Factor || 0)
-    const n2oEmission = usage * (fuel.n2oFactor || 0)
-    const totalCo2Equivalent = co2Emission + ch4Emission * 25 + n2oEmission * 298
+  } else if (fuel.emissionActivityType === 'MOBILE_COMBUSTION') {
+    // 이동연소 (scope.md): 이동연소 전용 배출계수 사용 (mobileEmissionFactors)
+    // Emission = 사용량 × NCV × 이동연소_배출계수 × GWP × 10^-6
+
+    const ncv = fuel.ncv || 1.0 // 순발열량 (Net Calorific Value)
+
+    // mobileEmissionFactors 사용 (fuel-data2.ts 구조)
+    if (!fuel.mobileEmissionFactors) {
+      throw new Error(`이동연소 연료 ${fuel.name}에 mobileEmissionFactors가 없습니다.`)
+    }
+
+    const co2Factor = fuel.mobileEmissionFactors.co2
+    const ch4Factor = fuel.mobileEmissionFactors.ch4
+    const n2oFactor = fuel.mobileEmissionFactors.n2o
+
+    // 배출량 계산 (tCO2eq) - scope.md 공식 적용
+    const co2Emission = usage * ncv * co2Factor * Math.pow(10, -6)
+    const ch4Emission = usage * ncv * ch4Factor * GWP_CH4 * Math.pow(10, -6)
+    const n2oEmission = usage * ncv * n2oFactor * GWP_N2O * Math.pow(10, -6)
+    const totalCo2Equivalent = co2Emission + ch4Emission + n2oEmission
 
     result = {
       co2Emission,
       ch4Emission,
       n2oEmission,
       totalCo2Equivalent,
-      calculationFormula: `총 CO2eq = ${co2Emission.toFixed(3)} + (${ch4Emission.toFixed(
+      calculationFormula: `이동연소: CO2=${usage}×${ncv}×${co2Factor}×10^-6, CH4=${usage}×${ncv}×${ch4Factor}×${GWP_CH4}×10^-6, N2O=${usage}×${ncv}×${n2oFactor}×${GWP_N2O}×10^-6 = ${totalCo2Equivalent.toFixed(
         6
-      )} × 25) + (${n2oEmission.toFixed(6)} × 298) = ${totalCo2Equivalent.toFixed(
-        3
       )} tCO2eq`,
       appliedFactors: {
         fuelId: fuel.id,
         fuelName: fuel.name,
-        co2Factor: fuel.co2Factor!,
-        ch4Factor: fuel.ch4Factor,
-        n2oFactor: fuel.n2oFactor,
+        co2Factor: co2Factor,
+        ch4Factor: ch4Factor,
+        n2oFactor: n2oFactor,
         unit: fuel.unit,
-        category: fuel.category
+        category: fuel.category,
+        purposeCategory
+      }
+    }
+  } else {
+    // 고정연소 (scope.md): 사용량 × NCV × 배출계수 × GWP × 10^-6
+    // 용도별 배출계수 적용 (에너지/제조건설/상업공공/가정기타)
+
+    const ncv = fuel.ncv || 1.0 // 순발열량 (Net Calorific Value)
+    const co2Factor = fuel.co2Factor || 0
+    const ch4Factor = getEmissionFactorByPurpose(fuel.ch4Factor, purposeCategory)
+    const n2oFactor = getEmissionFactorByPurpose(fuel.n2oFactor, purposeCategory)
+
+    // 배출량 계산 (tCO2eq) - scope.md 공식 적용
+    const co2Emission = usage * ncv * co2Factor * Math.pow(10, -6)
+    const ch4Emission = usage * ncv * ch4Factor * GWP_CH4 * Math.pow(10, -6)
+    const n2oEmission = usage * ncv * n2oFactor * GWP_N2O * Math.pow(10, -6)
+    const totalCo2Equivalent = co2Emission + ch4Emission + n2oEmission
+
+    const purposeText = purposeCategory ? ` (${purposeCategory} 용도)` : ''
+
+    result = {
+      co2Emission,
+      ch4Emission,
+      n2oEmission,
+      totalCo2Equivalent,
+      calculationFormula: `고정연소${purposeText}: CO2=${usage}×${ncv}×${co2Factor}×10^-6, CH4=${usage}×${ncv}×${ch4Factor}×${GWP_CH4}×10^-6, N2O=${usage}×${ncv}×${n2oFactor}×${GWP_N2O}×10^-6 = ${totalCo2Equivalent.toFixed(
+        6
+      )} tCO2eq`,
+      appliedFactors: {
+        fuelId: fuel.id,
+        fuelName: fuel.name,
+        co2Factor: co2Factor,
+        ch4Factor: ch4Factor,
+        n2oFactor: n2oFactor,
+        unit: fuel.unit,
+        category: fuel.category,
+        purposeCategory
       }
     }
   }

@@ -32,7 +32,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
-import {CreateMeetingDto, UpdateMeetingDto} from '@/types/IFRS/governance'
+import {CreateMeetingDto, UpdateMeetingDto} from '@/types/IFRS/governanceType'
 
 type MeetingProps = {
   onClose: () => void
@@ -160,8 +160,8 @@ export default function Meeting({onClose, rowId, mode}: MeetingProps) {
       className="flex flex-col space-y-5">
       {/* 헤더 섹션 */}
       <div className="flex items-center pb-2 mb-2 border-b">
-        <div className="p-2 mr-3 rounded-full bg-customGLight">
-          <CalendarDays className="w-5 h-5 text-customG" />
+        <div className="p-2 mr-3 rounded-full bg-blue-50">
+          <CalendarDays className="w-5 h-5 text-[#0D1359]-600" />
         </div>
         <div>
           <h3 className="text-base font-medium">
@@ -187,10 +187,10 @@ export default function Meeting({onClose, rowId, mode}: MeetingProps) {
                 <Button
                   id="meetingDate"
                   variant={'outline'}
-                  className={`w-full justify-start text-left font-norma focus-visible:ring-customG v ${
+                  className={`w-full justify-start text-left font-norma focus-visible:ring-[#0D1359] v ${
                     !meetingDate && 'text-gray-400'
                   }`}>
-                  <CalendarDays className="w-4 h-4 mr-2 text-customG" />
+                  <CalendarDays className="w-4 h-4 mr-2 text-[#0D1359]" />
                   {meetingDate ? format(meetingDate, 'yyyy년 MM월 dd일') : '날짜 선택'}
                 </Button>
               </PopoverTrigger>
@@ -215,7 +215,7 @@ export default function Meeting({onClose, rowId, mode}: MeetingProps) {
                 placeholder="예: 2025년 1분기 ESG 위원회"
                 value={meetingName}
                 onChange={e => setField('meetingName', e.target.value)}
-                className="border focus-visible:ring-customG"
+                className="border focus-visible:ring-[#0D1359]"
               />
             </div>
           </div>
@@ -231,7 +231,7 @@ export default function Meeting({onClose, rowId, mode}: MeetingProps) {
             rows={5}
             value={agenda}
             onChange={e => setField('agenda', e.target.value)}
-            className="border resize-none focus-visible:ring-customG"
+            className="border resize-none focus-visible:ring-[#0D1359]"
           />
         </div>
       </div>
@@ -289,7 +289,7 @@ export default function Meeting({onClose, rowId, mode}: MeetingProps) {
           <Button
             onClick={handleSubmit}
             disabled={submitting}
-            className="gap-1 text-white bg-customG hover:bg-customGDark">
+            className="gap-1 text-white bg-[#0D1359] hover:bg-[#0D1359]Dark">
             {submitting ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />

@@ -303,13 +303,13 @@ export default function GRI() {
       </div>
 
       {/* 제목 및 설명 - PageHeader 컴포넌트 사용 */}
-      <div className="flex flex-row w-full h-full mb-6">
+      <div className="flex flex-row justify-between w-full h-full mb-6">
         <Link
           href="/home"
           className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
           <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
           <PageHeader
-            icon={<BookOpen className="w-6 h-6" />}
+            icon={<BookOpen className="w-6 h-6 text-customG" />}
             title="GRI 표준"
             description="Global Reporting Initiative(GRI) 표준에 따른 ESG 공시 요구사항"
             module="GRI"

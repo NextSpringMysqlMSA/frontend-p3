@@ -32,8 +32,8 @@ import {
 import {StatCard} from '@/components/ui/stat-card'
 import {LoadingState} from '@/components/ui/loading-state'
 import {PageHeader} from '@/components/layout/PageHeader'
-import {fetchHrddResult} from '@/services/csddd'
-import type {HrddViolationDto} from '@/types/IFRS/csddd'
+import {fetchHrddResult} from '@/services/csdddService'
+import type {HrddViolationDto} from '@/types/IFRS/csdddType'
 import {DirectionButton} from '@/components/layout/direction'
 
 /**
@@ -131,7 +131,7 @@ export default function Hrdddesult() {
         initial={{opacity: 0, y: -10}}
         animate={{opacity: 1, y: 0}}
         transition={{duration: 0.3}}
-        className="flex flex-row items-center px-4 py-2 mb-4 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
+        className="flex flex-row items-center px-4 py-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -160,8 +160,8 @@ export default function Hrdddesult() {
             icon={<FileCheck className="w-6 h-6" />}
             title="인권 실사 자가진단 결과"
             description="인권 실사 지침 요구사항 이행 자가진단 결과 확인"
-            gradient="from-green-100 to-green-50"
-            iconColor="text-customG"
+            module="CSDDD"
+            submodule="hrddResult"
           />
         </Link>
       </div>

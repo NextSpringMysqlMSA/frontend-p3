@@ -13,7 +13,7 @@ import type {
   MobileCombustionForm,
   ElectricityUsageForm,
   SteamUsageForm
-} from '@/types/scope'
+} from '@/types/scopeType'
 
 /**
  * UI 고정연소 폼 데이터를 API 요청 형식으로 변환

@@ -39,7 +39,7 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
 import {Badge} from '@/components/ui/badge'
-import {CreateScenarioDto, UpdateScenarioDto} from '@/types/IFRS/strategy'
+import {CreateScenarioDto, UpdateScenarioDto} from '@/types/IFRS/strategyType'
 
 type ScenarioProps = {
   onClose: () => void

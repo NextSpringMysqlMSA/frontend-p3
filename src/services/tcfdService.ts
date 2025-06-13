@@ -12,7 +12,7 @@ import {
   UpdateEducationDto,
   UpdateKpiDto,
   UpdateMeetingDto
-} from '@/types/IFRS/governance'
+} from '@/types/IFRS/governanceType'
 
 // 위원회 상세 조회 (ID로 데이터 가져오기)
 export const fetchCommitteeById = async (id: number): Promise<CommitteeItem> => {

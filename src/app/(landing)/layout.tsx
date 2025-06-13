@@ -15,7 +15,7 @@ export default function Layout({
 }>) {
   return (
     <div className="flex flex-col w-full min-h-screen">
-      <div className="fixed w-full h-screen bg-gradient-to-b from-customGStart to-white -z-50" />
+      <div className="fixed w-full h-screen bg-gradient-to-b from-green-400 to-white -z-50" />
       <LandingNavBar />
       <div className="flex flex-col flex-1 w-full mt-16">{children}</div>
     </div>

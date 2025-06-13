@@ -23,16 +23,11 @@ import {
   Car, // 자동차 아이콘 (이동연소)
   Factory, // 공장 아이콘 (고정연소)
   Plus, // 플러스 아이콘 (데이터 추가)
-  Search, // 검색 아이콘
   TrendingUp, // 상승 트렌드 아이콘 (총 배출량)
   Edit, // 편집 아이콘
   Trash2, // 삭제 아이콘
   BarChart, // 차트 아이콘 (통계)
   CalendarDays, // 달력 아이콘 (날짜 선택)
-  FileText, // 파일 아이콘
-  Filter, // 필터 아이콘
-  Activity, // 활동 아이콘
-  Zap, // 번개 아이콘
   ArrowLeft, // 왼쪽 화살표 (뒤로가기)
   Home // 홈 아이콘
 } from 'lucide-react'
@@ -64,7 +59,7 @@ import type {
   StationaryCombustion, // 고정연소 배출량 타입
   MobileCombustion, // 이동연소 배출량 타입
   ScopeFormData // Scope 폼 데이터 타입
-} from '@/types/scope'
+} from '@/types/scopeType'
 
 // API 서비스 함수 임포트
 import {
@@ -72,7 +67,7 @@ import {
   fetchMobileCombustionByPartnerAndYear, // 이동연소 데이터 조회
   deleteStationaryCombustion, // 고정연소 데이터 삭제
   deleteMobileCombustion // 이동연소 데이터 삭제
-} from '@/services/scope'
+} from '@/services/scopeService' // Scope 관련 API 서비스 함수
 import {fetchPartnerCompaniesForScope} from '@/services/partnerCompany' // 실제 협력사 API 추가
 
 // 브레드크럼 네비게이션 컴포넌트 임포트
@@ -103,7 +98,8 @@ export default function Scope1Form() {
   // 필터 관련 상태
   const [selectedPartnerId, setSelectedPartnerId] = useState<string | null>(null) // 선택된 협력사 ID (UUID)
   const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear()) // 선택된 연도
-  const [selectedMonth, setSelectedMonth] = useState<number | null>(null) // 선택된 월 (null이면 전체)
+  const currentMonth = new Date().getMonth() + 1 // JavaScript의 월은 0부터 시작하므로 1을 더함
+  const [selectedMonth, setSelectedMonth] = useState<number | null>(currentMonth) // 선택된 월 (null이면 전체)
 
   // 데이터 관련 상태
   const [stationaryData, setStationaryData] = useState<StationaryCombustion[]>([]) // 고정연소 배출량 데이터
@@ -314,19 +310,16 @@ export default function Scope1Form() {
           className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
           <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
           <PageHeader
-            icon={<Factory className="w-6 h-6 text-blue-600" />}
+            icon={<Factory className="w-6 h-6 text-customG-600" />}
             title="Scope 1 배출량 관리"
             description="직접 배출량 (고정연소, 이동연소) 데이터를 관리하고 추적합니다"
-            module="Scope"
-            submodule="Scope1"
+            module="SCOPE"
+            submodule="scope1"
           />
         </Link>
       </div>
 
-      {/* ========================================================================
-          협력사 미선택 시 안내 메시지 (Partner Not Selected Message)
-          - 협력사 선택을 유도하는 UI
-          ======================================================================== */}
+      
       {!selectedPartnerId ? (
         <motion.div
           initial={{opacity: 0, scale: 0.95}}
@@ -391,27 +384,12 @@ export default function Scope1Form() {
 
           <Card className="flex items-center justify-center shadow-sm h-80 border-customG-200/50 bg-gradient-to-br from-white via-customG-25 to-emerald-25">
             <CardContent className="py-12 text-center">
-              <motion.div
-                initial={{scale: 0}}
-                animate={{scale: 1}}
-                transition={{delay: 0.8, type: 'spring', stiffness: 200}}
-                className="p-6 mx-auto mb-4 border bg-gradient-to-br from-customG-100 to-customG-200 rounded-3xl w-fit border-customG-300/30">
-                <Building className="w-16 h-16 text-customG-600" />
-              </motion.div>
-              <motion.h3
-                className="mb-4 text-2xl font-bold text-customG-800"
-                initial={{opacity: 0, y: 20}}
-                animate={{opacity: 1, y: 0}}
-                transition={{delay: 1, duration: 0.5}}>
+              <h3 className="mb-4 text-2xl font-bold text-customG-800">
                 협력사를 선택해주세요
-              </motion.h3>
-              <motion.p
-                className="max-w-md leading-relaxed text-customG-600 whitespace-nowrap"
-                initial={{opacity: 0, y: 20}}
-                animate={{opacity: 1, y: 0}}
-                transition={{delay: 1.1, duration: 0.5}}>
+              </h3>
+              <p className="max-w-md leading-relaxed text-customG-600 whitespace-nowrap">
                 먼저 협력사를 선택하여 해당 협력사의 배출량 데이터를 관리하고 추적하세요
-              </motion.p>
+              </p>
             </CardContent>
           </Card>
         </motion.div>
@@ -421,7 +399,7 @@ export default function Scope1Form() {
             - 통계 카드, 데이터 테이블 포함
             ====================================================================== */
         <motion.div
-          className="space-y-8"
+          className="space-y-6"
           initial={{opacity: 0, y: 20}}
           animate={{opacity: 1, y: 0}}
           transition={{delay: 0.7, duration: 0.6}}>
@@ -566,13 +544,13 @@ export default function Scope1Form() {
               <TabsTrigger
                 value="stationary"
                 className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md font-medium">
-                <Factory className="w-4 h-4" />
+                {/* 여기 팩토리 아이콘 삭제 */}
                 고정연소 ({filteredStationaryData.length})
               </TabsTrigger>
               <TabsTrigger
                 value="mobile"
                 className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md font-medium">
-                <Car className="w-4 h-4" />
+                {/* 여기 자동차 아이콘 삭제 */}
                 이동연소 ({filteredMobileData.length})
               </TabsTrigger>
             </TabsList>
@@ -581,7 +559,7 @@ export default function Scope1Form() {
                 고정연소 데이터 탭 (Stationary Combustion Tab)
                 - 고정연소 배출량 데이터 목록 및 관리 기능
                 ================================================================ */}
-            <TabsContent value="stationary" className="mt-4">
+            <TabsContent value="stationary" className="mt-6">
               <motion.div
                 initial={{opacity: 0, y: 20}}
                 animate={{opacity: 1, y: 0}}
@@ -591,9 +569,7 @@ export default function Scope1Form() {
                   <CardHeader className="border-b border-customG-100/50 bg-gradient-to-r from-customG-50 to-emerald-50">
                     <CardTitle className="flex items-center justify-between text-customG-800">
                       <div className="flex items-center gap-3">
-                        <div className="p-2 border rounded-lg bg-gradient-to-br from-emerald-100 to-emerald-200 border-emerald-300/30">
-                          <Factory className="w-5 h-5 text-emerald-700" />
-                        </div>
+                        {/* 이부분도 아이콘 삭제 */}
                         <div>
                           <h3 className="text-lg font-bold">고정연소 배출량 데이터</h3>
                           <p className="text-sm font-normal text-customG-600">
@@ -726,10 +702,9 @@ export default function Scope1Form() {
                             <TableRow>
                               <TableCell colSpan={8} className="py-16 text-center">
                                 <div className="flex flex-col items-center justify-center space-y-4">
-                                  <div className="p-4 border bg-gradient-to-br from-customG-100 to-customG-200 rounded-2xl border-customG-300/30">
-                                    <Factory className="w-12 h-12 text-customG-500" />
-                                  </div>
+                                  {/* 여기도 팩토리 아이콘 삭제 */}
                                   <div>
+                                    {/* 팩토리 아이콘 삭제 */}
                                     <h3 className="mb-2 text-lg font-semibold text-customG-700">
                                       데이터가 없습니다
                                     </h3>
@@ -763,9 +738,7 @@ export default function Scope1Form() {
                   <CardHeader className="border-b border-customG-100/50 bg-gradient-to-r from-customG-50 to-emerald-50">
                     <CardTitle className="flex items-center justify-between text-customG-800">
                       <div className="flex items-center gap-3">
-                        <div className="p-2 border rounded-lg bg-gradient-to-br from-amber-100 to-amber-200 border-amber-300/30">
-                          <Car className="w-5 h-5 text-amber-700" />
-                        </div>
+                        {/* 자동차 아이콘 삭제 */}
                         <div>
                           <h3 className="text-lg font-bold">이동연소 배출량 데이터</h3>
                           <p className="text-sm font-normal text-customG-600">
@@ -909,9 +882,7 @@ export default function Scope1Form() {
                             <TableRow>
                               <TableCell colSpan={9} className="py-16 text-center">
                                 <div className="flex flex-col items-center justify-center space-y-4">
-                                  <div className="p-4 border bg-gradient-to-br from-customG-100 to-customG-200 rounded-2xl border-customG-300/30">
-                                    <Car className="w-12 h-12 text-customG-500" />
-                                  </div>
+                                  {/* 여기도 아이콘 삭제 */}
                                   <div>
                                     <h3 className="mb-2 text-lg font-semibold text-customG-700">
                                       데이터가 없습니다
@@ -949,12 +920,7 @@ export default function Scope1Form() {
         defaultMonth={selectedMonth || new Date().getMonth() + 1}
         scope="SCOPE1"
       />
-      {/* 디버깅: 실제 협력사 데이터 확인 ----------------------------------------------------------------------------------------- 오른쪽 상단 협력사 수 생김*/}
-      {/* {process.env.NODE_ENV === 'development' && (
-        <div className="fixed z-50 p-2 text-xs text-white bg-black rounded top-2 right-2">
-          협력사 수: {realPartnerCompanies.length}
-        </div>
-      )} */}
+
       <DirectionButton
         direction="right"
         tooltip="scope2으로 이동"

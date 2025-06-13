@@ -6,7 +6,7 @@ import {
   EuddViolationDto,
   HrddAnswerRequest,
   HrddViolationDto
-} from '@/types/IFRS/csddd'
+} from '@/types/IFRS/csdddType'
 
 /********************************************************
  * EUDD (EU 공급망 실사 지침)

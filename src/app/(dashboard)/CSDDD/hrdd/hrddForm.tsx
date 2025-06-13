@@ -14,9 +14,9 @@ import {
 } from '@/components/ui/breadcrumb'
 import {showError, showSuccess} from '@/util/toast'
 import {BadgeCheck, ChevronRight, FileQuestion, Home, ArrowLeft} from 'lucide-react'
-import {fetchHrddResult, updateHrddAnswers} from '@/services/csddd'
+import {fetchHrddResult, updateHrddAnswers} from '@/services/csdddService'
 import {useRouter} from 'next/navigation'
-import type {HrddViolationDto} from '@/types/IFRS/csddd'
+import type {HrddViolationDto} from '@/types/IFRS/csdddType'
 import type {AxiosError} from 'axios'
 import {AnimatePresence, motion} from 'framer-motion'
 import {PageHeader} from '@/components/layout/PageHeader'
@@ -581,7 +581,7 @@ export default function HrdddForm() {
         initial={{opacity: 0, y: -10}}
         animate={{opacity: 1, y: 0}}
         transition={{duration: 0.3}}
-        className="flex flex-row items-center px-4 py-2 mb-4 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
+        className="flex flex-row items-center px-4 py-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>

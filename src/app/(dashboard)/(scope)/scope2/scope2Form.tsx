@@ -23,14 +23,11 @@ import {
   Zap, // 전력 아이콘
   Wind, // 스팀 아이콘
   Plus, // 플러스 아이콘 (데이터 추가)
-  Search, // 검색 아이콘
   TrendingUp, // 상승 트렌드 아이콘 (총 배출량)
   Edit, // 편집 아이콘
   Trash2, // 삭제 아이콘
   BarChart, // 차트 아이콘 (통계)
   CalendarDays, // 달력 아이콘 (날짜 선택)
-  Filter, // 필터 아이콘
-  Activity, // 활동 아이콘
   ArrowLeft, // 왼쪽 화살표 (뒤로가기)
   Home, // 홈 아이콘
   Factory
@@ -66,16 +63,17 @@ import {
 import ScopeModal from '@/components/scope/ScopeModal'
 
 // 타입 정의 및 API 서비스 임포트
-import {ElectricityUsage, SteamUsage} from '@/types/scope'
+import {ElectricityUsage, SteamUsage} from '@/types/scopeType'
 import {
   submitScopeData,
   fetchElectricityUsageByPartnerAndYear,
   fetchSteamUsageByPartnerAndYear
-} from '@/services/scope'
+} from '@/services/scopeService'
 import {fetchPartnerCompaniesForScope} from '@/services/partnerCompany' // 실제 협력사 API 추가
 import {PartnerSelector} from '@/components/scope/PartnerSelector'
 import {DirectionButton} from '@/components/layout/direction'
 import {PageHeader} from '@/components/layout/PageHeader'
+import {MonthSelector} from '@/components/scope/MonthSelector'
 
 /**
  * Scope2Form 컴포넌트
@@ -91,7 +89,8 @@ export default function Scope2Form() {
   // 필터 관련 상태
   const [selectedPartnerId, setSelectedPartnerId] = useState<string | null>(null) // 선택된 협력사 ID (UUID)
   const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear()) // 선택된 연도
-  const [selectedMonth, setSelectedMonth] = useState<number | null>(null) // 선택된 월 (null이면 전체)
+  const currentMonth = new Date().getMonth() + 1 // JavaScript의 월은 0부터 시작하므로 1을 더함
+  const [selectedMonth, setSelectedMonth] = useState<number | null>(currentMonth) // 선택된 월 (null이면 전체)
 
   // 데이터 관련 상태
   const [electricityData, setElectricityData] = useState<ElectricityUsage[]>([]) // 전력 사용량 데이터
@@ -321,11 +320,11 @@ export default function Scope2Form() {
           className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
           <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
           <PageHeader
-            icon={<Factory className="w-6 h-6 text-blue-600" />}
+            icon={<Factory className="w-6 h-6 text-customG-600" />}
             title="Scope 2 배출량 관리"
             description="간접 배출량 (전력, 스팀) 데이터를 관리하고 추적합니다"
-            module="Scope"
-            submodule="Scope2"
+            module="SCOPE"
+            submodule="scope2"
           />
         </Link>
       </div>
@@ -339,30 +338,10 @@ export default function Scope2Form() {
         animate={{opacity: 1, y: 0}}
         transition={{delay: 0.5, duration: 0.6}}>
         <Card className="mb-8 overflow-hidden shadow-sm">
-          <CardHeader className="border-b border-customG-100/50 bg-gradient-to-r from-customG-50 to-emerald-50">
-            <CardTitle className="flex items-center gap-4 text-customG-800">
-              <motion.div
-                className="p-3 border bg-gradient-to-br from-customG-100 to-customG-200 rounded-xl border-customG-300/30"
-                whileHover={{scale: 1.1}}
-                transition={{type: 'spring', stiffness: 400}}>
-                <Filter className="w-5 h-5 text-customG-700" />
-              </motion.div>
-              <div>
-                <h3 className="text-xl font-bold">데이터 필터</h3>
-                <p className="mt-1 text-sm font-normal text-customG-600">
-                  조회할 협력사와 기간을 선택하세요
-                </p>
-              </div>
-            </CardTitle>
-          </CardHeader>
-
           <CardContent className="px-4 pt-8 pb-6">
             <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
               {/* 협력사 선택 드롭다운 */}
-              <motion.div
-                className="space-y-3"
-                whileHover={{scale: 1.02}}
-                transition={{type: 'spring', stiffness: 300}}>
+              <motion.div className="space-y-3">
                 <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
                   <Building className="w-4 h-4" />
                   협력사 선택
@@ -376,10 +355,7 @@ export default function Scope2Form() {
               </motion.div>
 
               {/* 연도 선택 */}
-              <motion.div
-                className="space-y-3"
-                whileHover={{scale: 1.02}}
-                transition={{type: 'spring', stiffness: 300}}>
+              <motion.div className="space-y-3">
                 <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
                   <CalendarDays className="w-4 h-4" />
                   보고연도
@@ -393,6 +369,18 @@ export default function Scope2Form() {
                   className="w-full px-3 py-2 text-sm h-9 border-customG-200 focus:border-customG-400 focus:ring-customG-100 bg-white/80 backdrop-blur-sm"
                 />
               </motion.div>
+              {/* 보고월 선택 드롭다운 (선택사항) */}
+              <div className="space-y-3">
+                <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
+                  <CalendarDays className="w-4 h-4" />
+                  보고월 (선택사항)
+                </label>
+                <MonthSelector
+                  selectedMonth={selectedMonth}
+                  onSelect={setSelectedMonth}
+                  placeholder={`${currentMonth}월`}
+                />
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -409,20 +397,9 @@ export default function Scope2Form() {
           transition={{delay: 0.6, duration: 0.5}}>
           <Card className="flex items-center justify-center shadow-sm h-80 border-customG-200/50 bg-gradient-to-br from-white via-customG-25 to-emerald-25">
             <CardContent className="py-12 text-center">
-              <motion.div
-                initial={{scale: 0}}
-                animate={{scale: 1}}
-                transition={{delay: 0.8, type: 'spring', stiffness: 200}}
-                className="p-6 mx-auto mb-6 border bg-gradient-to-br from-customG-100 to-customG-200 rounded-3xl w-fit border-customG-300/30">
-                <Building className="w-16 h-16 text-customG-600" />
-              </motion.div>
-              <motion.h3
-                className="mb-4 text-2xl font-bold text-customG-800"
-                initial={{opacity: 0, y: 20}}
-                animate={{opacity: 1, y: 0}}
-                transition={{delay: 1, duration: 0.5}}>
+              <h3 className="mb-4 text-2xl font-bold text-customG-800">
                 협력사를 선택해주세요
-              </motion.h3>
+              </h3>
               <motion.p
                 className="max-w-md leading-relaxed text-customG-600"
                 initial={{opacity: 0, y: 20}}
@@ -527,13 +504,13 @@ export default function Scope2Form() {
               <TabsTrigger
                 value="electricity"
                 className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md font-medium">
-                <Zap className="w-4 h-4" />
+                {/* 아이콘 삭제 */}
                 전력 ({filteredElectricityData.length})
               </TabsTrigger>
               <TabsTrigger
                 value="steam"
                 className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md font-medium">
-                <Wind className="w-4 h-4" />
+                {/* 아이콘 삭제 */}
                 스팀 ({filteredSteamData.length})
               </TabsTrigger>
             </TabsList>
@@ -551,9 +528,7 @@ export default function Scope2Form() {
                   <CardHeader className="border-b border-customG-100/50 bg-gradient-to-r from-customG-50 to-emerald-50">
                     <CardTitle className="flex items-center justify-between text-customG-800">
                       <div className="flex items-center gap-3">
-                        <div className="p-2 border rounded-lg bg-gradient-to-br from-emerald-100 to-emerald-200 border-emerald-300/30">
-                          <Zap className="w-5 h-5 text-emerald-700" />
-                        </div>
+                        {/* 아이콘 삭제 */}
                         <div>
                           <h3 className="text-lg font-bold">전력 사용량 데이터</h3>
                           <p className="text-sm font-normal text-customG-600">
@@ -679,9 +654,7 @@ export default function Scope2Form() {
                             <TableRow>
                               <TableCell colSpan={7} className="py-16 text-center">
                                 <div className="flex flex-col items-center justify-center space-y-4">
-                                  <div className="p-4 border bg-gradient-to-br from-customG-100 to-customG-200 rounded-2xl border-customG-300/30">
-                                    <Zap className="w-12 h-12 text-customG-500" />
-                                  </div>
+                                  {/* 아이콘 삭제 */}
                                   <div>
                                     <h3 className="mb-2 text-lg font-semibold text-customG-700">
                                       데이터가 없습니다
@@ -712,12 +685,10 @@ export default function Scope2Form() {
                 transition={{duration: 0.5}}>
                 <Card className="overflow-hidden shadow-sm">
                   {/* 스팀 섹션 헤더 */}
-                  <CardHeader className="border-b border-customG-100/50 bg-gradient-to-r from-amber-50 to-orange-50">
+                  <CardHeader className="border-b border-customG-100/50 bg-gradient-to-r ">
                     <CardTitle className="flex items-center justify-between text-customG-800">
                       <div className="flex items-center gap-3">
-                        <div className="p-2 border rounded-lg bg-gradient-to-br from-amber-100 to-amber-200 border-amber-300/30">
-                          <Wind className="w-5 h-5 text-amber-700" />
-                        </div>
+                        {/* 아이콘 삭제 */}
                         <div>
                           <h3 className="text-lg font-bold">스팀 사용량 데이터</h3>
                           <p className="text-sm font-normal text-customG-600">
@@ -744,7 +715,7 @@ export default function Scope2Form() {
                       <Table>
                         {/* 테이블 헤더 */}
                         <TableHeader>
-                          <TableRow className="border-b bg-gradient-to-r from-amber-50 to-orange-50 border-customG-200/50">
+                          <TableRow className="border-b bg-gradient-to-r border-customG-200/50">
                             <TableHead className="font-semibold text-customG-700">
                               시설명
                             </TableHead>
@@ -823,9 +794,7 @@ export default function Scope2Form() {
                             <TableRow>
                               <TableCell colSpan={6} className="py-16 text-center">
                                 <div className="flex flex-col items-center justify-center space-y-4">
-                                  <div className="p-4 border bg-gradient-to-br from-amber-100 to-amber-200 rounded-2xl border-amber-300/30">
-                                    <Wind className="w-12 h-12 text-amber-500" />
-                                  </div>
+                                  {/* 아이콘 삭제 */}
                                   <div>
                                     <h3 className="mb-2 text-lg font-semibold text-customG-700">
                                       데이터가 없습니다
@@ -863,13 +832,6 @@ export default function Scope2Form() {
         defaultMonth={selectedMonth || new Date().getMonth() + 1}
         scope="SCOPE2"
       />
-
-      {/* 디버깅: 실제 협력사 데이터 확인 */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="fixed z-50 p-2 text-xs text-white bg-black rounded top-2 right-2">
-          협력사 수: {realPartnerCompanies.length}
-        </div>
-      )}
 
       <DirectionButton
         direction="left"
