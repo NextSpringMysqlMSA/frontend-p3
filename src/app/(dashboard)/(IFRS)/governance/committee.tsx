@@ -159,7 +159,7 @@ export default function Committee({onClose, rowId, mode}: CommitteeProps) {
       className="flex flex-col space-y-5">
       {/* 헤더 섹션 */}
       <div className="flex items-center pb-2 mb-2 border-b">
-        <div className="p-2 mr-3 rounded-full bg-blue-50">
+        <div className="p-2.5 mr-3 rounded-full bg-blue-50">
           <Users className="w-5 h-5 text-[#0D1359]-600" />
         </div>
         <div>

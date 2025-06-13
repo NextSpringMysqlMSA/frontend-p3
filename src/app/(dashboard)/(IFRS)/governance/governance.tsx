@@ -134,7 +134,9 @@ export default function Governance() {
   // 테이블 헤더 정의
   const committeeHeader = [
     '위원회 이름',
-    '구성원 이름 / 직책 / 소속',
+    '구성원 이름',
+    '직책',
+    '소속',
     '기후 관련 역할 및 책임 설명'
   ]
   const meetingHeader = ['회의 날짜', '회의 제목', '주요 안건 및 의결 내용']
@@ -279,24 +281,53 @@ export default function Governance() {
                     className="mb-3 overflow-hidden border rounded-md shadow-sm bg-gray-50">
                     <AccordionTrigger className="px-4 py-3 text-base font-medium ">
                       <div className="flex items-center gap-2">
-                        {/* <Users className="w-5 h-5 mr-2" /> */}
                         <Badge variant="outline" className=" bg-[#0D1359] border-black">
                           <span className="text-white">{committeeData.length}</span>
                         </Badge>
                         <p className="text-sm font-medium text-[#0D1359]">위원회 구성</p>
                       </div>
                     </AccordionTrigger>
+
                     <AccordionContent className="p-4">
                       <CollapsibleWindow
                         type="committee"
-                        headers={committeeHeader}
+                        headers={[
+                          <div className="flex items-center justify-center w-40 h-full text-sm font-semibold">
+                            위원회 이름
+                          </div>,
+                          <div className="flex items-center justify-center h-full text-sm font-semibold w-28">
+                            구성원 이름
+                          </div>,
+                          <div className="flex items-center justify-center h-full text-sm font-semibold w-28">
+                            직책
+                          </div>,
+                          <div className="flex items-center justify-center h-full text-sm font-semibold w-28">
+                            소속
+                          </div>,
+                          <div className="w-[320px] h-full flex items-center justify-center font-semibold text-sm">
+                            기후 관련 역할 및 책임 설명
+                          </div>
+                        ]}
                         dialogTitle="위원회 및 조직 입력"
                         data={committeeData.map(item => ({
                           id: item.id,
                           values: [
-                            item.committeeName,
-                            `${item.memberName} / ${item.memberPosition} / ${item.memberAffiliation}`,
-                            item.climateResponsibility
+                            <div className="w-full px-1 py-1 text-sm text-center text-gray-800 truncate">
+                              {item.committeeName || '-'}
+                            </div>,
+                            <div className="w-full px-1 py-1 text-sm text-center text-gray-800 truncate">
+                              {item.memberName || '-'}
+                            </div>,
+                            <div className="w-full px-1 py-1 text-sm text-center text-gray-800 truncate">
+                              {item.memberPosition || '-'}
+                            </div>,
+                            <div className="w-full px-1 py-1 text-sm text-center text-gray-800 truncate">
+                              {item.memberAffiliation || '-'}
+                            </div>,
+                            <div className="w-full px-1 py-1 text-sm text-left text-gray-800 max-w-[320px] truncate group">
+                              {item.climateResponsibility || '-'}
+                              <span className="absolute hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 left-0 -top-8 min-w-[200px] max-w-[400px] whitespace-normal"></span>
+                            </div>
                           ]
                         }))}
                         formContent={({onClose, rowId, mode}) => (
@@ -321,16 +352,33 @@ export default function Governance() {
                     <AccordionContent className="p-4">
                       <CollapsibleWindow
                         type="meeting"
-                        headers={meetingHeader}
+                        headers={[
+                          <div className="flex items-center justify-center w-[200px] h-full text-sm font-semibold">
+                            회의 날짜
+                          </div>,
+                          <div className="flex items-center justify-center w-[200px] h-full text-sm font-semibold">
+                            회의 제목
+                          </div>,
+                          <div className="flex items-center justify-center w-[200px] h-full text-sm font-semibold">
+                            주요 안건 및 의결 내용
+                          </div>
+                        ]}
                         dialogTitle="회의관리"
                         data={meetingData.map(item => ({
                           id: item.id,
                           values: [
-                            item.meetingDate
-                              ? format(item.meetingDate, 'yyyy-MM-dd')
-                              : '',
-                            item.meetingName ?? '',
-                            item.agenda ?? ''
+                            <div className="w-full px-1 py-1 text-sm text-center text-gray-800 truncate">
+                              {item.meetingDate
+                                ? format(item.meetingDate, 'yyyy-MM-dd')
+                                : '-'}
+                            </div>,
+                            <div className="w-full px-1 py-1 text-sm text-center text-gray-800 truncate">
+                              {item.meetingName || '-'}
+                            </div>,
+                            <div className="w-full px-1 py-1 text-sm text-left text-gray-800 max-w-[320px] truncate group relative">
+                              {item.agenda || '-'}
+                              <span className="absolute hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 left-0 -top-8 min-w-[200px] max-w-[400px] whitespace-normal"></span>
+                            </div>
                           ]
                         }))}
                         formContent={({onClose, rowId, mode}) => (
@@ -398,7 +446,12 @@ export default function Governance() {
                               : '',
                             item.participantCount?.toString() ?? '',
                             item.educationTitle ?? '',
-                            item.content ?? ''
+                            <div className="w-full px-1 py-1 text-sm text-left text-gray-800 max-w-[320px] truncate group relative">
+                              {item.content ?? '-'}
+                              <span className="absolute hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 left-0 -top-8 min-w-[200px] max-w-[400px] whitespace-normal">
+                                {item.content ?? '-'}
+                              </span>
+                            </div>
                           ]
                         }))}
                         formContent={({onClose, rowId, mode}) => (

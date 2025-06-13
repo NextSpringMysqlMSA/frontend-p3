@@ -1,19 +1,20 @@
 import {cn} from '@/lib/utils'
 import {typeThemeConfig} from './collapsibleWindow'
+import React from 'react'
 
 type RowData = {
   id: number
-  values: string[]
+  values: React.ReactNode[]
 }
 
 type CustomTableProps = {
-  headers: string[]
+  headers: React.ReactNode[]
   data: RowData[]
   type: keyof typeof typeThemeConfig
   theme: (typeof typeThemeConfig)[keyof typeof typeThemeConfig]
   onRowClick?: (
     type: CustomTableProps['type'],
-    rowValues: string[],
+    rowValues: React.ReactNode[],
     rowId: number
   ) => void
   className?: string
@@ -28,30 +29,34 @@ export default function CustomTable({
   className
 }: CustomTableProps) {
   return (
-    <div className={cn('w-full overflow-hidden rounded-lg shadow-sm', className)}>
+    <div className={cn('w-full overflow-hidden border border-gray-200', className)}>
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full text-sm border-collapse table-fixed">
           <thead>
-            <tr className={`${theme.bgHeader} ${theme.textColor.replace('600', '800')}`}>
+            <tr
+              className={cn(
+                `${theme.bgHeader} ${theme.textColor.replace('600', '800')}`
+              )}>
               {headers.map((header, index) => (
                 <th
                   key={index}
                   className={cn(
-                    `px-4 py-3 font-medium text-left border-b ${theme.border}`,
-                    index === 0 && 'rounded-tl-lg',
-                    index === headers.length - 1 && 'rounded-tr-lg'
+                    'px-3 py-3 text-center align-middle border-b border-gray-200',
+                    index !== 0 && 'border-l border-gray-200'
                   )}>
-                  {header}
+                  <div className="flex items-center justify-center text-sm font-semibold">
+                    {header}
+                  </div>
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-100">
+          <tbody className="bg-white">
             {data.length === 0 ? (
               <tr>
                 <td
                   colSpan={headers.length}
-                  className="px-4 py-8 text-center text-gray-500 bg-gray-50">
+                  className="px-4 py-8 text-center text-gray-500 border border-gray-200 bg-gray-50">
                   데이터가 없습니다.
                 </td>
               </tr>
@@ -59,20 +64,21 @@ export default function CustomTable({
               data.map(({id, values}) => (
                 <tr
                   key={id}
+                  onClick={() => onRowClick?.(type, values, id)} // 클릭 핸들러 수정
                   className={cn(
-                    'transition-colors border-b border-gray-100',
+                    'transition-colors hover:bg-gray-50',
                     onRowClick && `cursor-pointer ${theme.hover}`
-                  )}
-                  onClick={() => onRowClick?.(type, values, id)}>
+                  )}>
                   {values.map((cell, colIndex) => (
                     <td
                       key={colIndex}
                       className={cn(
-                        'px-4 py-3 text-left text-gray-700',
-                        colIndex === 0 &&
-                          `font-medium ${theme.textColor.replace('600', '700')}`
+                        'px-3 py-2.5 text-center text-gray-700 border-b border-gray-200',
+                        colIndex !== 0 && 'border-l border-gray-200'
                       )}>
-                      {cell || '-'}
+                      <div className="flex items-center justify-center w-full text-sm truncate">
+                        {cell ?? '-'}
+                      </div>
                     </td>
                   ))}
                 </tr>
