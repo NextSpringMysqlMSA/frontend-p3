@@ -45,6 +45,7 @@ export default function HomeNavbar() {
   const [prev, setPrev] = useState<string | null>(null)
   
   const handleToggle = (menu: "scope" | "tcfd" | "manage") => {
+    console.log(pathname)
     setOpenMenu(prev === menu ? null : menu);
     if (prev === menu) {
       setPrev(null);
@@ -52,7 +53,9 @@ export default function HomeNavbar() {
       setPrev(menu);
     }
   }
-  const closeMenu = () => setOpenMenu(null)
+  const closeMenu = () => {setOpenMenu(null)
+    setPrev(null);
+  }
 
   /**
    * 로그아웃 처리 함수
@@ -72,12 +75,13 @@ export default function HomeNavbar() {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         // 허공 클릭: 상태 초기화하거나 전환
         setOpenMenu(null);
+        setPrev(null);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+    document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
   // 사용자 이름 또는 기본값 설정
@@ -110,8 +114,8 @@ export default function HomeNavbar() {
 
         {/* --------------------------------------------------------------------------------------------------메뉴 영역 */}
         <NavigationMenu >
-          <NavigationMenuList className="flex flex-row items-center justify-center w-full h-full space-x-5 ">
-            <NavigationMenuItem >
+          <NavigationMenuList className="flex flex-row items-center justify-center w-full h-full  ">
+            <NavigationMenuItem  className="space-x-5">
               <Button
                 onClick = {()=> router.push('/home')}
                 variant = "ghost"
@@ -125,7 +129,7 @@ export default function HomeNavbar() {
               <Button
                 variant = "ghost"
                 onClick = {()=>{
-       
+                  console.log(openMenu)
                   handleToggle('scope')}}
                 className={`px-4 py-2 rounded-full text-base ${
                   pathname === '/scope1' || pathname === '/scope2'
@@ -327,9 +331,9 @@ export default function HomeNavbar() {
                   router.push('/scope1')
                   closeMenu()
                   }}
-                  className="w-full text-base">
+                  className="w-full text-base ">
                   <span
-                    className={`flex w-full justify-start pr-12${
+                    className={`flex w-full justify-start pr-12 ${
                       pathname === '/scope1' ? 'border-b border-black' : ''
                     }`}>
                     Scope 1
@@ -435,7 +439,7 @@ export default function HomeNavbar() {
                   }}
                   className="w-full text-base ">
                   <span
-                    className={`flex w-full justify-start pr-12${
+                    className={`flex w-full justify-start pr-12 ${
                       pathname === '/managePartner' ? 'border-b border-black' : ''
                     }`}>
                     파트너사 관리
@@ -448,7 +452,7 @@ export default function HomeNavbar() {
                    }}
                   className="w-full text-base ">
                   <span
-                    className={`flex w-full justify-start pr-12${
+                    className={`flex w-full justify-start pr-12 ${
                       pathname === '/financialRisk' ? 'border-b border-black' : ''
                     }`}>
                     제무제표 리스크 관리
