@@ -139,10 +139,10 @@ export default function Strategy() {
           className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
           <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
           <PageHeader
-            icon={<LineChart className="w-6 h-6 text-blue-600" />}
+            icon={<LineChart className="w-6 h-6 text-customG-600" />}
             title="기후변화 전략 관리"
             description="기후변화 관련 위험과 기회, 시나리오 분석을 통한 전략적 접근"
-            module="IFRS"
+            module="TCFD"
             submodule="strategy"
           />
         </Link>

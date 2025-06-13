@@ -140,7 +140,7 @@ export default function EddResult() {
         initial={{opacity: 0, y: -10}}
         animate={{opacity: 1, y: 0}}
         transition={{duration: 0.3}}
-        className="flex flex-row items-center px-4 py-2 mb-4 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
+        className="flex flex-row items-center px-4 py-2 mb-6 text-sm text-gray-500 bg-white rounded-lg shadow-sm">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -169,8 +169,8 @@ export default function EddResult() {
             icon={<FileCheck className="w-6 h-6" />}
             title="환경 실사 자가진단 결과"
             description="환경 실사 지침 요구사항 이행 자가진단 결과 확인"
-            gradient="from-green-100 to-green-50" // 그라데이션 배경
-            iconColor="text-customG" // 아이콘 색상
+            module="CSDDD"
+            submodule="eddResult"
           />
         </Link>
       </div>
