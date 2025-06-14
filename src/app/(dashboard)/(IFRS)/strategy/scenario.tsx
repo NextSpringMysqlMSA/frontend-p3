@@ -190,7 +190,12 @@ export default function Scenario({onClose, rowId, mode}: ScenarioProps) {
 
   // 시나리오 종류에 따른 배지 색상
   const getScenarioColor = (scenario: string) => {
-    return 'bg-gray-100 text-gray-700 border-gray-600'
+    if (scenario.includes('1-2.6')) return 'bg-green-100 text-green-700 border-green-200'
+    if (scenario.includes('2-4.5')) return 'bg-blue-100 text-blue-700 border-blue-200'
+    if (scenario.includes('3-7.0'))
+      return 'bg-orange-100 text-orange-700 border-orange-200'
+    if (scenario.includes('5-8.5')) return 'bg-rose-100 text-rose-700 border-rose-200'
+    return 'bg-gray-100 text-gray-700 border-gray-200'
   }
 
   return (

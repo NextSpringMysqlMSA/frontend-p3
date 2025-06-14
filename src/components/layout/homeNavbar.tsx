@@ -1,6 +1,6 @@
 'use client'
 
-import {use, useEffect, useState, useRef} from 'react'
+import {useEffect, useState, useRef} from 'react'
 import Link from 'next/link'
 import {
   DropdownMenu,
@@ -18,84 +18,111 @@ import {ChevronDown, LogOut, User, Leaf} from 'lucide-react'
 import {motion} from 'framer-motion'
 import {
   NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
-
+  NavigationMenuItem
 } from '../ui/navigation-menu'
-import {Separator} from '@radix-ui/react-select'
-import { Button } from '../ui/button'
+import {Button} from '../ui/button'
 import HomeNavCard from './homeNavCard'
-import  ImageCarousel from '@/components/tools/row_dotindicator'
-/**
- * 상단 네비게이션 바 컴포넌트
- * ESG 테마와 일치하는 녹색 디자인으로 구현
- */
+import ImageCarousel from '@/components/tools/row_dotindicator'
+
+const getActiveTab = (pathname: string): string => {
+  if (pathname === '/home') return 'home'
+  if (pathname.startsWith('/scope')) return 'scope'
+  if (
+    pathname.startsWith('/governance') ||
+    pathname.startsWith('/strategy') ||
+    pathname.startsWith('/goal')
+  )
+    return 'tcfd'
+  if (pathname === '/GRI') return 'gri'
+  if (pathname === '/CSDDD') return 'csddd'
+  if (pathname.startsWith('/managePartner') || pathname.startsWith('/financialRisk'))
+    return 'manage'
+  return ''
+}
+
 export default function HomeNavbar() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  // 상태 관리
+  const containerRef = useRef<HTMLDivElement>(null)
   const {profile, fetchProfile} = useProfileStore()
   const {logout} = useAuthStore()
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [openMenu, setOpenMenu] = useState<'scope' | 'tcfd' | 'manage' | null>(null)
   const router = useRouter()
   const pathname = usePathname()
-  const [openMenu, setOpenMenu] = useState<"scope" |"tcfd"|"manage"| null>(null)
-  const [prev, setPrev] = useState<string | null>(null)
-  
-  const handleToggle = (menu: "scope" | "tcfd" | "manage") => {
-    console.log(pathname)
-    setOpenMenu(prev === menu ? null : menu);
-    if (prev === menu) {
-      setPrev(null);
+
+  const [selectedTab, setSelectedTab] = useState<string>(() => getActiveTab(pathname))
+
+  useEffect(() => {
+    setSelectedTab(getActiveTab(pathname))
+  }, [pathname])
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setOpenMenu(null)
+        setSelectedTab(getActiveTab(pathname))
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [pathname])
+
+  const handleToggle = (menu: 'scope' | 'tcfd' | 'manage') => {
+    if (openMenu === menu) {
+      setOpenMenu(null)
+      setSelectedTab(getActiveTab(pathname))
     } else {
-      setPrev(menu);
+      setOpenMenu(menu)
+      setSelectedTab(menu)
     }
   }
-  const closeMenu = () => {setOpenMenu(null)
-    setPrev(null);
+  const closeMenu = () => {
+    setOpenMenu(null)
   }
 
-  /**
-   * 로그아웃 처리 함수
-   */
   const handleLogout = () => {
     logout()
     localStorage.removeItem('auth-storage')
     router.push('/login')
   }
 
-  // 프로필 정보 가져오기
   useEffect(() => {
     fetchProfile()
   }, [fetchProfile])
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        // 허공 클릭: 상태 초기화하거나 전환
-        setOpenMenu(null);
-        setPrev(null);
-      }
-    };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-  // 사용자 이름 또는 기본값 설정
   const fullName = profile?.name || '사용자'
   const position = profile?.position || '직책 미설정'
   const userInitials = fullName.charAt(0)
 
+  // 하위탭: customG 절대 적용X, 선택된 경우만 밑줄, 나머진 회색hover
+  const SubMenuButton = ({
+    onClick,
+    isActive,
+    children
+  }: {
+    onClick: () => void
+    isActive: boolean
+    children: React.ReactNode
+  }) => (
+    <Button
+      variant="ghost"
+      onClick={onClick}
+      className={`p-0 hover:bg-gray-100`}
+      style={isActive ? {fontWeight: 600} : {}}>
+      <span className="flex px-4 py-2 transition-colors rounded-lg">
+        <span className={isActive ? 'border-b-2 border-black' : ''}>{children}</span>
+      </span>
+    </Button>
+  )
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 w-full">
-      <div className="flex items-center justify-between w-full h-20 px-4 bg-white border-b border-gray-200 shadow-sm lg:px-6">
+    <header className="fixed top-0 left-0 right-0 z-50 w-full bg-white shadow-md">
+      <div className="flex items-center justify-between w-full h-20 px-4 border-b border-gray-200 lg:px-6">
         {/* 로고 영역 */}
         <div className="flex items-center">
-          <Link href="/" className="flex flex-row items-center space-x-2"
-          >
+          <Link href="/" className="flex flex-row items-center space-x-2">
             <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-customG">
               <Leaf className="text-white" size={20} />
             </div>
@@ -112,85 +139,108 @@ export default function HomeNavbar() {
           </Link>
         </div>
 
-        {/* --------------------------------------------------------------------------------------------------메뉴 영역 */}
-        <NavigationMenu >
-          <NavigationMenuList className="flex flex-row items-center justify-center w-full h-full  ">
-            <NavigationMenuItem  className="space-x-5">
+        {/* ----------- 메뉴 영역 ----------- */}
+        <NavigationMenu>
+          <NavigationMenuList className="flex flex-row items-center justify-center w-full h-full">
+            <NavigationMenuItem className="space-x-5">
+              {/* HOME */}
               <Button
-                onClick = {()=> router.push('/home')}
-                variant = "ghost"
-                className={`px-4 py-2 rounded-full text-base ${
-                  pathname === '/home'
-                    ? 'bg-customG text-white hover:bg-customG hover:text-white'
-                    : 'hover:bg-gray-100'
-                }`}>
+                onClick={() => {
+                  setSelectedTab('home')
+                  router.push('/home')
+                  closeMenu()
+                }}
+                variant="ghost"
+                className={`px-4 py-2 rounded-full text-base
+                  ${
+                    selectedTab === 'home'
+                      ? 'bg-customG text-white hover:bg-customG hover:text-white !hover:text-white'
+                      : 'hover:bg-gray-100'
+                  }
+                `}>
                 HOME
               </Button>
+              {/* Scope */}
               <Button
-                variant = "ghost"
-                onClick = {()=>{
-                  console.log(openMenu)
-                  handleToggle('scope')}}
-                className={`px-4 py-2 rounded-full text-base ${
-                  pathname === '/scope1' || pathname === '/scope2'
-                    ? 'bg-customG text-white hover:bg-customG hover:text-white'
-                    : 'hover:bg-gray-100'
-                }`}>
+                variant="ghost"
+                onClick={() => handleToggle('scope')}
+                className={`px-4 py-2 rounded-full text-base
+                  ${
+                    selectedTab === 'scope'
+                      ? 'bg-customG text-white hover:bg-customG hover:text-white !hover:text-white'
+                      : 'hover:bg-gray-100'
+                  }
+                `}>
                 Scope
               </Button>
+              {/* TCFD */}
               <Button
-                variant = "ghost"
-                onClick = {()=>handleToggle('tcfd')}
-                className={`px-4 py-2 rounded-full text-base ${
-                  pathname === '/governance' ||
-                  pathname === '/strategy' ||
-                  pathname === '/goal'
-                    ? 'bg-customG text-white hover:bg-customG hover:text-white'
-                    : 'hover:bg-gray-100'
-                }`}>
+                variant="ghost"
+                onClick={() => handleToggle('tcfd')}
+                className={`px-4 py-2 rounded-full text-base
+                  ${
+                    selectedTab === 'tcfd'
+                      ? 'bg-customG text-white hover:bg-customG hover:text-white !hover:text-white'
+                      : 'hover:bg-gray-100'
+                  }
+                `}>
                 TCFD
               </Button>
+              {/* GRI */}
               <Button
-                onClick = {()=> router.push('/GRI')}
-                variant = "ghost"
-                className={`px-4 py-2 rounded-full text-base ${
-                  pathname === '/GRI'
-                    ? 'bg-customG text-white hover:bg-customG hover:text-white'
-                    : 'hover:bg-gray-100'
-                }`}>
+                onClick={() => {
+                  setSelectedTab('gri')
+                  router.push('/GRI')
+                  closeMenu()
+                }}
+                variant="ghost"
+                className={`px-4 py-2 rounded-full text-base
+                  ${
+                    selectedTab === 'gri'
+                      ? 'bg-customG text-white hover:bg-customG hover:text-white !hover:text-white'
+                      : 'hover:bg-gray-100'
+                  }
+                `}>
                 GRI
               </Button>
+              {/* 공급망실사 */}
               <Button
-              onClick = {()=> router.push('/CSDDD')}
-                variant = "ghost"
-                className={`px-4 py-2 rounded-full text-base ${
-                  pathname === '/CSDDD'
-                    ? 'bg-customG text-white hover:bg-customG hover:text-white'
-                    : 'hover:bg-gray-100'
-                }`}>
+                onClick={() => {
+                  setSelectedTab('csddd')
+                  router.push('/CSDDD')
+                  closeMenu()
+                }}
+                variant="ghost"
+                className={`px-4 py-2 rounded-full text-base
+                  ${
+                    selectedTab === 'csddd'
+                      ? 'bg-customG text-white hover:bg-customG hover:text-white !hover:text-white'
+                      : 'hover:bg-gray-100'
+                  }
+                `}>
                 공급망실사
               </Button>
+              {/* 협력사 관리 */}
               <Button
-                variant = "ghost"
-                onClick = {()=>handleToggle('manage')}
-                className={`px-4 py-2 rounded-full text-base ${
-                  pathname === '/managePartner' || pathname === '/financialRisk'
-                    ? 'bg-customG text-white hover:bg-customG hover:text-white'
-                    : 'hover:bg-gray-100'
-                }`}>
+                variant="ghost"
+                onClick={() => handleToggle('manage')}
+                className={`px-4 py-2 rounded-full text-base
+                  ${
+                    selectedTab === 'manage'
+                      ? 'bg-customG text-white hover:bg-customG hover:text-white !hover:text-white'
+                      : 'hover:bg-gray-100'
+                  }
+                `}>
                 협력사 관리
               </Button>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
-        {/* --------------------------------------------------------------------------------------------------메뉴 영역 끝 */}
-
-        {/* 우측 메뉴 영역 */}
+        {/* ------------------- 우측 메뉴 영역 ------------------- */}
         <div className="flex items-center space-x-4">
           {/* 구분선 */}
           <div className="hidden h-6 border-l border-gray-300 md:block" />
-
-          {/* 프로필 섹션 */}
+          {/* 프로필 */}
           <HoverCard>
             <HoverCardTrigger asChild>
               <button className="flex items-center transition-opacity rounded-full hover:opacity-80">
@@ -229,7 +279,6 @@ export default function HomeNavbar() {
                   <p className="text-sm text-gray-500">{position}</p>
                 </div>
               </div>
-
               <div className="pt-3 mt-4 border-t border-gray-100">
                 <div className="grid gap-1">
                   <div className="flex items-center justify-between text-sm">
@@ -246,7 +295,6 @@ export default function HomeNavbar() {
                   </div>
                 </div>
               </div>
-
               <div className="flex justify-end mt-4">
                 <Link
                   href="/account"
@@ -256,12 +304,11 @@ export default function HomeNavbar() {
               </div>
             </HoverCardContent>
           </HoverCard>
-
           {/* 드롭다운 메뉴 */}
           <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
             <DropdownMenuTrigger asChild>
               <button
-                className={`flex items-center px-4 py-2 space-x-2 text-gray-700 transition-colors rounded-full hover:bg-gray-100 ${
+                className={`flex items-center px-4 py-2 space-x-2 text-gray-700 transition-colors rounded-full ${
                   dropdownOpen ? 'bg-customG text-white' : ''
                 }`}>
                 <span className="hidden md:inline-block max-w-[120px] truncate">
@@ -273,7 +320,7 @@ export default function HomeNavbar() {
                 />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-full  prt123" sideOffset={13.5}>
+            <DropdownMenuContent align="end" className="w-full prt123" sideOffset={13.5}>
               <div className="flex items-center gap-2 p-2 md:hidden">
                 <Avatar className="w-8 h-8">
                   {profile?.profileImageUrl ? (
@@ -292,18 +339,14 @@ export default function HomeNavbar() {
                   <span className="text-xs text-gray-500">{position}</span>
                 </div>
               </div>
-
               <DropdownMenuSeparator className="md:hidden" />
-
               <Link href="/account">
                 <DropdownMenuItem className="gap-2 cursor-pointer">
                   <User size={16} />
                   <span>내 프로필</span>
                 </DropdownMenuItem>
               </Link>
-
               <DropdownMenuSeparator />
-
               <DropdownMenuItem
                 onClick={handleLogout}
                 className="gap-2 text-red-300 cursor-pointer hover:text-red-700 hover:bg-red-50">
@@ -312,166 +355,144 @@ export default function HomeNavbar() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-           
-
         </div>
       </div>
-      <div ref = {containerRef} className=" flex-row justify-center flex pointer-events-auto">
-        <div
-          className={`absolute top-20 transition-opacity duration-300 ${
-            openMenu === "scope" ? "opacity-100 visible" : "opacity-0 invisible"
-          }`}
-        ><HomeNavCard description='bg-white'>
-          <div className='flex flex-row '>
-            <div className='flex flex-col border-r space-y-2 border-gray-300'>
-          <Button
-              variant="ghost"
-                  onClick= {()=> 
-                  {
-                  router.push('/scope1')
-                  closeMenu()
-                  }}
-                  className="w-full text-base ">
-                  <span
-                    className={`flex w-full justify-start pr-12 ${
-                      pathname === '/scope1' ? 'border-b border-black' : ''
-                    }`}>
+
+      {/* 드롭다운 메뉴 컨테이너 - 배경색 추가 및 그림자 제거 */}
+      <div ref={containerRef} className="relative bg-white">
+        <div className="flex flex-row justify-center">
+          {/* Scope 드롭다운 */}
+          <div
+            className={`absolute w-full max-w-3xl transition-all duration-300 ${
+              openMenu === 'scope'
+                ? 'opacity-100 visible translate-y-0'
+                : 'opacity-0 invisible -translate-y-2'
+            }`}>
+            <HomeNavCard description="bg-white border-none">
+              <div className="flex flex-row ">
+                <div className="flex flex-col space-y-2 border-r border-gray-300">
+                  <SubMenuButton
+                    onClick={() => {
+                      setSelectedTab('scope')
+                      router.push('/scope1')
+                      closeMenu()
+                    }}
+                    isActive={pathname === '/scope1'}>
                     Scope 1
-                  </span>
-                </Button>
-                <Button
-                  variant="ghost"
-                   onClick= {
-                    ()=> {router.push('/scope2')
-                  closeMenu()
-                   }}
-                  className="w-full text-base ">
-                  <span
-                    className={`flex w-full justify-start pr-12 ${
-                      pathname === '/scope2' ? 'border-b border-black' : ''
-                    }`}>
+                  </SubMenuButton>
+                  <SubMenuButton
+                    onClick={() => {
+                      setSelectedTab('scope')
+                      router.push('/scope2')
+                      closeMenu()
+                    }}
+                    isActive={pathname === '/scope2'}>
                     Scope 2
-                  </span>
-                </Button>
-            </div>
-            <div className='justify-start h-full pl-4 '
-            style={{ caretColor: "transparent" }}>
-              <ImageCarousel imgpath={
-                ['/images/scope1.png', '/images/scope2.png']
-              }
-              />
-            </div>
-            </div>
-
-          </HomeNavCard>
+                  </SubMenuButton>
+                </div>
+                <div
+                  className="justify-start h-full pl-4"
+                  style={{caretColor: 'transparent'}}>
+                  <ImageCarousel imgpath={['/images/scope1.png', '/images/scope2.png']} />
+                </div>
+              </div>
+            </HomeNavCard>
           </div>
-        <div
-          className={`absolute top-20 transition-opacity duration-300 ${
-            openMenu === "tcfd" ? "opacity-100 visible" : "opacity-0 invisible"
-          }`}
-        >
-          <HomeNavCard description='bg-white'>
-          <div className='flex flex-row '>
-            <div className='flex flex-col border-r space-y-2 border-gray-300'>
-          <Button
-          variant="ghost"
-                  onClick= {()=> {router.push('/governance')
-                  closeMenu()
-                  }}
-                  className="w-full text-base ">
-                  <span
-                    className={`flex w-full justify-start pr-12 ${
-                      pathname === '/governance' ? 'border-b border-black' : ''
-                    }`}>
+
+          {/* TCFD 드롭다운 */}
+          <div
+            className={`absolute w-full max-w-3xl transition-all duration-300 ${
+              openMenu === 'tcfd'
+                ? 'opacity-100 visible translate-y-0'
+                : 'opacity-0 invisible -translate-y-2'
+            }`}>
+            <HomeNavCard description="bg-white border-none">
+              <div className="flex flex-row ">
+                <div className="flex flex-col space-y-2 border-r border-gray-300">
+                  <SubMenuButton
+                    onClick={() => {
+                      setSelectedTab('tcfd')
+                      router.push('/governance')
+                      closeMenu()
+                    }}
+                    isActive={pathname === '/governance'}>
                     거버넌스
-                  </span>
-                </Button>
-                <Button
-                  variant="ghost"
-                   onClick= {()=> {router.push('/strategy')
-                    closeMenu()
-                   }}
-                  className="w-full text-base ">
-                  <span
-                    className={`flex w-full justify-start pr-12 ${
-                      pathname === '/strategy' ? 'border-b border-black' : ''
-                    }`}>
+                  </SubMenuButton>
+                  <SubMenuButton
+                    onClick={() => {
+                      setSelectedTab('tcfd')
+                      router.push('/strategy')
+                      closeMenu()
+                    }}
+                    isActive={pathname === '/strategy'}>
                     전략
-                  </span>
-                </Button>
-                <Button
-                  variant="ghost"
-                   onClick= {()=> {router.push('/goal')
-                    closeMenu()
-                   }}
-                  className="w-full text-base ">
-                  <span
-                    className={`flex w-full justify-start pr-12 ${
-                      pathname === '/goal' ? 'border-b border-black' : ''
-                    }`}>
+                  </SubMenuButton>
+                  <SubMenuButton
+                    onClick={() => {
+                      setSelectedTab('tcfd')
+                      router.push('/goal')
+                      closeMenu()
+                    }}
+                    isActive={pathname === '/goal'}>
                     목표 및 지표
-                  </span>
-                </Button>
-            </div>
-            <div className='justify-start h-full pl-4 '
-            style={{ caretColor: "transparent" }}>
-              <ImageCarousel imgpath={
-                ['/images/governance.gif', '/images/lisk_manage.png', '/images/goal.png']
-              }
-              />
-            </div>
-            </div>
+                  </SubMenuButton>
+                </div>
+                <div
+                  className="justify-start h-full pl-4"
+                  style={{caretColor: 'transparent'}}>
+                  <ImageCarousel
+                    imgpath={[
+                      '/images/governance.gif',
+                      '/images/lisk_manage.png',
+                      '/images/goal.png'
+                    ]}
+                  />
+                </div>
+              </div>
+            </HomeNavCard>
+          </div>
 
-          </HomeNavCard>
-        </div>
-        <div
-          className={`absolute top-20 transition-opacity duration-300 ${
-            openMenu === "manage" ? "opacity-100 visible" : "opacity-0 invisible"
-          }`}
-        >
-                    <HomeNavCard description='bg-white'>
-          <div className='flex flex-row '>
-            <div className='flex flex-col border-r space-y-2 border-gray-300'>
-          <Button
-          variant="ghost"
-                  onClick= {()=> {router.push('/managePartner')
-                  closeMenu()
-                  }}
-                  className="w-full text-base ">
-                  <span
-                    className={`flex w-full justify-start pr-12 ${
-                      pathname === '/managePartner' ? 'border-b border-black' : ''
-                    }`}>
+          {/* 협력사 관리 드롭다운 */}
+          <div
+            className={`absolute w-full max-w-3xl transition-all duration-300 ${
+              openMenu === 'manage'
+                ? 'opacity-100 visible translate-y-0'
+                : 'opacity-0 invisible -translate-y-2'
+            }`}>
+            <HomeNavCard description="bg-white border-none">
+              <div className="flex flex-row ">
+                <div className="flex flex-col space-y-2 border-r border-gray-300">
+                  <SubMenuButton
+                    onClick={() => {
+                      setSelectedTab('manage')
+                      router.push('/managePartner')
+                      closeMenu()
+                    }}
+                    isActive={pathname === '/managePartner'}>
                     파트너사 관리
-                  </span>
-                </Button>
-                <Button
-                  variant="ghost"
-                   onClick= {()=> {router.push('/financialRisk')
-                    closeMenu()
-                   }}
-                  className="w-full text-base ">
-                  <span
-                    className={`flex w-full justify-start pr-12 ${
-                      pathname === '/financialRisk' ? 'border-b border-black' : ''
-                    }`}>
-                    제무제표 리스크 관리
-                  </span>
-                </Button>
-            </div>
-            <div className='justify-start h-full pl-4 '
-            style={{ caretColor: "transparent" }}>
-              <ImageCarousel imgpath={
-                ['/images/partner.gif', '/images/partner_manage.png']
-              }
-              />
-            </div>
-            </div>
-
-          </HomeNavCard>
+                  </SubMenuButton>
+                  <SubMenuButton
+                    onClick={() => {
+                      setSelectedTab('manage')
+                      router.push('/financialRisk')
+                      closeMenu()
+                    }}
+                    isActive={pathname === '/financialRisk'}>
+                    재무제표 리스크 관리
+                  </SubMenuButton>
+                </div>
+                <div
+                  className="justify-start h-full pl-4"
+                  style={{caretColor: 'transparent'}}>
+                  <ImageCarousel
+                    imgpath={['/images/partner.gif', '/images/partner_manage.png']}
+                  />
+                </div>
+              </div>
+            </HomeNavCard>
+          </div>
         </div>
-        </div>
+      </div>
     </header>
-    
   )
 }
