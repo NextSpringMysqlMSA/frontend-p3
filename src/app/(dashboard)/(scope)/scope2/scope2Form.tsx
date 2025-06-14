@@ -330,63 +330,6 @@ export default function Scope2Form() {
       </div>
 
       {/* ========================================================================
-          협력사 및 연도 선택 섹션 (Partner & Year Selection)
-          - 데이터 조회를 위한 필터 조건 설정
-          ======================================================================== */}
-      <motion.div
-        initial={{opacity: 0, y: 20}}
-        animate={{opacity: 1, y: 0}}
-        transition={{delay: 0.5, duration: 0.6}}>
-        <Card className="mb-8 overflow-hidden shadow-sm">
-          <CardContent className="px-4 pt-8 pb-6">
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-              {/* 협력사 선택 드롭다운 */}
-              <motion.div className="space-y-3">
-                <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
-                  <Building className="w-4 h-4" />
-                  협력사 선택
-                </label>
-                <div className="relative">
-                  <PartnerSelector
-                    selectedPartnerId={selectedPartnerId}
-                    onSelect={setSelectedPartnerId}
-                  />
-                </div>
-              </motion.div>
-
-              {/* 연도 선택 */}
-              <motion.div className="space-y-3">
-                <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
-                  <CalendarDays className="w-4 h-4" />
-                  보고연도
-                </label>
-                <Input
-                  type="number"
-                  value={selectedYear}
-                  onChange={e => setSelectedYear(parseInt(e.target.value))}
-                  min="1900"
-                  max="2200"
-                  className="w-full px-3 py-2 text-sm h-9 border-customG-200 focus:border-customG-400 focus:ring-customG-100 bg-white/80 backdrop-blur-sm"
-                />
-              </motion.div>
-              {/* 보고월 선택 드롭다운 (선택사항) */}
-              <div className="space-y-3">
-                <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
-                  <CalendarDays className="w-4 h-4" />
-                  보고월 (선택사항)
-                </label>
-                <MonthSelector
-                  selectedMonth={selectedMonth}
-                  onSelect={setSelectedMonth}
-                  placeholder={`${currentMonth}월`}
-                />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {/* ========================================================================
           협력사 미선택 시 안내 메시지 (Partner Not Selected Message)
           - 협력사 선택을 유도하는 UI
           ======================================================================== */}
@@ -395,18 +338,62 @@ export default function Scope2Form() {
           initial={{opacity: 0, scale: 0.95}}
           animate={{opacity: 1, scale: 1}}
           transition={{delay: 0.6, duration: 0.5}}>
+          <Card className="mb-4 overflow-hidden shadow-sm">
+            <CardContent className="px-4 pt-8 pb-6">
+              <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+                {/* 협력사 선택 드롭다운 */}
+                <motion.div className="space-y-3">
+                  <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
+                    <Building className="w-4 h-4" />
+                    협력사 선택
+                  </label>
+                  <div className="relative">
+                    <PartnerSelector
+                      selectedPartnerId={selectedPartnerId}
+                      onSelect={setSelectedPartnerId}
+                    />
+                  </div>
+                </motion.div>
+
+                {/* 연도 선택 */}
+                <motion.div className="space-y-3">
+                  <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
+                    <CalendarDays className="w-4 h-4" />
+                    보고연도
+                  </label>
+                  <Input
+                    type="number"
+                    value={selectedYear}
+                    onChange={e => setSelectedYear(parseInt(e.target.value))}
+                    min="1900"
+                    max="2200"
+                    className="w-full px-3 py-2 text-sm h-9 border-customG-200 focus:border-customG-400 focus:ring-customG-100 bg-white/80 backdrop-blur-sm"
+                  />
+                </motion.div>
+                {/* 보고월 선택 드롭다운 (선택사항) */}
+                <div className="space-y-3">
+                  <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
+                    <CalendarDays className="w-4 h-4" />
+                    보고월 (선택사항)
+                  </label>
+                  <MonthSelector
+                    selectedMonth={selectedMonth}
+                    onSelect={setSelectedMonth}
+                    placeholder={`${currentMonth}월`}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           <Card className="flex items-center justify-center shadow-sm h-80 border-customG-200/50 bg-gradient-to-br from-white via-customG-25 to-emerald-25">
             <CardContent className="py-12 text-center">
               <h3 className="mb-4 text-2xl font-bold text-customG-800">
                 협력사를 선택해주세요
               </h3>
-              <motion.p
-                className="max-w-md leading-relaxed text-customG-600"
-                initial={{opacity: 0, y: 20}}
-                animate={{opacity: 1, y: 0}}
-                transition={{delay: 1.1, duration: 0.5}}>
+              <p className="max-w-md leading-relaxed text-customG-600 whitespace-nowrap">
                 먼저 협력사를 선택하여 해당 협력사의 배출량 데이터를 관리하고 추적하세요
-              </motion.p>
+              </p>
             </CardContent>
           </Card>
         </motion.div>
@@ -416,7 +403,7 @@ export default function Scope2Form() {
             - 통계 카드, 데이터 테이블 포함
             ====================================================================== */
         <motion.div
-          className="space-y-8"
+          className="space-y-4"
           initial={{opacity: 0, y: 20}}
           animate={{opacity: 1, y: 0}}
           transition={{delay: 0.7, duration: 0.6}}>
@@ -428,7 +415,7 @@ export default function Scope2Form() {
             initial={{opacity: 0}}
             animate={{opacity: 1}}
             transition={{duration: 0.4, delay: 0.1}}
-            className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2 lg:grid-cols-4">
+            className="grid grid-cols-1 gap-4 mb-4 md:grid-cols-2 lg:grid-cols-4">
             {/* 총 Scope 2 배출량 카드 */}
             <Card className="border-blue-100 bg-gradient-to-br from-blue-50 to-white">
               <CardContent className="flex items-center p-4">
@@ -494,13 +481,70 @@ export default function Scope2Form() {
             </Card>
           </motion.div>
 
+          {/* ========================================================================
+          협력사 및 연도 선택 섹션 (Partner & Year Selection)
+          - 데이터 조회를 위한 필터 조건 설정
+          ======================================================================== */}
+          <motion.div
+            initial={{opacity: 0}}
+            animate={{opacity: 1}}
+            transition={{duration: 0.4, delay: 0.1}}>
+            <Card className="mb-4 overflow-hidden shadow-sm">
+              <CardContent className="px-4 pt-8 pb-6">
+                <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+                  {/* 협력사 선택 드롭다운 */}
+                  <motion.div className="space-y-3">
+                    <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
+                      <Building className="w-4 h-4" />
+                      협력사 선택
+                    </label>
+                    <div className="relative">
+                      <PartnerSelector
+                        selectedPartnerId={selectedPartnerId}
+                        onSelect={setSelectedPartnerId}
+                      />
+                    </div>
+                  </motion.div>
+
+                  {/* 연도 선택 */}
+                  <motion.div className="space-y-3">
+                    <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
+                      <CalendarDays className="w-4 h-4" />
+                      보고연도
+                    </label>
+                    <Input
+                      type="number"
+                      value={selectedYear}
+                      onChange={e => setSelectedYear(parseInt(e.target.value))}
+                      min="1900"
+                      max="2200"
+                      className="w-full px-3 py-2 text-sm h-9 border-customG-200 focus:border-customG-400 focus:ring-customG-100 bg-white/80 backdrop-blur-sm"
+                    />
+                  </motion.div>
+                  {/* 보고월 선택 드롭다운 (선택사항) */}
+                  <div className="space-y-3">
+                    <label className="flex items-center gap-2 text-sm font-semibold text-customG-700">
+                      <CalendarDays className="w-4 h-4" />
+                      보고월 (선택사항)
+                    </label>
+                    <MonthSelector
+                      selectedMonth={selectedMonth}
+                      onSelect={setSelectedMonth}
+                      placeholder={`${currentMonth}월`}
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
           {/* ==================================================================
               데이터 테이블 섹션 (Data Table Section)
               - 탭으로 구분된 전력/스팀 데이터 표시
               ================================================================== */}
           <Tabs defaultValue="electricity" className="w-full">
             {/* 탭 헤더 - 전력/스팀 전환 */}
-            <TabsList className="grid w-full grid-cols-2 p-1 mb-6 bg-gray-100 rounded-lg">
+            <TabsList className="grid w-full grid-cols-2 p-1 bg-gray-100 rounded-lg">
               <TabsTrigger
                 value="electricity"
                 className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md font-medium">
@@ -518,7 +562,7 @@ export default function Scope2Form() {
             {/* ================================================================
                 전력 사용량 탭 (Electricity Usage Tab)
                 ================================================================ */}
-            <TabsContent value="electricity" className="mt-6">
+            <TabsContent value="electricity" className="mt-4">
               <motion.div
                 initial={{opacity: 0, y: 20}}
                 animate={{opacity: 1, y: 0}}
@@ -542,7 +586,7 @@ export default function Scope2Form() {
                           setEditingType('ELECTRICITY')
                           setIsModalOpen(true)
                         }}
-                        className="px-4 py-2 text-sm font-medium text-white transition-colors duration-200 bg-black rounded-lg hover:bg-gray-800">
+                        className="px-4 py-2 text-sm font-medium text-white transition-colors duration-200 rounded-lg bg-customG hover:bg-customGDark">
                         <Plus className="w-4 h-4 mr-2" />
                         데이터 추가
                       </Button>
@@ -678,7 +722,7 @@ export default function Scope2Form() {
             {/* ================================================================
                 스팀 사용량 탭 (Steam Usage Tab)
                 ================================================================ */}
-            <TabsContent value="steam" className="mt-6">
+            <TabsContent value="steam" className="mt-4">
               <motion.div
                 initial={{opacity: 0, y: 20}}
                 animate={{opacity: 1, y: 0}}
@@ -702,7 +746,7 @@ export default function Scope2Form() {
                           setEditingType('STEAM')
                           setIsModalOpen(true)
                         }}
-                        className="px-4 py-2 text-sm font-medium text-white transition-colors duration-200 bg-black rounded-lg hover:bg-gray-800">
+                        className="px-4 py-2 text-sm font-medium text-white transition-colors duration-200 rounded-lg bg-customG hover:bg-customGDark">
                         <Plus className="w-4 h-4 mr-2" />
                         데이터 추가
                       </Button>

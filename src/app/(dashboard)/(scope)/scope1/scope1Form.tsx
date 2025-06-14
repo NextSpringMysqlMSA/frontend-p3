@@ -319,7 +319,6 @@ export default function Scope1Form() {
         </Link>
       </div>
 
-      
       {!selectedPartnerId ? (
         <motion.div
           initial={{opacity: 0, scale: 0.95}}
@@ -399,7 +398,7 @@ export default function Scope1Form() {
             - 통계 카드, 데이터 테이블 포함
             ====================================================================== */
         <motion.div
-          className="space-y-6"
+          className="space-y-4"
           initial={{opacity: 0, y: 20}}
           animate={{opacity: 1, y: 0}}
           transition={{delay: 0.7, duration: 0.6}}>
@@ -559,7 +558,7 @@ export default function Scope1Form() {
                 고정연소 데이터 탭 (Stationary Combustion Tab)
                 - 고정연소 배출량 데이터 목록 및 관리 기능
                 ================================================================ */}
-            <TabsContent value="stationary" className="mt-6">
+            <TabsContent value="stationary" className="mt-4">
               <motion.div
                 initial={{opacity: 0, y: 20}}
                 animate={{opacity: 1, y: 0}}

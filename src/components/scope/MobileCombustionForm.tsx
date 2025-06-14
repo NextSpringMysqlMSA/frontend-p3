@@ -110,7 +110,7 @@ export default function MobileCombustionForm({
                   key={type.value}
                   className={`group p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 hover:shadow-md ${
                     isSelected
-                      ? 'border-blue-500 bg-blue-50 shadow-sm ring-2 ring-blue-500/20'
+                      ? 'border-customG bg-customGLight shadow-sm'
                       : 'border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50'
                   }`}
                   onClick={() => handleTransportTypeChange(type.value)}
@@ -124,29 +124,20 @@ export default function MobileCombustionForm({
                       handleTransportTypeChange(type.value)
                     }
                   }}>
-                  {/* 선택 표시 */}
-                  {isSelected && (
-                    <div className="absolute top-2 right-2">
-                      <div className="flex items-center justify-center w-5 h-5 bg-blue-500 rounded-full">
-                        <CheckCircle2 className="w-3 h-3 text-white" />
-                      </div>
-                    </div>
-                  )}
-
                   <div className="relative">
                     <div
                       className={`text-sm font-semibold ${
                         isSelected
-                          ? 'text-blue-800'
-                          : 'text-gray-800 group-hover:text-blue-800'
+                          ? 'text-black'
+                          : 'text-gray-800 group-hover:text-customG'
                       }`}>
                       {type.label}
                     </div>
                     <div
                       className={`text-xs leading-relaxed ${
                         isSelected
-                          ? 'text-blue-600'
-                          : 'text-gray-600 group-hover:text-blue-600'
+                          ? 'text-black'
+                          : 'text-gray-600 group-hover:text-customG'
                       }`}>
                       {type.description}
                     </div>

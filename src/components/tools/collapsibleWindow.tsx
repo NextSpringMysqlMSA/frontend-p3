@@ -15,84 +15,85 @@ import {PlusCircle, Edit, FileEdit} from 'lucide-react'
 import {Button} from '@/components/ui/button'
 import React from 'react'
 
+// ✅ 수정: string[] → React.ReactNode[]
 type RowData = {
   id: number
-  values: string[]
+  values: React.ReactNode[]
 }
 
 // 타입별 테마 설정 정의
 export const typeThemeConfig = {
   committee: {
-    color: 'customG',
-    bgLight: 'bg-customG/5',
-    bgHeader: 'bg-customG/10',
-    textColor: 'text-customG',
-    buttonBg: 'bg-customG hover:bg-customG/90',
-    border: 'border-2 border-customG/20',
-    hover: 'hover:bg-customG/5'
+    color: '[#0D1359]',
+    bgLight: 'bg-[#0D1359]/5',
+    bgHeader: 'bg-[#0D1359]/10',
+    textColor: 'text-[#0D1359]',
+    buttonBg: 'bg-[#0D1359] hover:bg-[#0D1359]/90',
+    border: 'border-2 border-[#0D1359]/20',
+    hover: 'hover:bg-[#0D1359]/5'
   },
   meeting: {
-    color: 'customG',
-    bgLight: 'bg-customG/5',
-    bgHeader: 'bg-customG/10',
-    textColor: 'text-customG',
-    buttonBg: 'bg-customG hover:bg-customG/90',
-    border: 'border-2 border-customG/20',
-    hover: 'hover:bg-customG/5'
+    color: '[#0D1359]',
+    bgLight: 'bg-[#0D1359]/5',
+    bgHeader: 'bg-[#0D1359]/10',
+    textColor: 'text-[#0D1359]',
+    buttonBg: 'bg-[#0D1359] hover:bg-[#0D1359]/90',
+    border: 'border-2 border-[#0D1359]/20',
+    hover: 'hover:bg-[#0D1359]/5'
   },
   KPI: {
-    color: 'customG',
-    bgLight: 'bg-customG/5',
-    bgHeader: 'bg-customG/10',
-    textColor: 'text-customG',
-    buttonBg: 'bg-customG hover:bg-customG/90',
-    border: 'border-2 border-customG/20',
-    hover: 'hover:bg-customG/5'
+    color: '[#0D1359]',
+    bgLight: 'bg-[#0D1359]/5',
+    bgHeader: 'bg-[#0D1359]/10',
+    textColor: 'text-[#0D1359]',
+    buttonBg: 'bg-[#0D1359] hover:bg-[#0D1359]/90',
+    border: 'border-2 border-[#0D1359]/20',
+    hover: 'hover:bg-[#0D1359]/5'
   },
   education: {
-    color: 'customG',
-    bgLight: 'bg-customG/5',
-    bgHeader: 'bg-customG/10',
-    textColor: 'text-customG',
-    buttonBg: 'bg-customG hover:bg-customG/90',
-    border: 'border-2 border-customG/20',
-    hover: 'hover:bg-customG/5'
+    color: '[#0D1359]',
+    bgLight: 'bg-[#0D1359]/5',
+    bgHeader: 'bg-[#0D1359]/10',
+    textColor: 'text-[#0D1359]',
+    buttonBg: 'bg-[#0D1359] hover:bg-[#0D1359]/90',
+    border: 'border-2 border-[#0D1359]/20',
+    hover: 'hover:bg-[#0D1359]/5'
   },
   risk: {
-    color: 'customG',
-    bgLight: 'bg-customG/5',
-    bgHeader: 'bg-customG/10',
-    textColor: 'text-customG',
-    buttonBg: 'bg-customG hover:bg-customG/90',
-    border: 'border-2 border-customG/20',
-    hover: 'hover:bg-customG/5'
+    color: '[#0D1359]',
+    bgLight: 'bg-[#0D1359]/5',
+    bgHeader: 'bg-[#0D1359]/10',
+    textColor: 'text-[#0D1359]',
+    buttonBg: 'bg-[#0D1359] hover:bg-[#0D1359]/90',
+    border: 'border-2 border-[#0D1359]/20',
+    hover: 'hover:bg-[#0D1359]/5'
   },
   scenario: {
-    color: 'customG',
-    bgLight: 'bg-customG/5',
-    bgHeader: 'bg-customG/10',
-    textColor: 'text-customG',
-    buttonBg: 'bg-customG hover:bg-customG/90',
-    border: 'border-2 border-customG/20',
-    hover: 'hover:bg-customG/5'
+    color: '[#0D1359]',
+    bgLight: 'bg-[#0D1359]/5',
+    bgHeader: 'bg-[#0D1359]/10',
+    textColor: 'text-[#0D1359]',
+    buttonBg: 'bg-[#0D1359] hover:bg-[#0D1359]/90',
+    border: 'border-2 border-[#0D1359]/20',
+    hover: 'hover:bg-[#0D1359]/5'
   },
   kpiGoal: {
-    color: 'customG',
-    bgLight: 'bg-customG/5',
-    bgHeader: 'bg-customG/10',
-    textColor: 'text-customG',
-    buttonBg: 'bg-customG hover:bg-customG/90',
-    border: 'border-2 border-customG/20',
-    hover: 'hover:bg-customG/5'
+    color: '[#0D1359]',
+    bgLight: 'bg-[#0D1359]/5',
+    bgHeader: 'bg-[#0D1359]/10',
+    textColor: 'text-[#0D1359]',
+    buttonBg: 'bg-[#0D1359] hover:bg-[#0D1359]/90',
+    border: 'border-2 border-[#0D1359]/20',
+    hover: 'hover:bg-[#0D1359]/5'
   },
   netZero: {
-    color: 'customG',
-    bgLight: 'bg-customG/5',
-    bgHeader: 'bg-customG/10',
-    textColor: 'text-customG',
-    buttonBg: 'bg-customG hover:bg-customG/90',
-    border: 'border-2 border-customG/20',
-    hover: 'hover:bg-customG/5'
+    color: '[#0D1359]',
+    bgLight: 'bg-[#0D1359]/5',
+    bgHeader: 'bg-[#0D1359]/10',
+    textColor: 'text-[#0D1359]',
+    buttonBg: 'bg-[#0D1359] hover:bg-[#0D1359]/90',
+    border: 'border-2 border-[#0D1359]/20',
+    hover: 'hover:bg-[#0D1359]/5'
   }
 }
 
@@ -100,11 +101,11 @@ type CollapsibleWindowType = keyof typeof typeThemeConfig
 
 type CollapsibleWindowProps = {
   type: CollapsibleWindowType
-  headers: string[]
+  headers: React.ReactNode[] // ✅ 수정: string[] → React.ReactNode[]
   data: RowData[]
   formContent: (props: {
     onClose: () => void
-    row: string[]
+    row: React.ReactNode[] // ✅ 수정: string[] → React.ReactNode[]
     rowId: number
     mode: 'add' | 'edit'
   }) => React.ReactNode
@@ -112,14 +113,6 @@ type CollapsibleWindowProps = {
   description?: string
 }
 
-/**
- * CollapsibleWindow 컴포넌트
- *
- * 테이블 데이터와 항목 추가/수정 기능을 제공하는 접이식 윈도우 컴포넌트입니다.
- *
- * @param {CollapsibleWindowProps} props - 컴포넌트 속성
- * @returns {JSX.Element} 렌더링된 컴포넌트
- */
 export default function CollapsibleWindow({
   type,
   headers,
@@ -128,30 +121,25 @@ export default function CollapsibleWindow({
   dialogTitle = '항목 입력',
   description
 }: CollapsibleWindowProps) {
-  // 상태 관리
   const [isAddOpen, setIsAddOpen] = useState(false)
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [selectedRowData, setSelectedRowData] = useState<{
-    row: string[]
+    row: React.ReactNode[]
     rowId: number
   } | null>(null)
 
-  // 테마 색상 설정 가져오기
   const theme = typeThemeConfig[type]
 
-  // 아이콘 설정
   const icons = {
     add: <PlusCircle className={`w-4 h-4 mr-1 ${theme.textColor}`} />,
     edit: <Edit className={`w-5 h-5 mr-2 ${theme.textColor}`} />,
     empty: <FileEdit className={`w-8 h-8 text-gray-300`} />
   }
 
-  // 항목 추가 핸들러
   const handleAdd = () => {
     setIsAddOpen(true)
   }
 
-  // 모달 닫기 핸들러
   const handleCloseModal = () => {
     setSelectedRowData(null)
     setIsEditOpen(false)
@@ -177,6 +165,13 @@ export default function CollapsibleWindow({
 
             <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
               <DialogTrigger asChild></DialogTrigger>
+              <Button
+                onClick={handleAdd}
+                className={`${theme.buttonBg} text-white shadow-sm hover:shadow-md transition-all duration-200 flex items-center gap-1.5 px-3 py-1.5`}
+                size="sm">
+                <PlusCircle className="w-4 h-4" />
+                <span>항목 추가</span>
+              </Button>
               <DialogContent className="sm:max-w-[550px]">
                 <DialogHeader>
                   <DialogTitle className="flex items-center text-xl sr-only" hidden>
@@ -221,7 +216,6 @@ export default function CollapsibleWindow({
             {selectedRowData &&
               formContent({
                 onClose: () => {
-                  console.log('[CollapsibleWindow] Closing edit dialog')
                   handleCloseModal()
                 },
                 row: selectedRowData.row,
@@ -237,7 +231,7 @@ export default function CollapsibleWindow({
         initial={{opacity: 0}}
         animate={{opacity: 1}}
         transition={{duration: 0.4, delay: 0.1}}
-        className="w-full overflow-hidden bg-white border-2 shadow-sm border-[#0D1359]/20 rounded-xl">
+        className="w-full overflow-hidden bg-white border border-gray-200">
         {data.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-48 p-6 text-center">
             <div className="p-2 mb-4 rounded-full bg-[#0D1359]/10">{icons.empty}</div>
@@ -262,7 +256,7 @@ export default function CollapsibleWindow({
               type={type}
               theme={{
                 ...theme,
-                border: 'border-2 border-[#0D1359]/20',
+                border: 'border border-gray-200', // 테두리 스타일 변경
                 bgHeader: 'bg-[#0D1359]/10',
                 bgLight: 'bg-[#0D1359]/5',
                 textColor: 'text-[#0D1359]'

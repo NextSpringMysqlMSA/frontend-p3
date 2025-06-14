@@ -49,20 +49,7 @@ export default function ElectricityForm({formData, setFormData}: ElectricityForm
 
   return (
     <Card className="overflow-hidden shadow-sm">
-      <CardHeader className="bg-white border-b border-gray-100">
-        <CardTitle className="flex items-center gap-3 text-gray-800">
-          <div className="p-2 rounded-lg bg-gray-50">
-            <Zap className="w-5 h-5 text-gray-600" />
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold">전력 사용량 정보</h3>
-            <p className="text-sm font-normal text-gray-600">
-              사업장의 전력 사용량을 입력하세요
-            </p>
-          </div>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="pt-6 space-y-6">
+      <CardContent className="p-4 space-y-6">
         {/* 시설 정보 입력 */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="space-y-2">

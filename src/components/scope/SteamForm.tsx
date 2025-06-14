@@ -45,20 +45,7 @@ export default function SteamForm({formData, setFormData}: SteamFormProps) {
 
   return (
     <Card className="overflow-hidden shadow-sm">
-      <CardHeader className="bg-white border-b border-gray-100">
-        <CardTitle className="flex items-center gap-3 text-gray-800">
-          <div className="p-2 rounded-lg bg-gray-50">
-            <Cloud className="w-5 h-5 text-gray-600" />
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold">스팀 사용량 정보</h3>
-            <p className="text-sm font-normal text-gray-600">
-              외부에서 구매한 스팀 사용량을 입력하세요
-            </p>
-          </div>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="pt-6 space-y-6">
+      <CardContent className="p-4 space-y-6">
         {/* 스팀 타입 선택 */}
         <div>
           <Label className="flex items-center gap-1 mb-3 text-sm font-medium text-gray-700">
@@ -74,7 +61,7 @@ export default function SteamForm({formData, setFormData}: SteamFormProps) {
                   key={type.value}
                   className={`group p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 hover:shadow-md ${
                     isSelected
-                      ? 'border-blue-500 bg-blue-50 shadow-sm ring-2 ring-blue-500/20'
+                      ? 'border-customG bg-customGLight shadow-sm'
                       : 'border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50'
                   }`}
                   onClick={() => handleSteamTypeChange(type.value)}
@@ -88,37 +75,28 @@ export default function SteamForm({formData, setFormData}: SteamFormProps) {
                       handleSteamTypeChange(type.value)
                     }
                   }}>
-                  {/* 선택 표시 */}
-                  {isSelected && (
-                    <div className="absolute top-2 right-2">
-                      <div className="flex items-center justify-center w-5 h-5 bg-blue-500 rounded-full">
-                        <CheckCircle2 className="w-3 h-3 text-white" />
-                      </div>
-                    </div>
-                  )}
-
                   <div className="relative">
                     <div
                       className={`text-sm font-semibold mb-1 ${
                         isSelected
-                          ? 'text-blue-800'
-                          : 'text-gray-800 group-hover:text-blue-800'
+                          ? 'text-black'
+                          : 'text-gray-800 group-hover:text-customG'
                       }`}>
                       {type.label}
                     </div>
                     <div
                       className={`text-xs leading-relaxed mb-2 ${
                         isSelected
-                          ? 'text-blue-600'
-                          : 'text-gray-600 group-hover:text-blue-600'
+                          ? 'text-black'
+                          : 'text-gray-600 group-hover:text-customG'
                       }`}>
                       {type.description}
                     </div>
                     <div
                       className={`text-xs font-medium ${
                         isSelected
-                          ? 'text-blue-700'
-                          : 'text-gray-700 group-hover:text-blue-700'
+                          ? 'text-black'
+                          : 'text-gray-700 group-hover:text-customG'
                       }`}>
                       {type.factor} tCO₂/GJ
                     </div>
