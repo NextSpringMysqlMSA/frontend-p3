@@ -1,7 +1,7 @@
 'use client'
 
 import {useState, useEffect, useCallback} from 'react'
-import {Check, ChevronsUpDown, Building2} from 'lucide-react'
+import {Check, ChevronDown, Building2} from 'lucide-react'
 import {Button} from '@/components/ui/button'
 import {
   Command,
@@ -13,7 +13,7 @@ import {
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover'
 import {Badge} from '@/components/ui/badge'
 import {cn} from '@/lib/utils'
-import {PartnerCompanyForScope} from '@/types/scope'
+import {PartnerCompanyForScope} from '@/types/scopeType'
 import {fetchPartnerCompaniesForScope} from '@/services/partnerCompany'
 
 interface PartnerSelectorProps {
@@ -43,10 +43,7 @@ export function PartnerSelector({
   // 파트너 회사 데이터를 PartnerCompanyForScope 형식으로 변환하는 함수
   const convertToPartnerCompanyForScope = useCallback(
     (partners: any[]): PartnerCompanyForScope[] => {
-      console.log('🔄 변환 전 파트너 데이터:', partners)
       const converted = partners.map(partner => {
-        console.log('🔍 개별 파트너 데이터:', partner)
-        // PartnerCompany 타입의 필드명들을 우선적으로 사용
         const name =
           partner.companyName || partner.corpName || partner.corp_name || '이름 없음'
         return {
@@ -55,7 +52,6 @@ export function PartnerSelector({
           status: partner.status || 'ACTIVE'
         }
       })
-      console.log('✅ 변환 후 파트너 데이터:', converted)
       return converted
     },
     []
@@ -74,7 +70,6 @@ export function PartnerSelector({
         )
         const convertedPartners = convertToPartnerCompanyForScope(response.content)
         setPartners(convertedPartners)
-        console.log('✅ 파트너사 목록 로드 완료:', convertedPartners.length, '개')
       } catch (error) {
         console.error('파트너사 목록 로드 실패:', error)
       } finally {
@@ -149,23 +144,14 @@ export function PartnerSelector({
           disabled={disabled}>
           {selectedPartner ? (
             <div className="flex items-center gap-2">
-              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100">
-                <Building2 className="w-3 h-3 text-indigo-600" />
-              </div>
               <span className="text-gray-800 truncate">{selectedPartner.name}</span>
-              <Badge
-                variant={getStatusBadgeVariant(selectedPartner.status)}
-                className="ml-auto text-xs">
-                {getStatusText(selectedPartner.status)}
-              </Badge>
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <Building2 className="w-4 h-4 text-gray-400" />
               <span>{placeholder}</span>
             </div>
           )}
-          <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
+          <ChevronDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[400px] p-0 bg-white/95 backdrop-blur-sm border border-white/50 shadow-xl">
@@ -184,7 +170,7 @@ export function PartnerSelector({
               <CommandItem
                 key="clear"
                 onSelect={handleClear}
-                className="flex items-center justify-center p-3 m-1 text-gray-500 transition-all duration-200 border border-dashed rounded-lg cursor-pointer hover:bg-gray-50">
+                className="flex items-center justify-center p-3 m-1 text-slate-500 transition-all duration-200 border-2 border-dashed rounded-lg cursor-pointer hover:bg-slate-50">
                 선택 해제
               </CommandItem>
             )}
@@ -193,31 +179,37 @@ export function PartnerSelector({
                 key={partner.id}
                 value={`${partner.name}`}
                 onSelect={() => handleSelect(partner)}
-                className="flex items-center justify-between p-3 m-1 transition-all duration-200 rounded-lg cursor-pointer hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50">
+                className={cn(
+                  'flex items-center justify-between p-3 m-1 transition-all duration-200 rounded-lg cursor-pointer border-2',
+                  selectedPartnerId === partner.id
+                    ? 'bg-customG/5 border-customG text-customG'
+                    : 'border-transparent hover:border-customG/20 hover:bg-customG/5'
+                )}>
                 <div className="flex items-center flex-1 gap-3">
-                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100">
-                    <Building2 className="w-4 h-4 text-indigo-600" />
+                  <div className={cn(
+                    'flex items-center justify-center w-8 h-8 rounded-lg transition-all duration-200',
+                    selectedPartnerId === partner.id
+                      ? 'bg-customG/10 ring-1 ring-customG'
+                      : 'bg-slate-50'
+                  )}>
+                    <Building2 className={cn(
+                      'w-4 h-4',
+                      selectedPartnerId === partner.id ? 'text-customG' : 'text-slate-400'
+                    )} />
                   </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-gray-800">
-                        {partner.name}
-                        {partner.status === 'INACTIVE' && ' (비활성)'}
-                      </span>
-                      <Badge
-                        variant={getStatusBadgeVariant(partner.status)}
-                        className="text-xs">
-                        {getStatusText(partner.status)}
-                      </Badge>
-                    </div>
-                  </div>
+                  <span className={cn(
+                    'font-medium',
+                    selectedPartnerId === partner.id ? 'text-customG' : 'text-slate-700'
+                  )}>
+                    {partner.name}
+                    {partner.status === 'INACTIVE' && (
+                      <span className="ml-1 text-sm text-slate-400">(비활성)</span>
+                    )}
+                  </span>
                 </div>
-                <Check
-                  className={cn(
-                    'h-4 w-4',
-                    selectedPartnerId === partner.id ? 'opacity-100' : 'opacity-0'
-                  )}
-                />
+                {selectedPartnerId === partner.id && (
+                  <Check className="w-4 h-4 text-customG" />
+                )}
               </CommandItem>
             ))}
           </CommandGroup>

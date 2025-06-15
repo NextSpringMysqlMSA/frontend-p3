@@ -60,6 +60,7 @@ import {
 import {DirectionButton} from '@/components/layout/direction'
 import {motion} from 'framer-motion'
 import {FinancialRiskAssessment} from '@/types/IFRS/partnerCompany'
+import {useSearchParams} from 'next/navigation' // 추가
 
 // API 응답 타입 정의
 interface RiskItem {
@@ -223,7 +224,7 @@ export default function FinancialRiskForm() {
   const [accordionValue, setAccordionValue] = useState<string[]>([])
 
   // URL 쿼리 파라미터에서 companyId와 companyName 가져오기
-  const searchParams = new URLSearchParams(window.location.search)
+  const searchParams = useSearchParams()
   const companyId = searchParams.get('companyId')
   const companyName = searchParams.get('companyName')
 
@@ -386,7 +387,8 @@ export default function FinancialRiskForm() {
             icon={<FileSearch className="w-6 h-6 text-customG" />}
             title="재무 리스크"
             description="협력사의 재무 리스크를 분석하고 관리합니다"
-            module="파트너사"
+            module="PARTNERCOMPANY"
+            submodule="financialRisk"
           />
         </Link>
       </div>
@@ -445,8 +447,8 @@ export default function FinancialRiskForm() {
                       <h3 className="text-2xl font-bold text-slate-800">
                         {riskData.partnerCompanyName}
                       </h3>
-                      <p className="px-3 py-1 font-mono text-xs font-medium text-slate-600 bg-white/80 rounded-xl">
-                        ID: {riskData.partnerCompanyId}
+                      <p className="px-3 py-1 font-mono text-xs font-medium text-slate-600 ">
+                        DART CODE: {riskData.partnerCompanyId}
                       </p>
                     </div>
                   </div>
@@ -465,7 +467,7 @@ export default function FinancialRiskForm() {
                       <h3 className="text-2xl font-bold text-slate-800">
                         {riskData.assessmentYear}년도
                       </h3>
-                      <p className="px-3 py-1 mt-1 font-mono text-xs font-medium text-slate-600 bg-white/80 rounded-xl">
+                      <p className="px-3 py-1 mt-1 font-mono text-xs font-medium text-slate-600">
                         보고서: {riskData.reportCode}
                       </p>
                     </div>
@@ -510,7 +512,7 @@ export default function FinancialRiskForm() {
                       <h3 className={`text-2xl font-bold ${statusInfo.color}`}>
                         {statusInfo.label}
                       </h3>
-                      <p className="px-3 py-1 mt-1 text-xs font-medium text-slate-600 bg-white/80 rounded-xl">
+                      <p className="px-3 py-1 mt-1 text-xs font-medium text-slate-600 ">
                         위험 항목: {atRiskCount} / {riskData.riskItems.length}
                       </p>
                     </div>

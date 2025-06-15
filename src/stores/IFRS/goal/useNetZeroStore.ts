@@ -1,6 +1,6 @@
 import {create} from 'zustand'
 import {persist} from 'zustand/middleware'
-import {NetZeroAsset, NetZeroEmission, NetZeroResponse} from '@/types/IFRS/goal'
+import {NetZeroAsset, NetZeroEmission, NetZeroResponse} from '@/types/IFRS/goalType'
 import {fetchNetZeroById} from '@/services/goal'
 
 // 스토어 타입 정의

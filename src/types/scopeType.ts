@@ -42,26 +42,54 @@ export type StationaryCombustionType =
   | 'GAS' // 가스연료
 
 // 이동연소 세부 타입
-export type MobileCombustionType =
-  | 'ROAD' // 도로교통
-  | 'AVIATION' // 항공
+export type MobileCombustionType = 'ROAD' // 도로교통
 
 // 스팀 타입
 export type SteamType = 'TYPE_A' | 'TYPE_B' | 'TYPE_C'
+
+// 🔥 새로 추가: 용도 구분 타입
+export type PurposeCategory =
+  | 'ENERGY' // 에너지산업
+  | 'MANUFACTURING' // 제조업/건설업
+  | 'COMMERCIAL' // 상업/공공
+  | 'DOMESTIC' // 가정/기타
+
+// 용도별 배출계수 타입
+export interface EmissionFactorByPurpose {
+  energy: number
+  manufacturing: number
+  commercial: number
+  domestic: number
+}
+
+// 이동연소 배출계수 타입
+export interface MobileEmissionFactors {
+  co2: number
+  ch4: number
+  n2o: number
+}
 
 // === 연료 타입 정의 ===
 export interface FuelType {
   id: string
   name: string
   category: string
-  subcategory?: string
   unit: string
-  description?: string
-  co2Factor?: number
-  ch4Factor?: number
-  n2oFactor?: number
   emissionActivityType: EmissionActivityType
   subcategoryType?: string
+  description?: string
+
+  // 발열량 (scope.md 기준)
+  gcv?: number // 총발열량 (Gross Calorific Value)
+  ncv: number // 순발열량 (Net Calorific Value) - 필수
+
+  // 고정연소 배출계수 (scope.md 정수형 기준)
+  co2Factor: number // CO2 배출계수 (정수형)
+  ch4Factor: EmissionFactorByPurpose // CH4 배출계수 (용도별)
+  n2oFactor: EmissionFactorByPurpose // N2O 배출계수 (용도별)
+
+  // 이동연소 배출계수 (scope.md에서 이동연소 컬럼에 데이터가 있는 연료만)
+  mobileEmissionFactors?: MobileEmissionFactors
 }
 
 // === 연료 카테고리 상수 ===
@@ -168,7 +196,7 @@ export const FUEL_CATEGORIES = {
 // === Scope 1 데이터 타입 ===
 export interface StationaryCombustion {
   id?: number
-  partnerCompanyId: string // UUID 형태
+  companyId: string // UUID 형태 (협력사 ID)
   partnerCompany?: PartnerCompanyForScope // 협력사 정보 (조회 시 포함)
   reportingYear: number
   reportingMonth: number
@@ -190,7 +218,7 @@ export interface StationaryCombustion {
 
 export interface MobileCombustion {
   id?: number
-  partnerCompanyId: string // UUID 형태
+  companyId: string // UUID 형태 (협력사 ID)
   partnerCompany?: PartnerCompanyForScope // 협력사 정보 (조회 시 포함)
   reportingYear: number
   reportingMonth: number
@@ -213,7 +241,7 @@ export interface MobileCombustion {
 // === Scope 2 데이터 타입 ===
 export interface ElectricityUsage {
   id?: number
-  partnerCompanyId: string // UUID 형태
+  companyId: string // UUID 형태 (협력사 ID)
   partnerCompany?: PartnerCompanyForScope // 협력사 정보 (조회 시 포함)
   reportingYear: number
   reportingMonth: number
@@ -232,7 +260,7 @@ export interface ElectricityUsage {
 
 export interface SteamUsage {
   id?: number
-  partnerCompanyId: string // UUID 형태
+  companyId: string // UUID 형태 (협력사 ID)
   partnerCompany?: PartnerCompanyForScope // 협력사 정보 (조회 시 포함)
   reportingYear: number
   reportingMonth: number
@@ -249,69 +277,139 @@ export interface SteamUsage {
 
 // === 폼 데이터 타입들 (백엔드 API 요청용) ===
 export interface StationaryCombustionForm {
-  partnerCompanyId: string // UUID 형태
+  memberId: number
+  companyId: string // UUID 형태 (협력사 ID)
   reportingYear: number
   reportingMonth: number
   facilityName: string
   facilityLocation?: string
   combustionType: StationaryCombustionType
   fuelId: string
-  fuelUsage: string
+  fuelName: string
+  fuelUsage: number // 숫자 타입
   unit: string
   createdBy: string
+  notes?: string
 }
 
 export interface MobileCombustionForm {
-  partnerCompanyId: string // UUID 형태
+  memberId: number
+  companyId: string // UUID 형태 (협력사 ID)
   reportingYear: number
   reportingMonth: number
   vehicleType: string
   transportType: MobileCombustionType
   fuelId: string
-  fuelUsage: string
+  fuelName: string
+  fuelUsage: number // 숫자 타입
   unit: string
-  distance?: string
+  distance?: number // 숫자 타입
   createdBy: string
+  notes?: string
 }
 
 export interface ElectricityUsageForm {
-  partnerCompanyId: string // UUID 형태
+  memberId: number
+  companyId: string // UUID 형태 (협력사 ID)
   reportingYear: number
   reportingMonth: number
   facilityName: string
   facilityLocation?: string
-  electricityUsage: string
+  electricityUsage: number // 숫자 타입
   unit: string
   isRenewable: boolean
   renewableType?: string
   createdBy: string
+  notes?: string
 }
 
 export interface SteamUsageForm {
-  partnerCompanyId: string // UUID 형태
+  memberId: number
+  companyId: string // UUID 형태 (협력사 ID)
   reportingYear: number
   reportingMonth: number
   facilityName: string
   facilityLocation?: string
   steamType: SteamType
-  steamUsage: string
+  steamUsage: number // 숫자 타입
   unit: string
   createdBy: string
+  notes?: string
 }
 
-// === 통합 폼 데이터 타입 ===
+// === 통합 폼 데이터 타입 (UI용 - 문자열 타입) ===
 export interface ScopeFormData {
   // 공통 정보
-  partnerCompanyId: string // UUID 형태
+  companyId: string // UUID 형태 (협력사 ID)
   reportingYear: number
   reportingMonth: number
   emissionActivityType: EmissionActivityType
 
-  // 배출활동별 세부 정보
-  stationaryCombustion?: StationaryCombustionForm
-  mobileCombustion?: MobileCombustionForm
-  electricity?: ElectricityUsageForm
-  steam?: SteamUsageForm
+  // 배출활동별 세부 정보 (UI용 - 일부 필드는 문자열)
+  stationaryCombustion?: StationaryCombustionFormUI
+  mobileCombustion?: MobileCombustionFormUI
+  electricity?: ElectricityUsageFormUI
+  steam?: SteamUsageFormUI
+}
+
+// === UI 폼 데이터 타입들 (폼 입력용 - 일부 문자열 타입) ===
+export interface StationaryCombustionFormUI {
+  companyId: string // UUID 형태 (협력사 ID)
+  reportingYear: number
+  reportingMonth: number
+  facilityName: string
+  facilityLocation?: string
+  combustionType: StationaryCombustionType
+  purposeCategory: PurposeCategory // 🔥 용도 구분 추가
+  fuelId: string
+  fuelName?: string
+  fuelUsage: string | number // UI에서는 문자열, API에서는 숫자
+  unit: string
+  createdBy: string
+  notes?: string
+}
+
+export interface MobileCombustionFormUI {
+  companyId: string // UUID 형태 (협력사 ID)
+  reportingYear: number
+  reportingMonth: number
+  vehicleType: string
+  transportType: MobileCombustionType
+  purposeCategory: PurposeCategory // 🔥 용도 구분 추가
+  fuelId: string
+  fuelName?: string
+  fuelUsage: string | number // UI에서는 문자열, API에서는 숫자
+  unit: string
+  distance?: string | number // UI에서는 문자열, API에서는 숫자
+  createdBy: string
+  notes?: string
+}
+
+export interface ElectricityUsageFormUI {
+  companyId: string // UUID 형태 (협력사 ID)
+  reportingYear: number
+  reportingMonth: number
+  facilityName: string
+  facilityLocation?: string
+  electricityUsage: string | number // UI에서는 문자열, API에서는 숫자
+  unit: string
+  isRenewable: boolean
+  renewableType?: string
+  createdBy: string
+  notes?: string
+}
+
+export interface SteamUsageFormUI {
+  companyId: string // UUID 형태 (협력사 ID)
+  reportingYear: number
+  reportingMonth: number
+  facilityName: string
+  facilityLocation?: string
+  steamType: SteamType
+  steamUsage: string | number // UI에서는 문자열, API에서는 숫자
+  unit: string
+  createdBy: string
+  notes?: string
 }
 
 // === API 응답 타입들 ===
@@ -340,7 +438,7 @@ export interface ScopeSummary {
   totalSteamEmission: number
   reportingYear: number
   reportingMonth?: number
-  partnerCompanyId?: string // UUID 형태
+  companyId?: string // UUID 형태 (협력사 ID)
 }
 
 // === 배출계수 타입 ===
@@ -353,6 +451,7 @@ export interface EmissionFactor {
   unit: string
   category: string
   description?: string
+  purposeCategory?: PurposeCategory
 }
 
 // === 계산 결과 타입 ===

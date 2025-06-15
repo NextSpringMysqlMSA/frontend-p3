@@ -43,7 +43,6 @@ api.interceptors.request.use(
       config.headers.Authorization = token
     }
 
-    console.log('📦 요청 헤더:', config.headers)
     console.log('🔗 API URL:', config.baseURL)
 
     return config

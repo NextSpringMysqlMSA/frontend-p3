@@ -23,7 +23,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
-import {CreateKpiDto, UpdateKpiDto} from '@/types/IFRS/governance'
+import {CreateKpiDto, UpdateKpiDto} from '@/types/IFRS/governanceType'
 
 type KPIProps = {
   onClose: () => void
@@ -140,8 +140,8 @@ export default function KPI({onClose, rowId, mode}: KPIProps) {
       className="flex flex-col space-y-5">
       {/* 헤더 섹션 */}
       <div className="flex items-center pb-2 mb-2 border-b">
-        <div className="p-2 mr-3 rounded-full bg-purple-50">
-          <BarChart className="w-5 h-5 text-purple-600" />
+        <div className="p-2 mr-3 rounded-full bg-blue-50">
+          <BarChart className="w-5 h-5 text-[#0D1359]-600" />
         </div>
         <div>
           <h3 className="text-base font-medium">
@@ -166,7 +166,7 @@ export default function KPI({onClose, rowId, mode}: KPIProps) {
             placeholder="예: CEO 김ㅇㅇ, CFO 박ㅇㅇ"
             value={executiveName}
             onChange={e => setField('executiveName', e.target.value)}
-            className="border focus-visible:ring-customG"
+            className="border focus-visible:ring-[#0D1359]"
           />
         </div>
 
@@ -180,7 +180,7 @@ export default function KPI({onClose, rowId, mode}: KPIProps) {
               placeholder="예: 탄소배출량 감축률, 재생에너지 사용률"
               value={kpiName}
               onChange={e => setField('kpiName', e.target.value)}
-              className="border focus-visible:ring-customG"
+              className="border focus-visible:ring-[#0D1359]"
             />
           </div>
         </div>
@@ -196,7 +196,7 @@ export default function KPI({onClose, rowId, mode}: KPIProps) {
                 placeholder="예: 10% 혹은 10000tCO2eq"
                 value={targetValue}
                 onChange={e => setField('targetValue', e.target.value)}
-                className="border focus-visible:ring-customG"
+                className="border focus-visible:ring-[#0D1359]"
               />
             </div>
           </div>
@@ -211,7 +211,7 @@ export default function KPI({onClose, rowId, mode}: KPIProps) {
                 placeholder="예: 8% 혹은 8000tCO2eq"
                 value={achievedValue}
                 onChange={e => setField('achievedValue', e.target.value)}
-                className="border focus-visible:ring-customG"
+                className="border focus-visible:ring-[#0D1359]"
               />
             </div>
           </div>
@@ -271,7 +271,7 @@ export default function KPI({onClose, rowId, mode}: KPIProps) {
           <Button
             onClick={handleSubmit}
             disabled={submitting}
-            className="gap-1 text-white bg-customG hover:bg-customGDark">
+            className="gap-1 text-white bg-[#0D1359] hover:bg-[#0D1359]Dark">
             {submitting ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />

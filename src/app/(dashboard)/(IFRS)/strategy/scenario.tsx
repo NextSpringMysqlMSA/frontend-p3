@@ -39,7 +39,7 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
 import {Badge} from '@/components/ui/badge'
-import {CreateScenarioDto, UpdateScenarioDto} from '@/types/IFRS/strategy'
+import {CreateScenarioDto, UpdateScenarioDto} from '@/types/IFRS/strategyType'
 
 type ScenarioProps = {
   onClose: () => void
@@ -207,7 +207,7 @@ export default function Scenario({onClose, rowId, mode}: ScenarioProps) {
       {/* 헤더 섹션 */}
       <div className="flex items-center pb-3 mb-2 border-b">
         <div className="p-2.5 rounded-full bg-blue-50 mr-3">
-          <LineChart className="w-5 h-5 text-blue-600" />
+          <LineChart className="w-5 h-5 text-[#0D1359]-600" />
         </div>
         <div>
           <h3 className="text-base font-semibold">
@@ -238,7 +238,7 @@ export default function Scenario({onClose, rowId, mode}: ScenarioProps) {
               <SelectTrigger
                 id="scenario"
                 className={cn(
-                  'focus-visible:ring-customG',
+                  'focus-visible:ring-[#0D1359]',
                   !scenario ? 'border-gray-300' : 'border-gray-300'
                 )}>
                 <SelectValue placeholder="SSP 시나리오 선택" />
@@ -277,7 +277,7 @@ export default function Scenario({onClose, rowId, mode}: ScenarioProps) {
               <SelectTrigger
                 id="baseYear"
                 className={cn(
-                  'focus-visible:ring-customG',
+                  'focus-visible:ring-[#0D1359]',
                   !baseYear ? 'border-gray-300' : 'border-gray-300'
                 )}>
                 <SelectValue placeholder="분석 기준 연도 선택" />
@@ -305,7 +305,7 @@ export default function Scenario({onClose, rowId, mode}: ScenarioProps) {
               <SelectTrigger
                 id="regions"
                 className={cn(
-                  'focus-visible:ring-customG',
+                  'focus-visible:ring-[#0D1359]',
                   !regions ? 'border-gray-300' : 'border-gray-300'
                 )}>
                 <SelectValue placeholder="행정구역 선택" />
@@ -331,7 +331,7 @@ export default function Scenario({onClose, rowId, mode}: ScenarioProps) {
               <SelectTrigger
                 id="climate"
                 className={cn(
-                  'focus-visible:ring-customG',
+                  'focus-visible:ring-[#0D1359]',
                   !climate ? 'border-gray-300' : 'border-gray-300'
                 )}>
                 <SelectValue placeholder="기후 지표 선택" />
@@ -364,7 +364,7 @@ export default function Scenario({onClose, rowId, mode}: ScenarioProps) {
               value={latitude || ''}
               onChange={e => setField('latitude', parseFloat(e.target.value) || 0)}
               className={cn(
-                'focus-visible:ring-customG',
+                'focus-visible:ring-[#0D1359]',
                 !latitude ? 'border-gray-300' : 'border-gray-300'
               )}
               step="0.01"
@@ -382,7 +382,7 @@ export default function Scenario({onClose, rowId, mode}: ScenarioProps) {
               value={longitude || ''}
               onChange={e => setField('longitude', parseFloat(e.target.value) || 0)}
               className={cn(
-                'focus-visible:ring-customG',
+                'focus-visible:ring-[#0D1359]',
                 !longitude ? 'border-gray-300' : 'border-gray-300'
               )}
               step="0.01"
@@ -399,7 +399,7 @@ export default function Scenario({onClose, rowId, mode}: ScenarioProps) {
               <SelectTrigger
                 id="industry"
                 className={cn(
-                  'focus-visible:ring-customG',
+                  'focus-visible:ring-[#0D1359]',
                   !industry ? 'border-gray-300' : 'border-gray-300'
                 )}>
                 <SelectValue placeholder="산업 분야 선택" />
@@ -433,7 +433,7 @@ export default function Scenario({onClose, rowId, mode}: ScenarioProps) {
                 setField('assetValue', numericValue ? parseFloat(numericValue) : 0)
               }}
               className={cn(
-                'focus-visible:ring-customG',
+                'focus-visible:ring-[#0D1359]',
                 !assetValue ? 'border-gray-300' : 'border-gray-300'
               )}
             />
@@ -450,7 +450,7 @@ export default function Scenario({onClose, rowId, mode}: ScenarioProps) {
             value={assetType || ''}
             onChange={e => setField('assetType', e.target.value)}
             className={cn(
-              'focus-visible:ring-customG',
+              'focus-visible:ring-[#0D1359]',
               !assetType ? 'border-gray-300' : 'border-gray-300'
             )}
           />
@@ -512,7 +512,7 @@ export default function Scenario({onClose, rowId, mode}: ScenarioProps) {
           <Button
             onClick={handleSubmit}
             disabled={submitting}
-            className="gap-1 text-white bg-customG hover:bg-customGDark">
+            className="gap-1 text-white bg-[#0D1359] hover:bg-[#0D1359]Dark">
             {submitting ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />

@@ -1,4 +1,4 @@
-import HrdddForm from './hrdddForm'
+import HrdddForm from './hrddForm'
 
 export const metadata = {
   title: '인권 실사 : 공급망 실사',
