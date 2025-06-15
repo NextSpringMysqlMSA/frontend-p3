@@ -60,7 +60,6 @@ import {
 } from '@/components/ui/breadcrumb'
 import {DirectionButton} from '@/components/layout/direction'
 
-
 /**
  * Governance 컴포넌트
  *
@@ -135,7 +134,9 @@ export default function Governance() {
   // 테이블 헤더 정의
   const committeeHeader = [
     '위원회 이름',
-    '구성원 이름 / 직책 / 소속',
+    '구성원 이름',
+    '직책',
+    '소속',
     '기후 관련 역할 및 책임 설명'
   ]
   const meetingHeader = ['회의 날짜', '회의 제목', '주요 안건 및 의결 내용']
@@ -167,10 +168,10 @@ export default function Governance() {
           className="flex flex-row items-center p-4 space-x-4 transition rounded-md cursor-pointer hover:bg-gray-200">
           <ArrowLeft className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
           <PageHeader
-            icon={<Landmark className="w-6 h-6 text-blue-600" />}
+            icon={<Landmark className="w-6 h-6 text-customG-600" />}
             title="거버넌스"
             description="IFRS S2/TCFD 기반 기후 거버넌스 체계 관리"
-            module="IFRS"
+            module="TCFD"
             submodule="governance"
           />
         </Link>
@@ -194,10 +195,10 @@ export default function Governance() {
           animate={{opacity: 1}}
           transition={{duration: 0.4, delay: 0.1}}
           className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2 lg:grid-cols-4">
-          <Card className="border-blue-100 bg-gradient-to-br from-blue-50 to-white">
+          <Card className="border-2 border-customG/20">
             <CardContent className="flex items-center p-4">
-              <div className="p-2 mr-3 bg-blue-100 rounded-full">
-                <Users className="w-5 h-5 text-blue-600" />
+              <div className="p-2 mr-3 rounded-full bg-customG/10">
+                <Users className="w-5 h-5 text-customG" />
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">위원회</p>
@@ -209,9 +210,9 @@ export default function Governance() {
             </CardContent>
           </Card>
 
-          <Card className="border-emerald-100 bg-gradient-to-br from-emerald-50 to-white">
+          <Card className="border-2 border-customG/20 ">
             <CardContent className="flex items-center p-4">
-              <div className="p-2 mr-3 rounded-full bg-emerald-100">
+              <div className="p-2 mr-3 rounded-full bg-customG/10">
                 <CalendarDays className="w-5 h-5 text-customG" />
               </div>
               <div>
@@ -224,10 +225,10 @@ export default function Governance() {
             </CardContent>
           </Card>
 
-          <Card className="border-purple-100 bg-gradient-to-br from-purple-50 to-white">
+          <Card className="border-2 border-customG/20 ">
             <CardContent className="flex items-center p-4">
-              <div className="p-2 mr-3 bg-purple-100 rounded-full">
-                <BarChart className="w-5 h-5 text-purple-600" />
+              <div className="p-2 mr-3 rounded-full bg-customG/10">
+                <BarChart className="w-5 h-5 text-customG" />
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">KPI</p>
@@ -239,10 +240,10 @@ export default function Governance() {
             </CardContent>
           </Card>
 
-          <Card className="border-amber-100 bg-gradient-to-br from-amber-50 to-white">
+          <Card className="border-2 border-customG/20 ">
             <CardContent className="flex items-center p-4">
-              <div className="p-2 mr-3 rounded-full bg-amber-100">
-                <GraduationCap className="w-5 h-5 text-amber-600" />
+              <div className="p-2 mr-3 rounded-full bg-customG/10">
+                <GraduationCap className="w-5 h-5 text-customG" />
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">교육</p>
@@ -277,29 +278,56 @@ export default function Governance() {
                 <Accordion type="multiple" defaultValue={[]} className="p-4">
                   <AccordionItem
                     value="item-1"
-                    className="mb-3 overflow-hidden border rounded-md shadow-sm">
-                    <AccordionTrigger className="px-4 py-3 text-base font-medium bg-gradient-to-r from-blue-50 to-white">
-                      <div className="flex items-center">
-                        <Users className="w-5 h-5 mr-2 text-blue-600" />
-                        위원회 구성
-                        <Badge
-                          variant="outline"
-                          className="ml-2 border-blue-100 bg-blue-50">
-                          {committeeData.length}
+                    className="mb-3 overflow-hidden border rounded-md shadow-sm bg-gray-50">
+                    <AccordionTrigger className="px-4 py-3 text-base font-medium ">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className=" bg-[#0D1359] border-black">
+                          <span className="text-white">{committeeData.length}</span>
                         </Badge>
+                        <p className="text-sm font-medium text-[#0D1359]">위원회 구성</p>
                       </div>
                     </AccordionTrigger>
+
                     <AccordionContent className="p-4">
                       <CollapsibleWindow
                         type="committee"
-                        headers={committeeHeader}
+                        headers={[
+                          <div className="flex items-center justify-center w-40 h-full text-sm font-semibold">
+                            위원회 이름
+                          </div>,
+                          <div className="flex items-center justify-center h-full text-sm font-semibold w-28">
+                            구성원 이름
+                          </div>,
+                          <div className="flex items-center justify-center h-full text-sm font-semibold w-28">
+                            직책
+                          </div>,
+                          <div className="flex items-center justify-center h-full text-sm font-semibold w-28">
+                            소속
+                          </div>,
+                          <div className="w-[320px] h-full flex items-center justify-center font-semibold text-sm">
+                            기후 관련 역할 및 책임 설명
+                          </div>
+                        ]}
                         dialogTitle="위원회 및 조직 입력"
                         data={committeeData.map(item => ({
                           id: item.id,
                           values: [
-                            item.committeeName,
-                            `${item.memberName} / ${item.memberPosition} / ${item.memberAffiliation}`,
-                            item.climateResponsibility
+                            <div className="w-full px-1 py-1 text-sm text-center text-gray-800 truncate">
+                              {item.committeeName || '-'}
+                            </div>,
+                            <div className="w-full px-1 py-1 text-sm text-center text-gray-800 truncate">
+                              {item.memberName || '-'}
+                            </div>,
+                            <div className="w-full px-1 py-1 text-sm text-center text-gray-800 truncate">
+                              {item.memberPosition || '-'}
+                            </div>,
+                            <div className="w-full px-1 py-1 text-sm text-center text-gray-800 truncate">
+                              {item.memberAffiliation || '-'}
+                            </div>,
+                            <div className="w-full px-1 py-1 text-sm text-left text-gray-800 max-w-[320px] truncate group">
+                              {item.climateResponsibility || '-'}
+                              <span className="absolute hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 left-0 -top-8 min-w-[200px] max-w-[400px] whitespace-normal"></span>
+                            </div>
                           ]
                         }))}
                         formContent={({onClose, rowId, mode}) => (
@@ -311,31 +339,46 @@ export default function Governance() {
 
                   <AccordionItem
                     value="item-2"
-                    className="mb-3 overflow-hidden border rounded-md shadow-sm">
-                    <AccordionTrigger className="px-4 py-3 text-base font-medium bg-gradient-to-r from-customGLight to-white">
-                      <div className="flex items-center">
-                        <CalendarDays className="w-5 h-5 mr-2 text-customG" />
-                        회의 관리
-                        <Badge
-                          variant="outline"
-                          className="ml-2 bg-customGLight border-customGBorder">
-                          {meetingData.length}
+                    className="mb-3 overflow-hidden border rounded-md shadow-sm bg-gray-50">
+                    <AccordionTrigger className="px-4 py-3 text-base font-medium bg-customG-700">
+                      <div className="flex items-center gap-2">
+                        {/* <CalendarDays className="w-5 h-5 mr-2 text-[#0D1359]" /> */}
+                        <Badge variant="outline" className=" bg-[#0D1359] border-black">
+                          <span className="text-white">{meetingData.length}</span>
                         </Badge>
+                        <p className="text-sm font-medium text-[#0D1359]">회의 관리</p>
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="p-4">
                       <CollapsibleWindow
                         type="meeting"
-                        headers={meetingHeader}
+                        headers={[
+                          <div className="flex items-center justify-center w-[200px] h-full text-sm font-semibold">
+                            회의 날짜
+                          </div>,
+                          <div className="flex items-center justify-center w-[200px] h-full text-sm font-semibold">
+                            회의 제목
+                          </div>,
+                          <div className="flex items-center justify-center w-[200px] h-full text-sm font-semibold">
+                            주요 안건 및 의결 내용
+                          </div>
+                        ]}
                         dialogTitle="회의관리"
                         data={meetingData.map(item => ({
                           id: item.id,
                           values: [
-                            item.meetingDate
-                              ? format(item.meetingDate, 'yyyy-MM-dd')
-                              : '',
-                            item.meetingName ?? '',
-                            item.agenda ?? ''
+                            <div className="w-full px-1 py-1 text-sm text-center text-gray-800 truncate">
+                              {item.meetingDate
+                                ? format(item.meetingDate, 'yyyy-MM-dd')
+                                : '-'}
+                            </div>,
+                            <div className="w-full px-1 py-1 text-sm text-center text-gray-800 truncate">
+                              {item.meetingName || '-'}
+                            </div>,
+                            <div className="w-full px-1 py-1 text-sm text-left text-gray-800 max-w-[320px] truncate group relative">
+                              {item.agenda || '-'}
+                              <span className="absolute hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 left-0 -top-8 min-w-[200px] max-w-[400px] whitespace-normal"></span>
+                            </div>
                           ]
                         }))}
                         formContent={({onClose, rowId, mode}) => (
@@ -347,16 +390,14 @@ export default function Governance() {
 
                   <AccordionItem
                     value="item-3"
-                    className="mb-3 overflow-hidden border rounded-md shadow-sm">
-                    <AccordionTrigger className="px-4 py-3 text-base font-medium bg-gradient-to-r from-purple-50 to-white">
-                      <div className="flex items-center">
-                        <BarChart className="w-5 h-5 mr-2 text-purple-600" />
-                        경영진 KPI
-                        <Badge
-                          variant="outline"
-                          className="ml-2 border-purple-100 bg-purple-50">
-                          {kpiData.length}
+                    className="mb-3 overflow-hidden border rounded-md shadow-sm bg-gray-50">
+                    <AccordionTrigger className="px-4 py-3 text-base font-medium bg-customG-600">
+                      <div className="flex items-center gap-2">
+                        {/* <BarChart className="w-5 h-5 mr-2 text-[#0D1359]" /> */}
+                        <Badge variant="outline" className=" bg-[#0D1359] border-black">
+                          <span className="text-white">{kpiData.length}</span>
                         </Badge>
+                        <p className="text-sm font-medium text-[#0D1359]">경영진 KPI</p>
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="p-4">
@@ -382,16 +423,14 @@ export default function Governance() {
 
                   <AccordionItem
                     value="item-4"
-                    className="mb-1 overflow-hidden border rounded-md shadow-sm">
-                    <AccordionTrigger className="px-4 py-3 text-base font-medium bg-gradient-to-r from-amber-50 to-white">
-                      <div className="flex items-center">
-                        <GraduationCap className="w-5 h-5 mr-2 text-amber-600" />
-                        환경 교육
-                        <Badge
-                          variant="outline"
-                          className="ml-2 bg-amber-50 border-amber-100">
-                          {educationData.length}
+                    className="mb-3 overflow-hidden border rounded-md shadow-sm bg-gray-50">
+                    <AccordionTrigger className="px-4 py-3 text-base font-medium ">
+                      <div className="flex items-center gap-2">
+                        {/* <GraduationCap className="w-5 h-5 mr-2 text-customG" /> */}
+                        <Badge variant="outline" className="bg-[#0D1359] border-black">
+                          <span className="text-white">{educationData.length}</span>
                         </Badge>
+                        <span className="text-[#0D1359]">환경 교육</span>
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="p-4">
@@ -407,7 +446,12 @@ export default function Governance() {
                               : '',
                             item.participantCount?.toString() ?? '',
                             item.educationTitle ?? '',
-                            item.content ?? ''
+                            <div className="w-full px-1 py-1 text-sm text-left text-gray-800 max-w-[320px] truncate group relative">
+                              {item.content ?? '-'}
+                              <span className="absolute hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 left-0 -top-8 min-w-[200px] max-w-[400px] whitespace-normal">
+                                {item.content ?? '-'}
+                              </span>
+                            </div>
                           ]
                         }))}
                         formContent={({onClose, rowId, mode}) => (

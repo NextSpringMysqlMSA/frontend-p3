@@ -27,7 +27,7 @@ export default function Reminder() {
     const eventSource = connectReminderSSE(
       (alert: NewsAlert) => {
         console.log('New alert received:', alert)
-        
+
         // 중복 알림 방지
         if (alert.id !== lastAlertIdRef.current) {
           lastAlertIdRef.current = alert.id
@@ -45,7 +45,7 @@ export default function Reminder() {
           }, 7000)
         }
       },
-      (event) => {
+      event => {
         console.error('SSE connection error:', event)
       }
     )
@@ -90,7 +90,7 @@ export default function Reminder() {
   // 감성 분석 결과에 따른 스타일
   const getSentimentStyle = (sentiment?: string) => {
     if (!sentiment || sentiment === '분석 정보 없음') return 'border-red-500'
-    
+
     const sentimentLower = sentiment.toLowerCase()
     if (sentimentLower.includes('negative') || sentimentLower.includes('부정')) {
       return 'border-red-500'
@@ -103,14 +103,14 @@ export default function Reminder() {
   // 발행 시간 포맷팅
   const formatPublishedTime = (publishedAt?: string) => {
     if (!publishedAt) return null
-    
+
     try {
       const date = new Date(publishedAt)
       const now = new Date()
       const diffMs = now.getTime() - date.getTime()
       const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
       const diffDays = Math.floor(diffHours / 24)
-      
+
       if (diffDays > 0) {
         return `${diffDays}일 전`
       } else if (diffHours > 0) {
@@ -144,7 +144,6 @@ export default function Reminder() {
           ? 'opacity-100 translate-y-0'
           : 'opacity-0 -translate-y-4 pointer-events-none'
       )}>
-      
       {/* 개발 모드 표시 */}
       {process.env.NODE_ENV === 'development' && (
         <div className="absolute top-2 left-2">
@@ -153,30 +152,35 @@ export default function Reminder() {
       )}
 
       <div className="flex items-start">
-        <div className={clsx(
-          'flex flex-col w-full h-full pl-4 border-l-8',
-          getSentimentStyle(currentAlert.sentiment)
-        )}>
+        <div
+          className={clsx(
+            'flex flex-col w-full h-full pl-4 border-l-8',
+            getSentimentStyle(currentAlert.sentiment)
+          )}>
           {/* 헤더 */}
           <div className="flex flex-row w-full items-center space-x-2 mb-2">
             <AlertTriangle className="w-5 h-5 text-red-500 flex-shrink-0" />
-            <h3 className="text-base font-semibold text-gray-900">협력사 ESG 리스크 알림</h3>
+            <h3 className="text-base font-semibold text-gray-900">
+              협력사 ESG 리스크 알림
+            </h3>
           </div>
-          
+
           {/* 회사명과 카테고리 */}
           <div className="flex items-center space-x-2 mb-2">
             <Building2 className="w-4 h-4 text-gray-500" />
-            <span className="text-sm font-medium text-gray-700">{currentAlert.companyName}</span>
+            <span className="text-sm font-medium text-gray-700">
+              {currentAlert.companyName}
+            </span>
             <span className="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded-full">
               {currentAlert.category.toUpperCase()}
             </span>
           </div>
-          
+
           {/* 뉴스 제목 */}
           <h4 className="text-sm font-medium text-gray-800 mb-2 line-clamp-2">
             {currentAlert.title}
           </h4>
-          
+
           {/* 뉴스 URL 또는 상태 */}
           {hasValidUrl ? (
             <div className="flex items-center space-x-1 mb-2">
@@ -188,7 +192,7 @@ export default function Reminder() {
           ) : (
             <p className="text-xs text-gray-500 mb-2">링크 정보 없음</p>
           )}
-          
+
           {/* 추가 정보 */}
           <div className="flex items-center justify-between text-xs text-gray-500">
             <div className="flex items-center space-x-1">
@@ -206,7 +210,7 @@ export default function Reminder() {
             )}
           </div>
         </div>
-        
+
         {/* 닫기 버튼 */}
         <button
           onClick={handleClose}

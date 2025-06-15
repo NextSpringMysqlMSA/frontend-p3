@@ -27,7 +27,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
-import {CreateCommitteeDto, UpdateCommitteeDto} from '@/types/IFRS/governance'
+import {CreateCommitteeDto, UpdateCommitteeDto} from '@/types/IFRS/governanceType'
 
 type CommitteeProps = {
   onClose: () => void
@@ -159,8 +159,8 @@ export default function Committee({onClose, rowId, mode}: CommitteeProps) {
       className="flex flex-col space-y-5">
       {/* 헤더 섹션 */}
       <div className="flex items-center pb-2 mb-2 border-b">
-        <div className="p-2 mr-3 rounded-full bg-blue-50">
-          <Users className="w-5 h-5 text-blue-600" />
+        <div className="p-2.5 mr-3 rounded-full bg-blue-50">
+          <Users className="w-5 h-5 text-[#0D1359]-600" />
         </div>
         <div>
           <h3 className="text-base font-medium">
@@ -185,7 +185,7 @@ export default function Committee({onClose, rowId, mode}: CommitteeProps) {
             placeholder="예: ESG 위원회, 지속가능경영위원회"
             value={committeeName}
             onChange={e => setField('committeeName', e.target.value)}
-            className="border focus-visible:ring-customG"
+            className="border focus-visible:ring-[#0D1359]"
           />
         </div>
 
@@ -199,7 +199,7 @@ export default function Committee({onClose, rowId, mode}: CommitteeProps) {
               placeholder="이름"
               value={memberName}
               onChange={e => setField('memberName', e.target.value)}
-              className="border focus-visible:ring-customG"
+              className="border focus-visible:ring-[#0D1359]"
             />
           </div>
           <div className="grid gap-2">
@@ -211,7 +211,7 @@ export default function Committee({onClose, rowId, mode}: CommitteeProps) {
               placeholder="직책"
               value={memberPosition}
               onChange={e => setField('memberPosition', e.target.value)}
-              className="border focus-visible:ring-customG"
+              className="border focus-visible:ring-[#0D1359]"
             />
           </div>
           <div className="grid gap-2">
@@ -223,7 +223,7 @@ export default function Committee({onClose, rowId, mode}: CommitteeProps) {
               placeholder="소속"
               value={memberAffiliation}
               onChange={e => setField('memberAffiliation', e.target.value)}
-              className="border focus-visible:ring-customG"
+              className="border focus-visible:ring-[#0D1359]"
             />
           </div>
         </div>
@@ -238,7 +238,7 @@ export default function Committee({onClose, rowId, mode}: CommitteeProps) {
             rows={4}
             value={climateResponsibility}
             onChange={e => setField('climateResponsibility', e.target.value)}
-            className="border resize-none focus-visible:ring-customG"
+            className="border resize-none focus-visible:ring-[#0D1359]"
           />
         </div>
       </div>
@@ -297,7 +297,7 @@ export default function Committee({onClose, rowId, mode}: CommitteeProps) {
           <Button
             onClick={handleSubmit}
             disabled={submitting}
-            className="gap-1 text-white bg-customG hover:bg-customGDark">
+            className="gap-1 text-white bg-[#0D1359] hover:bg-[#0D1359]Dark">
             {submitting ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
